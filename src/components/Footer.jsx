@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, Instagram, Facebook, Github } from "lucide-react";
+import { Mail, Instagram, Facebook, Github } from "lucide-react";
 
 export default function Footer() {
     const year = new Date().getFullYear();
+
+    function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            const yOffset = -80; // adjust if you want more/less offset
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
+    }
 
     return (
         <footer className="mt-10 border-t border-white/10 bg-white/5 backdrop-blur-md">
@@ -20,9 +29,13 @@ export default function Footer() {
                     <div className="space-y-2">
                         <p className="text-white/60 font-medium">Pages</p>
                         <Link className="block hover:text-white" to="/">Home</Link>
+                        <button
+                            onClick={() => scrollToSection("about")}
+                            className="block text-left hover:text-white w-full"
+                        >
+                            About
+                        </button>
                         <Link className="block hover:text-white" to="/contact">Contact</Link>
-                        {/* <Link className="block hover:text-white" to="/gallery">Gallery</Link> */}
-                        {/* add more links if you have pages */}
                     </div>
                     <div className="space-y-2">
                         <p className="text-white/60 font-medium">Services</p>
@@ -43,13 +56,16 @@ export default function Footer() {
                     </li>
 
                     <div className="mt-2 flex items-center gap-3">
-                        <a href="https://instagram.com" target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+                        <a href="https://instagram.com" target="_blank" rel="noreferrer"
+                            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                             <Instagram size={18} />
                         </a>
-                        <a href="https://facebook.com" target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+                        <a href="https://facebook.com" target="_blank" rel="noreferrer"
+                            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                             <Facebook size={18} />
                         </a>
-                        <a href="https://github.com" target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+                        <a href="https://github.com" target="_blank" rel="noreferrer"
+                            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                             <Github size={18} />
                         </a>
                     </div>

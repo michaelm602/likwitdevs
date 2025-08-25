@@ -6,7 +6,9 @@ export default function ProjectsSection() {
 
     return (
         // Lift above footer + give plenty of bottom space
-        <section className="relative z-10 px-4 pt-12 pb-28 md:pt-16 md:pb-32">
+        <section
+            id="projects"
+            className="relative z-10 px-4 pt-12 pb-28 md:pt-16 md:pb-32">
             <div className="mx-auto max-w-6xl">
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Recent Work</h2>
 
