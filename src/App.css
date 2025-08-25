@@ -1,48 +1,28 @@
 .hero {
-  position: relative;        /* NEW: create stacking context */
-  height: 100vh;
-  width: 100vw;
+  position: relative;
+
+  /* Full viewport height; start at top */
+  min-height: 50vh;
+  margin-top: 0;
+
+  /* Put the CONTENT just below the navbar */
+  padding-top: calc(var(--nav-h) + 0.5rem);
+
+  /* Top-align content, keep it horizontally centered */
   display: grid;
-  place-items: center;
+  align-items: start;
+  justify-items: center;
+
+  width: 100vw;
   color: white;
   text-align: center;
-
-  background-image: url("/images/computerbg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-
-  overflow: hidden;          /* NEW: keep particles inside */
+  overflow: hidden;
 }
 
-/* NEW: dark overlay */
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3); /* adjust 0.4–0.7 for more/less darkness */
-  z-index: 0;
+.cursor { 
+  display:inline-block; 
+  width:.6ch; 
+  margin-left:2px; 
+  animation: blink 1s steps(1) infinite; 
 }
-
-.hero-content {
-  position: relative;        /* NEW: ensure above particles */
-  z-index: 1;                /* NEW */
-  background: rgba(0, 0, 0, 0.45);
-  padding: 2rem;
-  border-radius: 12px;
-}
-
-/* Particles layer */
-.hero-particles {
-  position: absolute;        /* NEW */
-  inset: 0;                  /* NEW: fill hero */
-  z-index: 0;                /* NEW: behind content, above bg image */
-}
-
-.cursor {
-  display: inline-block;
-  width: 0.6ch;
-  margin-left: 2px;
-  animation: blink 1s steps(1) infinite;
-}
-
 @keyframes blink { 50% { opacity: 0; } }
