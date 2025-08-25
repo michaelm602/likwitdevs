@@ -64,7 +64,7 @@ export default function Footer() {
                             className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                             <Facebook size={18} />
                         </a>
-                        <a href="https://github.com" target="_blank" rel="noreferrer"
+                        <a href="https://github.com/michaelm602" target="_blank" rel="noreferrer"
                             className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                             <Github size={18} />
                         </a>

@@ -155,7 +155,7 @@ export default function Navbar() {
                             </a>
 
                             <a
-                                href="https://github.com"
+                                href="https://github.com/michaelm602"
                                 target="_blank"
                                 rel="noreferrer"
                                 aria-label="GitHub"
