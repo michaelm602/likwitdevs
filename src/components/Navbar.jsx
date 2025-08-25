@@ -26,10 +26,10 @@ export default function Navbar() {
     }
 
     return (
-        <header className="fixed left-0 right-0 top-6 z-50">
+        <header className="left-0 right-0 top-6 z-50 mt-10">
             <div className="mx-auto max-w-6xl px-4">
                 <div className="flex items-center justify-between rounded-2xl border border-white/10
-                        bg-white/10 backdrop-blur-md px-4 py-3">
+                        bg-black/10 backdrop-blur-md px-4 py-3">
                     <NavLink to="/" className="text-white font-semibold">
                         Likwit Devs
                     </NavLink>

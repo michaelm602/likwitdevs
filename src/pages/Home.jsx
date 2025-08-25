@@ -12,8 +12,8 @@ export default function Home() {
                 <ParticlesBackground className="hero-particles" />
 
                 <div className="hero-content">
-                    <h1 className="hero-title">Welcome to My Portfolio</h1>
-                    <p className="hero-subtitle">
+                    <h1 className="hero-title hero-title text-5xl md:text-5xl leading-tight">Welcome to My Portfolio</h1>
+                    <p className="hero-subtitle mt-2 text-xl md:text-1xl leading-relaxed">
                         <Typewriter
                             texts={[
                                 "I build and design modern, responsive websites.",

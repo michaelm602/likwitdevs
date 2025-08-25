@@ -26,3 +26,23 @@
   animation: blink 1s steps(1) infinite; 
 }
 @keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- Custom hero fonts ---------- */
+@font-face {
+  font-family: "PunkTypewriter";
+  src: url("/fonts/punk-typewriter.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "VeteranTypewriter";
+  src: url("/fonts/veteran-typewriter.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+

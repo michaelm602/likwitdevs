@@ -34,13 +34,13 @@ export default function Footer() {
 
                 {/* Contact / Socials */}
                 <div className="space-y-3">
-                    <p className="text-white/60 font-medium">Get in touch</p>
-                    <a href="mailto:likwitdevs@gmail.com" className="inline-flex items-center gap-2 hover:text-white">
-                        <Mail size={18} /> likwitdevs@gmail.com
-                    </a>
-                    <a href="tel:+16024345511" className="block inline-flex items-center gap-2 hover:text-white">
-                        <Phone size={18} /> (602) 434-5511
-                    </a>
+                    <h4 className="font-semibold text-white mb-2">Get in touch</h4>
+                    <li className="flex items-center gap-2">
+                        <Mail className="w-5 h-5 opacity-80" />
+                        <Link to="/contact" className="hover:underline hover:text-white">
+                            likwitdevs@gmail.com
+                        </Link>
+                    </li>
 
                     <div className="mt-2 flex items-center gap-3">
                         <a href="https://instagram.com" target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
