@@ -4,7 +4,7 @@
 
 /* ---------- Base / Resets ---------- */
 @layer base {
-  :root { --nav-h: 5.5rem; } /* keep if you use it */
+  :root { --nav-h: 5.5rem; }
 
   html, body, #root { height: 100%; }
   * { box-sizing: border-box; }
@@ -15,14 +15,6 @@
     font-family: system-ui, sans-serif;
     overflow-x: hidden; /* prevent accidental horizontal scroll on mobile */
   }
-
-  @layer utilities {
-  /* Use svh when supported; fallback to vh */
-  .h-svh { height: 100vh; }
-  @supports (height: 100svh) {
-    .h-svh { height: 100svh; }
-  }
-}
 
   /* Make media responsive by default */
   img, video, canvas, svg {
@@ -67,10 +59,23 @@
   }
 }
 
-/* ---------- (Optional) Utilities you might reuse ---------- */
+/* ---------- Utilities ---------- */
 @layer utilities {
-  /* Clamp helpers for headings if you want to use them as classes */
+  /* Clamp helpers for headings */
   .text-fluid-h1 { font-size: clamp(1.75rem, 2vw + 1rem, 3rem); line-height: 1.1; }
   .text-fluid-h2 { font-size: clamp(1.25rem, 1.2vw + 1rem, 2rem); line-height: 1.2; }
   .text-fluid-body { font-size: clamp(0.95rem, 0.3vw + 0.85rem, 1.1rem); line-height: 1.6; }
+
+  /* Stable viewport height helper (used by SiteBackground layers) */
+  .h-svh { height: 100vh; }
+  @supports (height: 100svh) {
+    .h-svh { height: 100svh; }
+  }
+
+  /* Page animation helper to reduce flicker */
+  .motion-page {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
 }

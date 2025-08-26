@@ -41,14 +41,12 @@ export default function Navbar() {
                     <nav className="hidden md:flex items-center gap-1">
                         <NavLink to="/" className={linkClass}>Home</NavLink>
                         {/* About scroll */}
-                        <button
-                            onClick={() => {
-                                document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
-                            }}
+                        <Link
+                            to={{ pathname: "/", hash: "#about" }}
                             className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition"
                         >
                             About
-                        </button>
+                        </Link>
                         <NavLink to="/contact" className={linkClass}>Contact</NavLink>
                         {authed && (
                             <>
@@ -86,15 +84,13 @@ export default function Navbar() {
                                 <NavLink to="/" className={linkClass} onClick={() => setOpen(false)}>Home</NavLink>
                             </li>
                             <li>
-                                <button
-                                    onClick={() => {
-                                        document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
-                                        setOpen(false);
-                                    }}
-                                    className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition w-full text-left"
+                                <Link
+                                    to={{ pathname: "/", hash: "#about" }}
+                                    onClick={() => setOpen(false)}
+                                    className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition block text-left"
                                 >
                                     About
-                                </button>
+                                </Link>
                             </li>
                             <li>
                                 <NavLink to="/contact" className={linkClass} onClick={() => setOpen(false)}>Contact</NavLink>
