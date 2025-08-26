@@ -1,19 +1,25 @@
 .hero {
   position: relative;
 
-  /* Full viewport height; start at top */
-  min-height: 50vh;
-  margin-top: 0;
+  /* Stable height (fallback first) */
+  min-height: 60vh;
+}
+@supports (height: 100svh) {
+  .hero { min-height: 60svh; } /* prevents the mobile zoom effect */
+}
 
-  /* Put the CONTENT just below the navbar */
+/* Keep the rest of your layout rules */
+.hero {
+  margin-top: 0;
   padding-top: calc(var(--nav-h) + 0.5rem);
 
-  /* Top-align content, keep it horizontally centered */
   display: grid;
   align-items: start;
   justify-items: center;
 
-  width: 100vw;
+  /* IMPORTANT: avoid 100vw; it causes overflow/jitter on mobile */
+  width: 100%;
+
   color: white;
   text-align: center;
   overflow: hidden;

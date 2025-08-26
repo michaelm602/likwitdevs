@@ -7,10 +7,27 @@ export default function SiteBackground() {
 
     return (
         <>
-            <div aria-hidden className="fixed inset-0 -z-30 bg-center bg-cover md:bg-fixed"
-                style={{ backgroundImage: `url(${bgUrl})` }} />
-            <div aria-hidden className="fixed inset-0 -z-20 bg-black/30 pointer-events-none" />
-            <div aria-hidden className="fixed inset-0 -z-10 pointer-events-none">
+            {/* Background image */}
+            <div
+                aria-hidden
+                className="
+          fixed -z-30 left-0 right-0 top-0 h-svh
+          bg-center bg-cover md:bg-fixed
+        "
+                style={{ backgroundImage: `url(${bgUrl})` }}
+            />
+
+            {/* Tint overlay */}
+            <div
+                aria-hidden
+                className="fixed -z-20 left-0 right-0 top-0 h-svh bg-black/30 pointer-events-none"
+            />
+
+            {/* Particles */}
+            <div
+                aria-hidden
+                className="fixed -z-10 left-0 right-0 top-0 h-svh pointer-events-none"
+            >
                 <ParticlesBackground key={pathname} />
             </div>
         </>

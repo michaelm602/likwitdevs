@@ -7,7 +7,7 @@ export default function Home() {
     return (
         <>
             {/* HERO */}
-            <section className="relative overflow-hidden">
+            <section className="relative overflow-hidden hero-stable">
                 {/* Background / particles */}
                 <ParticlesBackground className="pointer-events-none absolute inset-0" />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent" />

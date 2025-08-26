@@ -16,6 +16,14 @@
     overflow-x: hidden; /* prevent accidental horizontal scroll on mobile */
   }
 
+  @layer utilities {
+  /* Use svh when supported; fallback to vh */
+  .h-svh { height: 100vh; }
+  @supports (height: 100svh) {
+    .h-svh { height: 100svh; }
+  }
+}
+
   /* Make media responsive by default */
   img, video, canvas, svg {
     max-width: 100%;
