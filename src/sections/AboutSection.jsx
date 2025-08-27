@@ -11,7 +11,7 @@ export default function AboutSection() {
 
                     <p className="text-white/90 max-w-3xl">
                         I’m Michael, the builder behind <span className="font-semibold">Likwit Devs</span>.
-                        I design and ship **fast, mobile-first websites** that look clean and convert.
+                        I design and ship **fast, mobile-first websites** that look clean and make it easy to contact or book.
                         My focus is performance (Core Web Vitals), simple content editing, and custom visuals
                         so your brand actually stands out.
                     </p>
