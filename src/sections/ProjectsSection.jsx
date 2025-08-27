@@ -11,9 +11,8 @@ export default function ProjectsSection() {
             id="projects"
             className="relative z-10 px-4 pt-12 pb-28 md:pt-16 md:pb-32">
             <div className="mx-auto max-w-6xl">
-                <Reveal>
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Recent Work</h2>
-                </Reveal>
+
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Recent Work</h2>
                 {loading && <p className="text-white/70">Loading projects…</p>}
                 {error && <p className="text-red-300">Couldn't load projects.</p>}
 
