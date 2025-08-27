@@ -1,48 +1,58 @@
 import { useEffect, useRef, useState } from "react";
 
+/** Anti-flicker Reveal: different thresholds for enter/exit (hysteresis) */
 export default function Reveal({
     as: Tag = "div",
     className = "",
     children,
-    y = 24,                 // slide distance (px)
-    duration = 550,         // ms
-    delay = 0,              // ms
+    y = 24,
+    duration = 550,
+    delay = 0,
     ease = "cubic-bezier(0.22,1,0.36,1)",
-    threshold = 0.15,       // portion visible to count as "in view"
-    rootMargin = "-10% 0px -10% 0px", // tighten to prevent flicker near edges
-    once = false,           // false = animate both ways; true = only animate in
-    startVisible = true,    // show instantly if it starts on screen
+    // Hysteresis: higher to enter, lower to exit
+    enter = 0.25,                // intersectionRatio to show
+    exit = 0.12,                 // intersectionRatio to hide
+    rootMargin = "-12% 0px -12% 0px",
+    once = false,
+    startVisible = true,
     ...rest
 }) {
-    const ref = useRef(null);
+    const elRef = useRef(null);
     const [visible, setVisible] = useState(startVisible);
+    const visibleRef = useRef(visible);
 
     useEffect(() => {
-        const m = window.matchMedia("(prefers-reduced-motion: reduce)");
-        if (m.matches) { setVisible(true); return; }
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+        if (reduce.matches) { setVisible(true); visibleRef.current = true; return; }
 
-        const el = ref.current;
+        const el = elRef.current;
         if (!el) return;
 
-        // If it starts within the viewport, render as visible to avoid first-paint flicker
+        // If starting on-screen, render visible to avoid first-paint flash
         if (startVisible) {
             const r = el.getBoundingClientRect();
             const within = r.top < window.innerHeight && r.bottom > 0;
-            if (within) setVisible(true);
+            if (within) { setVisible(true); visibleRef.current = true; }
         }
 
+        // Fine-grained thresholds so we can read intersectionRatio accurately
+        const thresholds = Array.from({ length: 21 }, (_, i) => i / 20);
         const io = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
+            const ratio = entry.intersectionRatio ?? 0;
+
+            if (!visibleRef.current && ratio >= enter) {
+                visibleRef.current = true;
                 setVisible(true);
                 if (once) io.disconnect();
-            } else if (!once) {
+            } else if (!once && visibleRef.current && ratio <= exit) {
+                visibleRef.current = false;
                 setVisible(false);
             }
-        }, { threshold, rootMargin });
+        }, { threshold: thresholds, rootMargin });
 
         io.observe(el);
         return () => io.disconnect();
-    }, [once, threshold, rootMargin, startVisible]);
+    }, [enter, exit, rootMargin, once, startVisible]);
 
     const base = {
         transition: `transform ${duration}ms ${ease} ${delay}ms, opacity ${duration}ms ${ease} ${delay}ms`,
@@ -54,7 +64,12 @@ export default function Reveal({
     const shown = { transform: "translateY(0px)", opacity: 1 };
 
     return (
-        <Tag ref={ref} className={className} style={{ ...base, ...(visible ? shown : hidden) }} {...rest}>
+        <Tag
+            ref={elRef}
+            className={className}
+            style={{ ...base, ...(visible ? shown : hidden) }}
+            {...rest}
+        >
             {children}
         </Tag>
     );

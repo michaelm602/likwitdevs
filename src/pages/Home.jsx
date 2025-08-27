@@ -18,24 +18,22 @@ export default function Home() {
                 <div className="mx-auto max-w-6xl px-4">
 
                     <div className="relative py-14 md:py-24">
-                        <Reveal>
-                            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white">
-                                Welcome to My Portfolio
-                            </h1>
-                        </Reveal>
-                        <Reveal>
-                            <p className="mt-3 text-base sm:text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
-                                <Typewriter
-                                    texts={[
-                                        "I build and design modern, responsive websites.",
-                                        "I make sites that are fast, professional, and mobile-friendly.",
-                                        "I add custom artwork and visuals to make your brand stand out.",
-                                    ]}
-                                    speed={70}
-                                    pause={1600}
-                                />
-                            </p>
-                        </Reveal>
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white">
+                            Websites that outpace your competition.
+                        </h1>
+                        <p className="mt-3 text-base sm:text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
+                            <Typewriter
+                                texts={[
+                                    "Blazing-fast performance & Core Web Vitals friendly.",
+                                    "Mobile-first design with clean, modern UI.",
+                                    "SEO-ready builds and simple content editing.",
+                                    "Custom visuals so your brand actually stands out.",
+                                ]}
+                                speed={70}
+                                pause={1600}
+                            />
+                        </p>
+
                         <button
                             onClick={() => {
                                 document.getElementById("projects")?.scrollIntoView({
@@ -44,10 +42,14 @@ export default function Home() {
                             }}
                             className="btn-subtle text-white bg-black/10 backdrop-blur-md mt-3"
                         >
-                            <Reveal>
-                                View Projects
-                            </Reveal>
+                            View Projects
                         </button>
+                        <div className="mt-4 flex flex-wrap gap-2 text-sm text-white/80">
+                            <span className="px-3 py-1 rounded-lg bg-white/10">Responsive</span>
+                            <span className="px-3 py-1 rounded-lg bg-white/10">Fast Loads</span>
+                            <span className="px-3 py-1 rounded-lg bg-white/10">SEO Ready</span>
+                            <span className="px-3 py-1 rounded-lg bg-white/10">Modern UI</span>
+                        </div>
 
 
                     </div>
