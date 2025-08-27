@@ -128,7 +128,7 @@ export default function Navbar() {
                                 <Mail size={18} />
                             </Link>
 
-                            <a
+                            {/* <a
                                 href="https://instagram.com"
                                 target="_blank"
                                 rel="noreferrer"
@@ -148,7 +148,7 @@ export default function Navbar() {
                                 onClick={() => setOpen(false)}
                             >
                                 <Facebook size={18} />
-                            </a>
+                            </a>*/}
 
                             <a
                                 href="https://github.com/michaelm602"

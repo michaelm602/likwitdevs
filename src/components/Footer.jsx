@@ -52,6 +52,7 @@ export default function Footer() {
                 </nav>
 
                 {/* Contact / Socials */}
+
                 <div className="space-y-3">
                     <Reveal>
                         <h4 className="font-semibold text-white mb-2">Get in touch</h4>
@@ -61,9 +62,9 @@ export default function Footer() {
                                 likwitdevs@gmail.com
                             </Link>
                         </li>
-                    </Reveal>
-                    <Reveal>
+
                         <div className="mt-2 flex items-center gap-3">
+                            {/*
                             <a href="https://instagram.com" target="_blank" rel="noreferrer"
                                 className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                                 <Instagram size={18} />
@@ -71,19 +72,21 @@ export default function Footer() {
                             <a href="https://facebook.com" target="_blank" rel="noreferrer"
                                 className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                                 <Facebook size={18} />
-                            </a>
+                            </a> */}
                             <a href="https://github.com/michaelm602" target="_blank" rel="noreferrer"
                                 className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
                                 <Github size={18} />
                             </a>
+
                         </div>
                     </Reveal>
                 </div>
-            </div>
+
+            </div >
 
             <div className="border-t border-white/10 text-center text-xs text-white/60 py-4">
                 © {year} Likwit Devs. All rights reserved.
             </div>
-        </footer>
+        </footer >
     );
 }
