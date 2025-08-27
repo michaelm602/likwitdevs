@@ -2,7 +2,6 @@ import Typewriter from "../components/Typewriter";
 import ParticlesBackground from "../components/ParticlesBackground";
 import ProjectsSection from "../sections/ProjectsSection";
 import AboutSection from "../sections/AboutSection";
-import Reveal from "../components/Reveal";
 
 export default function Home() {
     return (
@@ -14,14 +13,13 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent" />
 
                 {/* Content */}
-
                 <div className="mx-auto max-w-6xl px-4">
-
                     <div className="relative py-14 md:py-24">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white">
                             Websites that outpace your competition.
                         </h1>
                         <p className="mt-3 text-base sm:text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
+
                             <Typewriter
                                 texts={[
                                     "Blazing-fast performance & Core Web Vitals friendly.",
@@ -33,7 +31,6 @@ export default function Home() {
                                 pause={1600}
                             />
                         </p>
-
                         <button
                             onClick={() => {
                                 document.getElementById("projects")?.scrollIntoView({
