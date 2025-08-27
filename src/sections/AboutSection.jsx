@@ -16,7 +16,7 @@ export default function AboutSection() {
                         Need e-commerce, booking, or custom visuals? I’ve got you.
                     </p>
 
-                    <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 text-white/80">
+                    <ul className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 text-white/80">
                         <li>• React + Tailwind, Firebase (Auth/Firestore/Storage)</li>
                         <li>• Stripe & PayPal checkout, EmailJS notifications</li>
                         <li>• Image galleries, admin panels, and fast hosting</li>

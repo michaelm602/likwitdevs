@@ -22,7 +22,7 @@ export default function ProjectsSection() {
                 )}
 
                 {!loading && !error && projects.length > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {projects.map((p) => (
                             <ProjectCard key={p.id} project={p} />
                         ))}
