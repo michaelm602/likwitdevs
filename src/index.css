@@ -10,22 +10,23 @@
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
 
-
+  /* keep page behind everything dark & avoid rubber-band showing bg */
+    html, body { background: transparent; }
 
   body {
     margin: 0;
     font-family: system-ui, sans-serif;
-    overflow-x: hidden; /* prevent accidental horizontal scroll on mobile */
+    overflow-x: hidden;
   }
 
-  /* Make media responsive by default */
+  /* responsive media defaults */
   img, video, canvas, svg {
     max-width: 100%;
     height: auto;
     display: block;
   }
 
-  /* Respect reduced motion */
+  /* reduced-motion */
   @media (prefers-reduced-motion: reduce) {
     * {
       animation-duration: 0.01ms !important;
@@ -36,23 +37,18 @@
   }
 }
 
-/* ---------- Reusable Components ---------- */
+/* ---------- Components ---------- */
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center rounded-xl px-4 py-2 font-medium
            bg-white text-black hover:opacity-90 transition;
   }
-
   .btn-subtle {
     @apply inline-flex items-center justify-center rounded-xl px-3 py-2
            bg-white/10 hover:bg-white/20 transition;
   }
+  .card { @apply rounded-2xl border border-white/10 bg-white/5; }
 
-  .card {
-    @apply rounded-2xl border border-white/10 bg-white/5;
-  }
-
-  /* Single, consolidated input style */
   .input {
     @apply w-full rounded-xl px-3 py-2 text-white outline-none
            bg-black/40 border border-white/20 backdrop-blur-sm
@@ -63,18 +59,26 @@
 
 /* ---------- Utilities ---------- */
 @layer utilities {
-  /* Clamp helpers for headings */
+  /* fluid text helpers */
   .text-fluid-h1 { font-size: clamp(1.75rem, 2vw + 1rem, 3rem); line-height: 1.1; }
   .text-fluid-h2 { font-size: clamp(1.25rem, 1.2vw + 1rem, 2rem); line-height: 1.2; }
   .text-fluid-body { font-size: clamp(0.95rem, 0.3vw + 0.85rem, 1.1rem); line-height: 1.6; }
 
-  /* Stable viewport height helper (used by SiteBackground layers) */
+  /* old stable vh (ok to keep) */
   .h-svh { height: 100vh; }
-  @supports (height: 100svh) {
-    .h-svh { height: 100svh; }
+  @supports (height: 100svh) { .h-svh { height: 100svh; } }
+
+  /* dynamic viewport height: follows toolbar show/hide */
+  .h-dvh { height: 100vh; }
+  @supports (height: 100dvh) { .h-dvh { height: 100dvh; } }
+
+  /* safe-area padding (used on pricing wrapper) */
+  .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+  @supports (padding: max(0px)) {
+    .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
   }
 
-  /* Page animation helper to reduce flicker */
+  /* page animation helper */
   .motion-page {
     will-change: transform, opacity;
     backface-visibility: hidden;

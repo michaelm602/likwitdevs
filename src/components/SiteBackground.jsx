@@ -5,10 +5,8 @@ import ParticlesBackground from "./ParticlesBackground";
 
 export default function SiteBackground() {
     const { pathname } = useLocation();
-    const bgUrl = `${import.meta.env.BASE_URL}images/computerbg.jpg`;
     const [showFx, setShowFx] = useState(false);
 
-    // Mount heavy visuals a tick after first paint to avoid initial flash
     useEffect(() => {
         const id = requestAnimationFrame(() => setShowFx(true));
         return () => cancelAnimationFrame(id);
@@ -16,24 +14,40 @@ export default function SiteBackground() {
 
     return (
         <>
-            {/* Background image */}
+            {/* Fixed image layer (no background-attachment; very stable on mobile) */}
             <div
                 aria-hidden
-                className="fixed -z-30 left-0 right-0 top-0 inset-0 bg-center bg-cover md:bg-fixed"
-                style={{ backgroundImage: `url(${bgUrl})`, willChange: "transform", transform: "translateZ(0)" }}
-            />
-            {/* Tint */}
+                className="fixed inset-0 -z-30 pointer-events-none select-none"
+            >
+                <img
+                    src="/images/computerbg.jpg"
+                    alt=""
+                    className="
+            absolute inset-0 w-full
+            h-svh md:h-dvh          /* stable height on mobile; desktop can use dvh */
+            object-cover
+            [transform:translateZ(0)]
+            will-change-transform
+          "
+                    draggable={false}
+                />
+            </div>
+
+            {/* Tint overlay */}
             <div
                 aria-hidden
-                className="fixed -z-20 left-0 right-0 top-0 h-svh bg-black/30 pointer-events-none"
-                style={{ willChange: "opacity", transform: "translateZ(0)" }}
+                className="fixed inset-0 -z-20 bg-black/30 pointer-events-none
+                   h-svh md:h-dvh"
+                style={{ transform: "translateZ(0)", willChange: "opacity" }}
             />
-            {/* Particles (deferred mount) */}
+
+            {/* Particles (mounted one tick later) */}
             {showFx && (
                 <div
                     aria-hidden
-                    className="fixed -z-10 left-0 right-0 top-0 h-svh pointer-events-none"
-                    style={{ willChange: "transform", transform: "translateZ(0)" }}
+                    className="fixed inset-0 -z-10 pointer-events-none
+                     h-svh md:h-dvh"
+                    style={{ transform: "translateZ(0)" }}
                 >
                     <ParticlesBackground key={pathname} />
                 </div>
