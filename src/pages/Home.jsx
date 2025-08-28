@@ -2,6 +2,7 @@ import Typewriter from "../components/Typewriter";
 import ParticlesBackground from "../components/ParticlesBackground";
 import ProjectsSection from "../sections/ProjectsSection";
 import AboutSection from "../sections/AboutSection";
+import PricingSection from "../sections/PricingSection";
 
 export default function Home() {
     return (
@@ -63,6 +64,7 @@ export default function Home() {
             {/* PROJECTS */}
             <ProjectsSection />
             <AboutSection />
+            <PricingSection />
         </>
     );
 }

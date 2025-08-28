@@ -1,18 +1,24 @@
-import { Link } from "react-router-dom";
-import { Mail, Instagram, Facebook, Github } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Mail, Github } from "lucide-react";
 import Reveal from "./Reveal";
 
 export default function Footer() {
     const year = new Date().getFullYear();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    function scrollToSection(id) {
-        const el = document.getElementById(id);
-        if (el) {
-            const yOffset = -80; // adjust if you want more/less offset
-            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: "smooth" });
+    // Scroll to a section id, navigating home first if needed
+    const goTo = (id) => {
+        const scroll = () =>
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        if (location.pathname !== "/") {
+            navigate("/");
+            setTimeout(scroll, 80);
+        } else {
+            scroll();
         }
-    }
+    };
 
     return (
         <footer className="mt-10 border-t border-white/10 bg-white/5 backdrop-blur-md">
@@ -26,21 +32,34 @@ export default function Footer() {
                         </p>
                     </div>
                 </Reveal>
+
                 {/* Links */}
                 <nav className="grid grid-cols-2 gap-2 text-sm">
                     <Reveal>
                         <div className="space-y-2">
                             <p className="text-white/60 font-medium">Pages</p>
+
                             <Link className="block hover:text-white" to="/">Home</Link>
+
+                            {/* Keep links visually consistent: block, no padding */}
                             <button
-                                onClick={() => scrollToSection("about")}
-                                className="block text-left hover:text-white w-full"
+                                onClick={() => goTo("about")}
+                                className="block text-left w-full hover:text-white"
                             >
                                 About
                             </button>
+
+                            <button
+                                onClick={() => goTo("pricing")}
+                                className="block text-left w-full hover:text-white"
+                            >
+                                Pricing
+                            </button>
+
                             <Link className="block hover:text-white" to="/contact">Contact</Link>
                         </div>
                     </Reveal>
+
                     <Reveal>
                         <div className="space-y-2">
                             <p className="text-white/60 font-medium">Services</p>
@@ -52,7 +71,6 @@ export default function Footer() {
                 </nav>
 
                 {/* Contact / Socials */}
-
                 <div className="space-y-3">
                     <Reveal>
                         <h4 className="font-semibold text-white mb-2">Get in touch</h4>
@@ -64,29 +82,22 @@ export default function Footer() {
                         </li>
 
                         <div className="mt-2 flex items-center gap-3">
-                            {/*
-                            <a href="https://instagram.com" target="_blank" rel="noreferrer"
-                                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
-                                <Instagram size={18} />
-                            </a>
-                            <a href="https://facebook.com" target="_blank" rel="noreferrer"
-                                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
-                                <Facebook size={18} />
-                            </a> */}
-                            <a href="https://github.com/michaelm602" target="_blank" rel="noreferrer"
-                                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+                            <a
+                                href="https://github.com/michaelm602"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+                            >
                                 <Github size={18} />
                             </a>
-
                         </div>
                     </Reveal>
                 </div>
-
-            </div >
+            </div>
 
             <div className="border-t border-white/10 text-center text-xs text-white/60 py-4">
                 © {year} Likwit Devs. All rights reserved.
             </div>
-        </footer >
+        </footer>
     );
 }

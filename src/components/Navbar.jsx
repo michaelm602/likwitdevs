@@ -1,17 +1,18 @@
-import { NavLink, useNavigate, Link } from "react-router-dom";
+import { NavLink, useNavigate, Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../lib/firebase";
-import { Instagram, Facebook, Github, Mail } from "lucide-react"; // 👈 add this
+import { Github, Mail } from "lucide-react";
 
 const linkClass = ({ isActive }) =>
-    `px-3 py-2 rounded-lg text-sm transition
-   ${isActive ? "bg-white/20 text-white" : "text-white/80 hover:text-white hover:bg-white/10"}`;
+    `px-3 py-2 rounded-lg text-sm transition ${isActive ? "bg-white/20 text-white" : "text-white/80 hover:text-white hover:bg-white/10"
+    }`;
 
 export default function Navbar() {
     const [authed, setAuthed] = useState(false);
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => setAuthed(!!u));
@@ -28,11 +29,24 @@ export default function Navbar() {
         }
     }
 
+    // Navigate to Home (if not there) then smooth-scroll to the section id
+    const goTo = (id) => {
+        const scroll = () =>
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        setOpen(false);
+        if (location.pathname !== "/") {
+            navigate("/");
+            setTimeout(scroll, 80); // wait for Home to render
+        } else {
+            scroll();
+        }
+    };
+
     return (
         <header className="left-0 right-0 z-50 mt-6">
             <div className="mx-auto max-w-6xl px-4">
-                <div className="flex items-center justify-between rounded-2xl border border-white/10
-                        bg-black/10 backdrop-blur-md px-4 py-3">
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/10 backdrop-blur-md px-4 py-3">
                     <NavLink to="/" className="text-white font-semibold" onClick={() => setOpen(false)}>
                         Likwit Devs
                     </NavLink>
@@ -40,14 +54,24 @@ export default function Navbar() {
                     {/* Desktop nav */}
                     <nav className="hidden md:flex items-center gap-1">
                         <NavLink to="/" className={linkClass}>Home</NavLink>
-                        {/* About scroll */}
-                        <Link
-                            to={{ pathname: "/", hash: "#about" }}
+
+                        <button
+                            onClick={() => goTo("about")}
                             className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition"
                         >
                             About
-                        </Link>
+                        </button>
+
+                        {/* ✅ New Pricing link */}
+                        <button
+                            onClick={() => goTo("pricing")}
+                            className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition"
+                        >
+                            Pricing
+                        </button>
+
                         <NavLink to="/contact" className={linkClass}>Contact</NavLink>
+
                         {authed && (
                             <>
                                 <NavLink to="/admin" className={linkClass}>Admin</NavLink>
@@ -75,8 +99,8 @@ export default function Navbar() {
                 {/* Mobile drawer */}
                 <div
                     id="mobile-nav"
-                    className={`md:hidden transition-[max-height] duration-300 overflow-hidden border-x border-b border-white/10 rounded-b-2xl
-          ${open ? "max-h-80" : "max-h-0"}`}
+                    className={`md:hidden transition-[max-height] duration-300 overflow-hidden border-x border-b border-white/10 rounded-b-2xl ${open ? "max-h-80" : "max-h-0"
+                        }`}
                 >
                     <div className="px-4 py-3 bg-black/10 backdrop-blur-md">
                         <ul className="space-y-2">
@@ -84,22 +108,34 @@ export default function Navbar() {
                                 <NavLink to="/" className={linkClass} onClick={() => setOpen(false)}>Home</NavLink>
                             </li>
                             <li>
-                                <Link
-                                    to={{ pathname: "/", hash: "#about" }}
-                                    onClick={() => setOpen(false)}
-                                    className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition block text-left"
+                                <button
+                                    onClick={() => goTo("about")}
+                                    className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition w-full text-left"
                                 >
                                     About
-                                </Link>
+                                </button>
+                            </li>
+                            {/* ✅ New Pricing link (mobile) */}
+                            <li>
+                                <button
+                                    onClick={() => goTo("pricing")}
+                                    className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition w-full text-left"
+                                >
+                                    Pricing
+                                </button>
                             </li>
                             <li>
-                                <NavLink to="/contact" className={linkClass} onClick={() => setOpen(false)}>Contact</NavLink>
+                                <NavLink to="/contact" className={linkClass} onClick={() => setOpen(false)}>
+                                    Contact
+                                </NavLink>
                             </li>
 
                             {authed && (
                                 <>
                                     <li>
-                                        <NavLink to="/admin" className={linkClass} onClick={() => setOpen(false)}>Admin</NavLink>
+                                        <NavLink to="/admin" className={linkClass} onClick={() => setOpen(false)}>
+                                            Admin
+                                        </NavLink>
                                     </li>
                                     <li>
                                         <button
@@ -118,7 +154,6 @@ export default function Navbar() {
 
                         {/* Socials row */}
                         <div className="flex items-center gap-3">
-                            {/* Contact Page link */}
                             <Link
                                 to="/contact"
                                 aria-label="Contact"
@@ -127,28 +162,6 @@ export default function Navbar() {
                             >
                                 <Mail size={18} />
                             </Link>
-
-                            {/* <a
-                                href="https://instagram.com"
-                                target="_blank"
-                                rel="noreferrer"
-                                aria-label="Instagram"
-                                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-white"
-                                onClick={() => setOpen(false)}
-                            >
-                                <Instagram size={18} />
-                            </a>
-
-                            <a
-                                href="https://facebook.com"
-                                target="_blank"
-                                rel="noreferrer"
-                                aria-label="Facebook"
-                                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition text-white"
-                                onClick={() => setOpen(false)}
-                            >
-                                <Facebook size={18} />
-                            </a>*/}
 
                             <a
                                 href="https://github.com/michaelm602"
@@ -161,7 +174,6 @@ export default function Navbar() {
                                 <Github size={18} />
                             </a>
                         </div>
-
                     </div>
                 </div>
             </div>
