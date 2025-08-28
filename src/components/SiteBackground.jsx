@@ -24,7 +24,6 @@ export default function SiteBackground() {
                     alt=""
                     className="
             absolute inset-0 w-full
-            h-svh md:h-dvh          /* stable height on mobile; desktop can use dvh */
             object-cover
             [transform:translateZ(0)]
             will-change-transform

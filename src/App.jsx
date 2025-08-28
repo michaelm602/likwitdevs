@@ -27,7 +27,7 @@ export default function App() {
       <SiteBackground />
       <Navbar />
       <ScrollToHash offset={100} />
-      <main className="min-h-[100svh]">
+      <main className="min-h-screen pb-safe">
         <Outlet />
       </main>
       <Footer />
