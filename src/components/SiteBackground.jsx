@@ -19,7 +19,7 @@ export default function SiteBackground() {
             {/* Background image */}
             <div
                 aria-hidden
-                className="fixed -z-30 left-0 right-0 top-0 h-svh bg-center bg-cover md:bg-fixed"
+                className="fixed -z-30 left-0 right-0 top-0 inset-0 bg-center bg-cover md:bg-fixed"
                 style={{ backgroundImage: `url(${bgUrl})`, willChange: "transform", transform: "translateZ(0)" }}
             />
             {/* Tint */}
