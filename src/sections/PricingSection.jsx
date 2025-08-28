@@ -59,7 +59,7 @@ export default function PricingSection() {
     return (
         <section
             id="pricing"
-            className="relative z-10 px-4 pt-12 pb-28 md:pt-16 md:pb-32 scroll-mt-32 md:scroll-mt-40"
+            className="relative z-10 px-4 pt-12 pb-16 md:pt-16 md:pb-20 pb-safe scroll-mt-32 md:scroll-mt-40"
         >
             <div className="mx-auto max-w-6xl">
                 <Reveal once enter={0.1} exit={0} rootMargin="-8% 0px -80% 0px">
