@@ -4,6 +4,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
+console.log("ENV CHECK", {
+    apiKey: import.meta.env.VITE_FB_API_KEY,
+    authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FB_PROJECT_ID,
+});
+
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FB_API_KEY,
     authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
