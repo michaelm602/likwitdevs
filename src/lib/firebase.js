@@ -4,7 +4,6 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-// Paste your config from Firebase Console → Project settings → Your apps (Web)
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FB_API_KEY,
     authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
@@ -15,6 +14,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);

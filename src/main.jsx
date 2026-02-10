@@ -29,7 +29,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               </RequireAdmin>
             }
           />
-          <Route path="admin" element={<AdminProjects />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
