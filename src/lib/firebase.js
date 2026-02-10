@@ -5,12 +5,12 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FB_API_KEY,
-    authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FB_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FB_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FB_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FB_APP_ID,
+    apiKey: "AIzaSyAM24lLkve3X0yaBhlHgfNx7LZ7UttRXFw",
+    authDomain: "likwitdevs-417ee.firebaseapp.com",
+    projectId: "likwitdevs-417ee",
+    storageBucket: "likwitdevs-417ee.firebasestorage.app",
+    messagingSenderId: "669619326357",
+    appId: "1:669619326357:web:356366d029b91cb570fa9c"
 };
 
 const app = initializeApp(firebaseConfig);
