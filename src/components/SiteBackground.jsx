@@ -7,6 +7,8 @@ export default function SiteBackground() {
     const { pathname } = useLocation();
     const [showFx, setShowFx] = useState(false);
 
+    const bgUrl = `${import.meta.env.BASE_URL}images/computerbg.jpg`;
+
     useEffect(() => {
         const id = requestAnimationFrame(() => setShowFx(true));
         return () => cancelAnimationFrame(id);
@@ -14,38 +16,25 @@ export default function SiteBackground() {
 
     return (
         <>
-            {/* Fixed image layer (no background-attachment; very stable on mobile) */}
-            <div
-                aria-hidden
-                className="fixed inset-0 -z-30 pointer-events-none select-none"
-            >
+            <div aria-hidden className="fixed inset-0 -z-30 pointer-events-none select-none">
                 <img
-                    src="/images/computerbg.jpg"
+                    src={bgUrl}
                     alt=""
-                    className="
-            absolute inset-0 w-full
-            object-cover
-            [transform:translateZ(0)]
-            will-change-transform
-          "
+                    className="absolute inset-0 w-full object-cover [transform:translateZ(0)] will-change-transform"
                     draggable={false}
                 />
             </div>
 
-            {/* Tint overlay */}
             <div
                 aria-hidden
-                className="fixed inset-0 -z-20 bg-black/30 pointer-events-none
-                   h-svh md:h-dvh"
+                className="fixed inset-0 -z-20 bg-black/30 pointer-events-none h-svh md:h-dvh"
                 style={{ transform: "translateZ(0)", willChange: "opacity" }}
             />
 
-            {/* Particles (mounted one tick later) */}
             {showFx && (
                 <div
                     aria-hidden
-                    className="fixed inset-0 -z-10 pointer-events-none
-                     h-svh md:h-dvh"
+                    className="fixed inset-0 -z-10 pointer-events-none h-svh md:h-dvh"
                     style={{ transform: "translateZ(0)" }}
                 >
                     <ParticlesBackground key={pathname} />
