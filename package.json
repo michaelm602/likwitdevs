@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
-    "postbuild": "cp dist/index.html dist/404.html || copy dist\\index.html dist\\404.html"
-  },
+  "dev": "vite",
+  "build": "vite build",
+  "build:github": "vite build --mode github",
+  "predeploy": "npm run build:github",
+  "deploy": "gh-pages -d dist",
+  "postbuild": "cp dist/index.html dist/404.html || copy dist\\index.html dist\\404.html"
+},
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "firebase": "^12.1.0",

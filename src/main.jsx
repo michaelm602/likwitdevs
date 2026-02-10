@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Home from "./pages/Home";
@@ -13,9 +13,13 @@ function NotFound() {
   return <div style={{ padding: 24, color: "#fff" }}>Page not found.</div>;
 }
 
+// Use HashRouter ONLY on GitHub Pages
+const isGitHubPages = window.location.hostname.includes("github.io");
+const Router = isGitHubPages ? HashRouter : BrowserRouter;
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <HashRouter>
+    <Router>
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
@@ -32,6 +36,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </HashRouter>
+    </Router>
   </React.StrictMode>
 );
