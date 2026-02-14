@@ -10,7 +10,15 @@ export default function Contact() {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
 
+    // Query params
     const plan = searchParams.get("plan") || "";
+    const intent = searchParams.get("intent") || "";
+    const website = searchParams.get("website") || "";
+    const business = searchParams.get("business") || "";
+
+    // Badge label logic
+    const selectedLabel = intent === "audit" ? "Free Website Audit" : plan;
+
     const plans = ["Starter Site", "Business Site", "E-commerce / Booking"];
     const [selectOpen, setSelectOpen] = useState(false);
 
@@ -18,11 +26,29 @@ export default function Contact() {
     const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
     const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-    // Prefill message when arriving with a plan and message is empty
+    // Prefill message on load
     useEffect(() => {
         const form = formRef.current;
         if (!form) return;
-        if (plan && !form.message.value.trim()) {
+
+        const current = form.message.value.trim();
+
+        // Audit prefill
+        if (intent === "audit" && !current) {
+            form.message.value =
+                `Hi! I'd like a free website audit.\n\n` +
+                `• Website: ${website || "(paste link here)"}\n` +
+                `• Business type: ${business || "(type here)"}\n\n` +
+                `What I want help with:\n` +
+                `• More leads / calls\n` +
+                `• Better mobile experience\n` +
+                `• Speed + SEO improvements\n\n` +
+                `Anything else you should know:\n`;
+            return;
+        }
+
+        // Plan prefill
+        if (plan && !current) {
             form.message.value =
                 `Hi! I'm interested in the ${plan} package. A few details about my project:\n\n` +
                 `• Business / project name:\n` +
@@ -30,9 +56,8 @@ export default function Contact() {
                 `• Pages / features needed:\n` +
                 `• Timeline:\n`;
         }
-    }, [plan]);
+    }, [plan, intent, website, business]);
 
-    // Update plan (URL + message if it's still the auto-prefill)
     function setPlan(newPlan) {
         const form = formRef.current;
         const next = new URLSearchParams(searchParams);
@@ -43,10 +68,10 @@ export default function Contact() {
         setSearchParams(next, { replace: true });
         setSelectOpen(false);
 
-        // Replace the prefill header if user hasn't typed a custom message
         if (form) {
             const existing = form.message.value;
             const prefixRe = /^Hi! I'm interested in the (.+) package\./;
+
             if (!existing.trim() || prefixRe.test(existing)) {
                 form.message.value = newPlan
                     ? `Hi! I'm interested in the ${newPlan} package. A few details about my project:\n\n` +
@@ -62,7 +87,10 @@ export default function Contact() {
     function goPricing() {
         navigate("/");
         setTimeout(
-            () => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+            () =>
+                document
+                    .getElementById("pricing")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" }),
             80
         );
     }
@@ -83,6 +111,7 @@ export default function Contact() {
 
         try {
             setStatus({ sending: true, ok: null, msg: "" });
+
             await emailjs.send(
                 SERVICE_ID,
                 TEMPLATE_ID,
@@ -90,15 +119,23 @@ export default function Contact() {
                     from_name: name,
                     from_email: email,
                     message,
-                    plan, // add {{plan}} in your EmailJS template to display it
+                    plan,
+                    intent,
+                    website,
+                    business,
                     reply_to: email,
                 },
                 { publicKey: PUBLIC_KEY }
             );
+
             setStatus({ sending: false, ok: true, msg: "Thanks! Your message was sent." });
             form.reset();
         } catch {
-            setStatus({ sending: false, ok: false, msg: "Could not send. Try again later." });
+            setStatus({
+                sending: false,
+                ok: false,
+                msg: "Could not send. Try again later.",
+            });
         }
     }
 
@@ -109,28 +146,39 @@ export default function Contact() {
                 onSubmit={handleSubmit}
                 initial={{ y: 12 }}
                 animate={{ y: 0, transition: { duration: 0.28, ease: "easeOut" } }}
-                className="w-full max-w-xl bg-black/40 backdrop-blur-md border border-white/10
-                   rounded-2xl p-6 text-white space-y-4 transform-gpu"
+                className="w-full max-w-xl card p-6 text-white space-y-5 transform-gpu"
             >
                 <h2 className="text-2xl font-semibold">Contact</h2>
-                {/* Honeypot */}
-                <input type="text" name="company" className="hidden" tabIndex={-1} autoComplete="off" />
+                <div className="h-px bg-white/10" />
 
-                {/* Selected plan + inline selector */}
+                {/* Honeypot */}
+                <input
+                    type="text"
+                    name="company"
+                    className="hidden"
+                    tabIndex={-1}
+                    autoComplete="off"
+                />
+
+                {/* Selected plan / audit badge */}
                 <div className="text-sm text-white/90">
-                    {plan ? (
+                    {selectedLabel ? (
                         <>
                             Interested in:{" "}
                             <span className="px-2 py-1 rounded-full bg-white/10 border border-white/10">
-                                {plan}
+                                {selectedLabel}
                             </span>
-                            <button
-                                type="button"
-                                onClick={() => setSelectOpen((v) => !v)}
-                                className="ml-2 text-white/70 hover:text-white underline"
-                            >
-                                change
-                            </button>
+
+                            {intent !== "audit" && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectOpen((v) => !v)}
+                                    className="ml-2 text-white/70 hover:text-white underline"
+                                >
+                                    change
+                                </button>
+                            )}
+
                             <button
                                 type="button"
                                 onClick={goPricing}
@@ -138,7 +186,6 @@ export default function Contact() {
                             >
                                 view packages
                             </button>
-                            <input type="hidden" name="plan" value={plan} />
                         </>
                     ) : (
                         <>
@@ -173,13 +220,6 @@ export default function Contact() {
                                 {p}
                             </button>
                         ))}
-                        <button
-                            type="button"
-                            onClick={() => setPlan("")}
-                            className="block w-full text-left rounded-md px-3 py-2 hover:bg-white/10 text-white/70"
-                        >
-                            No specific plan
-                        </button>
                     </div>
                 )}
 
@@ -188,16 +228,17 @@ export default function Contact() {
                         <label className="text-sm text-white/80">Your name</label>
                         <input
                             name="from_name"
-                            className="mt-1 w-full rounded-lg bg-white/10 p-2 outline-none"
+                            className="input mt-1"
                             placeholder="Jane Doe"
                         />
                     </div>
+
                     <div>
                         <label className="text-sm text-white/80">Email</label>
                         <input
                             name="from_email"
                             type="email"
-                            className="mt-1 w-full rounded-lg bg-white/10 p-2 outline-none"
+                            className="input mt-1"
                             placeholder="you@email.com"
                         />
                     </div>
@@ -208,7 +249,7 @@ export default function Contact() {
                     <textarea
                         name="message"
                         rows="5"
-                        className="mt-1 w-full rounded-lg bg-white/10 p-2 outline-none"
+                        className="input mt-1"
                         placeholder="How can I help?"
                     />
                 </div>
@@ -216,13 +257,17 @@ export default function Contact() {
                 <button
                     type="submit"
                     disabled={status.sending}
-                    className="w-full rounded-xl bg-white/90 text-black font-semibold py-2 hover:bg-white disabled:opacity-60"
+                    className="w-full btn disabled:opacity-60"
                 >
                     {status.sending ? "Sending..." : "Send"}
                 </button>
 
-                {status.ok === true && <p className="text-green-300">{status.msg}</p>}
-                {status.ok === false && <p className="text-red-300">{status.msg}</p>}
+                {status.ok === true && (
+                    <p className="text-green-300">{status.msg}</p>
+                )}
+                {status.ok === false && (
+                    <p className="text-red-300">{status.msg}</p>
+                )}
             </motion.form>
         </section>
     );

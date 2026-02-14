@@ -8,7 +8,18 @@ export default function ProjectCard({ project }) {
     const bgPos = imageFocus || "50% 25%";
 
     return (
-        <article className="rounded-2xl border border-white/15 bg-black/40 backdrop-blur-sm shadow-xl shadow-black/80">
+        <article
+            className="
+    group
+    rounded-2xl
+    border border-white/15
+    bg-black/60
+    backdrop-blur-md
+    shadow-[0_12px_40px_rgba(0,0,0,0.6)]
+    transition-transform duration-200
+    hover:-translate-y-1
+  "
+        >
             {/* make the screenshot open the live site too */}
             <a
                 href={safeHref}

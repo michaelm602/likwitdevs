@@ -5,7 +5,9 @@ import { auth } from "../lib/firebase";
 import { Github, Mail } from "lucide-react";
 
 const linkClass = ({ isActive }) =>
-    `px-3 py-2 rounded-lg text-sm transition ${isActive ? "bg-white/20 text-white" : "text-white/80 hover:text-white hover:bg-white/10"
+    `px-3 py-2 rounded-lg text-sm transition ${isActive
+        ? "bg-white/20 text-white"
+        : "text-white/80 hover:text-white hover:bg-white/10"
     }`;
 
 export default function Navbar() {
@@ -32,37 +34,42 @@ export default function Navbar() {
     // Navigate to Home (if not there) then smooth-scroll to the section id
     const goTo = (id) => {
         const scroll = () =>
-            document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            document
+                .getElementById(id)
+                ?.scrollIntoView({ behavior: "smooth", block: "start" });
 
         setOpen(false);
+
         if (location.pathname !== "/") {
             navigate("/");
-            setTimeout(scroll, 80); // wait for Home to render
+            setTimeout(scroll, 120); // give Home a tick to render
         } else {
             scroll();
         }
     };
 
     return (
-        <header className="left-0 right-0 z-50 mt-6">
+        // Sticky keeps CTA visible while scrolling (better conversion)
+        <header className="sticky top-0 left-0 right-0 z-50 pt-4">
             <div className="mx-auto max-w-6xl px-4">
-                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/10 backdrop-blur-md px-4 py-3">
-                    <NavLink to="/" className="text-white font-semibold" onClick={() => setOpen(false)}>
+                <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 backdrop-blur-md px-4 py-3">
+                    <NavLink
+                        to="/"
+                        className="text-white font-semibold tracking-wide"
+                        onClick={() => setOpen(false)}
+                    >
                         Likwit Devs
                     </NavLink>
 
                     {/* Desktop nav */}
                     <nav className="hidden md:flex items-center gap-1">
-                        <NavLink to="/" className={linkClass}>Home</NavLink>
-
                         <button
-                            onClick={() => goTo("about")}
+                            onClick={() => goTo("projects")}
                             className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition"
                         >
-                            About
+                            Work
                         </button>
 
-                        {/* ✅ New Pricing link */}
                         <button
                             onClick={() => goTo("pricing")}
                             className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition"
@@ -70,11 +77,23 @@ export default function Navbar() {
                             Pricing
                         </button>
 
-                        <NavLink to="/contact" className={linkClass}>Contact</NavLink>
+                        <NavLink to="/contact" className={linkClass}>
+                            Contact
+                        </NavLink>
+
+                        {/* PRIMARY CTA */}
+                        <button
+                            onClick={() => goTo("audit")}
+                            className="ml-2 px-4 py-2 rounded-xl text-sm text-white bg-white/20 hover:bg-white/30 transition"
+                        >
+                            Free Audit
+                        </button>
 
                         {authed && (
                             <>
-                                <NavLink to="/admin" className={linkClass}>Admin</NavLink>
+                                <NavLink to="/admin" className={linkClass}>
+                                    Admin
+                                </NavLink>
                                 <button
                                     onClick={handleSignOut}
                                     className="ml-2 px-3 py-1.5 rounded-lg text-sm text-white bg-white/20 hover:bg-white/30 transition"
@@ -99,23 +118,29 @@ export default function Navbar() {
                 {/* Mobile drawer */}
                 <div
                     id="mobile-nav"
-                    className={`md:hidden transition-[max-height] duration-300 overflow-hidden border-x border-b border-white/10 rounded-b-2xl ${open ? "max-h-80" : "max-h-0"
+                    className={`md:hidden transition-[max-height] duration-300 overflow-hidden border-x border-b border-white/10 rounded-b-2xl ${open ? "max-h-96" : "max-h-0"
                         }`}
                 >
-                    <div className="px-4 py-3 bg-black/10 backdrop-blur-md">
+                    <div className="px-4 py-3 bg-black/20 backdrop-blur-md">
                         <ul className="space-y-2">
                             <li>
-                                <NavLink to="/" className={linkClass} onClick={() => setOpen(false)}>Home</NavLink>
-                            </li>
-                            <li>
                                 <button
-                                    onClick={() => goTo("about")}
-                                    className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition w-full text-left"
+                                    onClick={() => goTo("audit")}
+                                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-white bg-white/20 hover:bg-white/30 transition"
                                 >
-                                    About
+                                    Free Audit
                                 </button>
                             </li>
-                            {/* ✅ New Pricing link (mobile) */}
+
+                            <li>
+                                <button
+                                    onClick={() => goTo("projects")}
+                                    className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition w-full text-left"
+                                >
+                                    Work
+                                </button>
+                            </li>
+
                             <li>
                                 <button
                                     onClick={() => goTo("pricing")}
@@ -124,8 +149,13 @@ export default function Navbar() {
                                     Pricing
                                 </button>
                             </li>
+
                             <li>
-                                <NavLink to="/contact" className={linkClass} onClick={() => setOpen(false)}>
+                                <NavLink
+                                    to="/contact"
+                                    className={linkClass}
+                                    onClick={() => setOpen(false)}
+                                >
                                     Contact
                                 </NavLink>
                             </li>
@@ -133,7 +163,11 @@ export default function Navbar() {
                             {authed && (
                                 <>
                                     <li>
-                                        <NavLink to="/admin" className={linkClass} onClick={() => setOpen(false)}>
+                                        <NavLink
+                                            to="/admin"
+                                            className={linkClass}
+                                            onClick={() => setOpen(false)}
+                                        >
                                             Admin
                                         </NavLink>
                                     </li>
