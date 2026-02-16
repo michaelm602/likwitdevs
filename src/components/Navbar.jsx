@@ -1,6 +1,7 @@
 import { NavLink, useNavigate, Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import logo from "../assets/likwitdevs-logo-white-long.png";
 import { auth } from "../lib/firebase";
 import { Github, Mail } from "lucide-react";
 
@@ -55,10 +56,17 @@ export default function Navbar() {
                 <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 backdrop-blur-md px-4 py-3">
                     <NavLink
                         to="/"
-                        className="text-white font-semibold tracking-wide"
+                        className="flex items-center gap-3"
                         onClick={() => setOpen(false)}
+                        aria-label="Likwit Devs home"
                     >
-                        Likwit Devs
+                        <img
+                            src={logo}
+                            alt="Likwit Devs"
+                            className="h-11 w-auto select-none"
+                            draggable="false"
+                        />
+                        <span className="sr-only">Likwit Devs</span>
                     </NavLink>
 
                     {/* Desktop nav */}

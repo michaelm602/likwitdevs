@@ -1,6 +1,8 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Mail, Github } from "lucide-react";
 import Reveal from "./Reveal";
+import logoMark from "../assets/likwitdevs-logo-white.png";
+
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -22,12 +24,25 @@ export default function Footer() {
 
     return (
         <footer className="mt-10 border-t border-white/10 bg-white/5 backdrop-blur-md">
-            <div className="mx-auto max-w-6xl px-4 py-8 grid gap-8 md:grid-cols-3 text-white/90">
+            <div className="mx-auto max-w-6xl px-4 py-10 grid gap-8 md:gap-8 md:grid-cols-3 items-start text-white/90">
                 {/* Brand */}
                 <Reveal>
                     <div>
-                        <h3 className="text-lg font-semibold text-white">Likwit Devs</h3>
-                        <p className="mt-2 text-sm text-white/70">
+                        <div className="flex items-center gap-3">
+                            <img
+                                src={logoMark}
+                                alt="Likwit Devs"
+                                className="h-14 w-auto object-contain opacity-95"
+                                draggable="false"
+                            />
+                            <div className="leading-tight">
+                                <p className="text-[11px] tracking-[0.2em] text-white/50 uppercase">
+                                    Websites • UI • SEO
+                                </p>
+                            </div>
+                        </div>
+
+                        <p className="mt-3 text-sm text-white/70 max-w-[280px]">
                             Modern, responsive websites with clean UX and custom visuals.
                         </p>
                     </div>
