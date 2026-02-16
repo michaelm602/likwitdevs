@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
 
-export default function Contact() {
+export default function Contact({ embedded = false }) {
     const formRef = useRef(null);
     const [status, setStatus] = useState({ sending: false, ok: null, msg: "" });
 
@@ -140,15 +140,25 @@ export default function Contact() {
     }
 
     return (
-        <section className="min-h-screen grid place-items-center bg-transparent px-4 pt-28">
+        <section
+            className={
+                embedded
+                    ? "w-full"
+                    : "min-h-screen grid place-items-center bg-transparent px-4 pt-28"
+            }
+        >
             <motion.form
                 ref={formRef}
                 onSubmit={handleSubmit}
                 initial={{ y: 12 }}
                 animate={{ y: 0, transition: { duration: 0.28, ease: "easeOut" } }}
-                className="w-full max-w-xl card p-6 text-white space-y-5 transform-gpu"
+                className={`w-full max-w-xl card p-6 text-white space-y-5 transform-gpu ${embedded ? "mx-auto" : ""
+                    }`}
             >
-                <h2 className="text-2xl font-semibold">Contact</h2>
+                <h2 className="text-2xl font-semibold">
+                    {intent === "audit" ? "Free Website Audit" : "Contact"}
+                </h2>
+
                 <div className="h-px bg-white/10" />
 
                 {/* Honeypot */}
@@ -226,11 +236,7 @@ export default function Contact() {
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <label className="text-sm text-white/80">Your name</label>
-                        <input
-                            name="from_name"
-                            className="input mt-1"
-                            placeholder="Jane Doe"
-                        />
+                        <input name="from_name" className="input mt-1" placeholder="Jane Doe" />
                     </div>
 
                     <div>
@@ -254,20 +260,12 @@ export default function Contact() {
                     />
                 </div>
 
-                <button
-                    type="submit"
-                    disabled={status.sending}
-                    className="w-full btn disabled:opacity-60"
-                >
+                <button type="submit" disabled={status.sending} className="w-full btn disabled:opacity-60">
                     {status.sending ? "Sending..." : "Send"}
                 </button>
 
-                {status.ok === true && (
-                    <p className="text-green-300">{status.msg}</p>
-                )}
-                {status.ok === false && (
-                    <p className="text-red-300">{status.msg}</p>
-                )}
+                {status.ok === true && <p className="text-green-300">{status.msg}</p>}
+                {status.ok === false && <p className="text-red-300">{status.msg}</p>}
             </motion.form>
         </section>
     );
