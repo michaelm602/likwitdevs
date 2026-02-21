@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Typewriter from "../components/Typewriter";
-import ParticlesBackground from "../components/ParticlesBackground";
 import ProjectsSection from "../sections/ProjectsSection";
 import AboutSection from "../sections/AboutSection";
 import PricingSection from "../sections/PricingSection";
@@ -15,8 +14,6 @@ export default function Home() {
         <>
             {/* HERO */}
             <section className="relative overflow-hidden hero-stable">
-                {/* Background / particles */}
-                <ParticlesBackground className="pointer-events-none absolute inset-0" />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-transparent" />
 
                 {/* Content */}

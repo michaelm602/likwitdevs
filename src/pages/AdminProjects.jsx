@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import useAuthGate from "../hooks/useAuthGate";
 import { auth, db, storage } from "../lib/firebase";
-import { signOut, onAuthStateChanged } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import {
     addDoc,
     collection,
@@ -52,8 +52,7 @@ async function batchUpdateOrders(projects) {
 }
 
 export default function AdminProjects() {
-    const ok = useAuthGate(); // null=loading, true=allowed, false=not allowed
-    const [authed, setAuthed] = useState(false);
+    const { loading: authLoading, ok } = useAuthGate();
     const [busy, setBusy] = useState(false);
     const [list, setList] = useState([]);
 
@@ -80,11 +79,6 @@ export default function AdminProjects() {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const unsub = onAuthStateChanged(auth, (u) => setAuthed(!!u));
-        return () => unsub();
-    }, []);
-
     // live list (all projects, admin view)
     useEffect(() => {
         const qy = query(collection(db, "projects"), orderBy("order", "asc"));
@@ -98,10 +92,10 @@ export default function AdminProjects() {
 
     const isEditing = useMemo(() => !!editingId, [editingId]);
 
-    if (ok === null) {
+    if (authLoading) {
         return <div className="min-h-screen grid place-items-center p-6 text-white">Checking access…</div>;
     }
-    if (ok === false) {
+    if (!ok) {
         return (
             <main className="min-h-screen grid place-items-center p-6 text-white">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center space-y-3 text-white">
@@ -323,7 +317,7 @@ export default function AdminProjects() {
                     <Link to="/" className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
                         View site
                     </Link>
-                    {authed && (
+                    {ok && (
                         <>
                             <Link to="/admin" className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
                                 Admin
