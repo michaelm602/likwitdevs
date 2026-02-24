@@ -28,10 +28,10 @@ export default function Home() {
                         <p className="mt-3 text-base sm:text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
                             <Typewriter
                                 texts={[
-                                    "Fast load times that keep customers from bouncing.",
-                                    "Mobile-first design that looks legit on every phone.",
-                                    "SEO-ready structure so Google can actually find you.",
-                                    "Clear calls-to-action that drive calls, bookings, and leads.",
+                                    "Fast load times so customers don’t leave before you say hello.",
+                                    "Built for mobile, where most of your traffic lives.",
+                                    "Structured to show up when people search for what you do.",
+                                    "Clear next steps so visitors actually take action.",
                                 ]}
                                 speed={70}
                                 pause={1600}
@@ -108,15 +108,14 @@ export default function Home() {
                                 Free Website Audit (No fluff, just fixes)
                             </h2>
                             <p className="mt-2 text-white/80">
-                                Send your website link and I’ll reply with a quick breakdown of what’s hurting your
-                                conversions: speed, mobile layout, SEO basics, and your call-to-action flow.
+                                Share your site and I’ll send back a direct breakdown of what’s costing you customers — covering speed, mobile experience, SEO structure, and how well your site moves visitors to act.
                             </p>
 
                             <ul className="mt-4 space-y-2 text-white/75 text-sm">
-                                <li>✅ Speed + mobile issues (bounce-rate killers)</li>
-                                <li>✅ SEO structure check (titles, descriptions, indexing basics)</li>
-                                <li>✅ Conversion fixes (CTA placement, layout, trust signals)</li>
-                                <li>✅ Clear next steps + rough estimate to fix it</li>
+                                <li>✅ Speed + mobile performance (the first thing visitors judge)</li>
+                                <li>✅ SEO structure (titles, descriptions, crawlability)</li>
+                                <li>✅ Conversion review (CTA placement, layout, trust signals)</li>
+                                <li>✅ Clear next steps with an honest cost estimate</li>
                             </ul>
                         </div>
 
@@ -133,12 +132,12 @@ export default function Home() {
                                     className="mt-2 w-full rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-white placeholder:text-white/40 outline-none focus:border-white/30"
                                 />
 
-                                <label className="block text-sm text-white/80 mt-4">Business type</label>
+                                <label className="block text-sm text-white/80 mt-4">Your Industry</label>
                                 <input
                                     type="text"
                                     value={auditBiz}
                                     onChange={(e) => setAuditBiz(e.target.value)}
-                                    placeholder="Contractor, barber, cleaning, etc."
+                                    placeholder="e.g. Contractor, restaurant, law firm"
                                     className="mt-2 w-full rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-white placeholder:text-white/40 outline-none focus:border-white/30"
                                 />
 
@@ -154,7 +153,7 @@ export default function Home() {
                                         }}
                                         className="w-full text-center rounded-xl px-4 py-2 bg-white/15 hover:bg-white/20 text-white"
                                     >
-                                        Submit via Contact
+                                        Get My Free Review
                                     </button>
 
                                     <a
@@ -169,7 +168,7 @@ export default function Home() {
 
 
                                 <p className="mt-3 text-xs text-white/50">
-                                    No spam. No pressure. Just a real audit.
+                                    Every review is written personally — specific to your site, not a template.
                                 </p>
                             </div>
                         </div>
