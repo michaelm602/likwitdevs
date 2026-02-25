@@ -26,7 +26,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="free-audit" element={<FreeAudit />} />
+          <Route path="free-audit" element={<FreeAudit mode="qr" />} />
+          <Route path="free-review" element={<FreeAudit mode="cta" />} />
           <Route path="admin/login" element={<AdminLogin />} />
           <Route
             path="admin"

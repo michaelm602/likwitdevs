@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import useProjects from "../hooks/useProjects";
 import ProjectCard from "../components/ProjectCard";
 import Reveal from "../components/Reveal";
@@ -55,12 +56,12 @@ export default function ProjectsSection() {
 
                     <Reveal y={10} delay={120}>
                         <div className="mt-5 flex flex-wrap gap-3">
-                            <a
-                                href="#audit"
+                            <Link
+                                to="/free-review"
                                 className="btn-subtle text-white bg-white/15 hover:bg-white/20 backdrop-blur-md"
                             >
-                                Get a Free Website Audit
-                            </a>
+                                Get My Free Review
+                            </Link>
                             <a
                                 href="#pricing"
                                 className="btn-subtle text-white bg-black/10 hover:bg-black/20 backdrop-blur-md"

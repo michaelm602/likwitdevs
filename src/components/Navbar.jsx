@@ -91,10 +91,10 @@ export default function Navbar() {
 
                         {/* PRIMARY CTA */}
                         <button
-                            onClick={() => goTo("audit")}
+                            onClick={() => { setOpen(false); navigate("/free-review"); }}
                             className="ml-2 px-4 py-2 rounded-xl text-sm text-white bg-white/20 hover:bg-white/30 transition"
                         >
-                            Free Audit
+                            Free Review
                         </button>
 
                         {authed && (
@@ -133,10 +133,10 @@ export default function Navbar() {
                         <ul className="space-y-2">
                             <li>
                                 <button
-                                    onClick={() => goTo("audit")}
+                                    onClick={() => { setOpen(false); navigate("/free-review"); }}
                                     className="w-full text-left px-3 py-2 rounded-lg text-sm text-white bg-white/20 hover:bg-white/30 transition"
                                 >
-                                    Free Audit
+                                    Free Review
                                 </button>
                             </li>
 

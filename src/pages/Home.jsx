@@ -126,11 +126,10 @@ export default function Home() {
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            const qs = new URLSearchParams();
-                                            qs.set("intent", "review");
-                                            if (reviewUrl.trim()) qs.set("website", reviewUrl.trim());
-                                            if (reviewBiz.trim()) qs.set("business", reviewBiz.trim());
-                                            navigate(`/contact?${qs.toString()}`);
+                                            const params = new URLSearchParams({ intent: "review" });
+                                            if (reviewUrl.trim()) params.set("website", reviewUrl.trim());
+                                            if (reviewBiz.trim()) params.set("business", reviewBiz.trim());
+                                            navigate(`/free-review?${params.toString()}`);
                                         }}
                                         className="w-full text-center rounded-xl px-4 py-2 bg-white/15 hover:bg-white/20 text-white"
                                     >

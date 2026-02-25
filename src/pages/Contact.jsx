@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
 
-export default function Contact({ embedded = false }) {
+export default function Contact({ embedded = false, source = "contact", intent: intentProp = "" }) {
     const formRef = useRef(null);
     const [status, setStatus] = useState({ sending: false, ok: null, msg: "" });
 
@@ -12,12 +12,17 @@ export default function Contact({ embedded = false }) {
 
     // Query params
     const plan = searchParams.get("plan") || "";
-    const intent = searchParams.get("intent") || "";
+    const intent = intentProp || searchParams.get("intent") || "";
     const website = searchParams.get("website") || "";
     const business = searchParams.get("business") || "";
 
     // Badge label logic
-    const selectedLabel = intent === "audit" ? "Free Website Audit" : plan;
+    const selectedLabel =
+        intent === "audit"
+            ? "Free Website Audit"
+            : intent === "review"
+                ? "Free Website Review"
+                : plan;
 
     const plans = ["Starter Site", "Business Site", "E-commerce / Booking"];
     const [selectOpen, setSelectOpen] = useState(false);
@@ -37,12 +42,23 @@ export default function Contact({ embedded = false }) {
         if (intent === "audit" && !current) {
             form.message.value =
                 `Hi! I'd like a free website audit.\n\n` +
-                `• Website: ${website || "(paste link here)"}\n` +
-                `• Business type: ${business || "(type here)"}\n\n` +
                 `What I want help with:\n` +
                 `• More leads / calls\n` +
                 `• Better mobile experience\n` +
                 `• Speed + SEO improvements\n\n` +
+                `Anything else you should know:\n`;
+            return;
+        }
+
+        // Review prefill (CTA)
+        if (intent === "review" && !current) {
+            form.message.value =
+                `Hi! I'd like a free website review.\n\n` +
+                `Main goal (pick one):\n` +
+                `• More calls / leads\n` +
+                `• Better mobile experience\n` +
+                `• Faster load speed\n` +
+                `• Cleaner design / trust\n\n` +
                 `Anything else you should know:\n`;
             return;
         }
@@ -103,6 +119,8 @@ export default function Contact({ embedded = false }) {
         const name = form.from_name.value.trim();
         const email = form.from_email.value.trim();
         const message = form.message.value.trim();
+        const websiteVal = (form.website_url?.value || "").trim() || website;
+        const businessVal = (form.business_type?.value || "").trim() || business;
 
         if (!name || !email || !message) {
             setStatus({ sending: false, ok: false, msg: "Please fill out all fields." });
@@ -121,9 +139,10 @@ export default function Contact({ embedded = false }) {
                     message,
                     plan,
                     intent,
-                    website,
-                    business,
+                    website: websiteVal,
+                    business: businessVal,
                     reply_to: email,
+                    source,
                 },
                 { publicKey: PUBLIC_KEY }
             );
@@ -156,7 +175,11 @@ export default function Contact({ embedded = false }) {
                     }`}
             >
                 <h2 className="text-2xl font-semibold">
-                    {intent === "audit" ? "Free Website Audit" : "Contact"}
+                    {intent === "audit"
+                        ? "Free Website Audit"
+                        : intent === "review"
+                            ? "Free Website Review"
+                            : "Contact"}
                 </h2>
 
                 <div className="h-px bg-white/10" />
@@ -179,7 +202,7 @@ export default function Contact({ embedded = false }) {
                                 {selectedLabel}
                             </span>
 
-                            {intent !== "audit" && (
+                            {intent !== "audit" && intent !== "review" && (
                                 <button
                                     type="button"
                                     onClick={() => setSelectOpen((v) => !v)}
@@ -249,6 +272,30 @@ export default function Contact({ embedded = false }) {
                         />
                     </div>
                 </div>
+
+                {(intent === "review" || intent === "audit") && (
+                    <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-sm text-white/80">Website URL</label>
+                            <input
+                                name="website_url"
+                                type="url"
+                                className="input mt-1"
+                                placeholder="https://yourbusiness.com"
+                                defaultValue={website}
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm text-white/80">Your Industry</label>
+                            <input
+                                name="business_type"
+                                className="input mt-1"
+                                placeholder="e.g. Contractor, restaurant"
+                                defaultValue={business}
+                            />
+                        </div>
+                    </div>
+                )}
 
                 <div>
                     <label className="text-sm text-white/80">Message</label>
