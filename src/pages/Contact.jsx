@@ -254,7 +254,7 @@ export default function Contact({ embedded = false }) {
                     <label className="text-sm text-white/80">Message</label>
                     <textarea
                         name="message"
-                        rows="5"
+                        rows="7"
                         className="input mt-1"
                         placeholder="How can I help?"
                     />
