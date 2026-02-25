@@ -13,15 +13,8 @@ export default function AboutSection() {
                         I’m Michael — the builder behind{" "}
                         <span className="font-semibold">Likwit Devs</span>. I design and ship{" "}
                         <span className="font-semibold">fast, mobile-first websites</span>{" "}
-                        that look clean and make it easy for customers to call, book, or buy.
-                        My focus is performance (Core Web Vitals), simple content editing, and
-                        custom visuals so your brand actually stands out.
-                    </p>
-
-                    <p className="text-white/80 max-w-3xl mt-3">
-                        Real talk: most small business websites fail because they’re slow,
-                        confusing, or don’t tell people what to do next. I build with a
-                        conversion-first mindset — and I don’t ship messy, fragile nonsense.
+                        that make it easy for customers to call, book, or buy.
+                        Most small business sites lose customers because they’re slow, confusing, or don’t tell people what to do next — I fix that.
                     </p>
 
                     <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 text-white/80">
@@ -59,22 +52,6 @@ export default function AboutSection() {
                                 Go live, walkthrough, and optional maintenance plan.
                             </div>
                         </div>
-                    </div>
-
-                    {/* CTA */}
-                    <div className="mt-8 flex flex-wrap gap-3">
-                        <a
-                            href="#audit"
-                            className="btn-subtle text-white bg-white/15 hover:bg-white/20 backdrop-blur-md"
-                        >
-                            Get a Free Website Audit
-                        </a>
-                        <a
-                            href="#pricing"
-                            className="btn-subtle text-white bg-black/10 hover:bg-black/20 backdrop-blur-md"
-                        >
-                            View Packages
-                        </a>
                     </div>
 
                     {/* Trust line */}

@@ -22,12 +22,11 @@ const FIELDS = [
     { key: "businessName", label: "Business Name", required: true, placeholder: "Acme Roofing", type: "input" },
     { key: "contact", label: "Email or Phone", required: true, placeholder: "you@email.com or 555-555-5555", type: "input" },
     { key: "websiteOrInstagram", label: "Website or Instagram", required: false, placeholder: "https://yourbiz.com or @handle", type: "input" },
-    { key: "message", label: "Anything else?", required: false, placeholder: "Tell me about your business or what you need...", type: "textarea" },
+    { key: "message", label: "Anything else?", required: false, placeholder: "Tell me about your business.\n\nIf you have a website, drop the link.\nIf not, tell me what you do and what you want help with.\n\nMore leads? Better mobile? Faster site?\nLet's fix it.", type: "textarea" },
 ];
 
 const INITIAL_VALUES = {
     ...Object.fromEntries(FIELDS.map((f) => [f.key, ""])),
-    message: `Tell me about your business.\n\nIf you have a website, drop the link.\nIf not, tell me what you do and what you want help with.\n\nMore leads? Better mobile? Faster site?\nLet's fix it.`,
 };
 
 // ---------------------------------------------------------------------------

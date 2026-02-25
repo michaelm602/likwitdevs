@@ -7,8 +7,8 @@ import PricingSection from "../sections/PricingSection";
 
 export default function Home() {
     const navigate = useNavigate();
-    const [auditUrl, setAuditUrl] = useState("");
-    const [auditBiz, setAuditBiz] = useState("");
+    const [reviewUrl, setReviewUrl] = useState("");
+    const [reviewBiz, setReviewBiz] = useState("");
 
     return (
         <>
@@ -39,39 +39,18 @@ export default function Home() {
                         </p>
 
                         {/* CTAs */}
-                        <div className="mt-5 flex flex-wrap gap-3">
-                            {/* Primary CTA: Lead magnet */}
+                        <div className="mt-5">
                             <a
                                 href="#audit"
                                 className="btn-subtle text-white bg-white/15 hover:bg-white/20 backdrop-blur-md"
                             >
-                                Get a Free Website Audit
+                                Get a Free Website Review
                             </a>
-
-                            {/* Secondary CTA: proof */}
-                            <a
-                                href="#projects"
-                                className="btn-subtle text-white bg-black/10 hover:bg-black/20 backdrop-blur-md"
-                            >
-                                View Work
-                            </a>
-
-                            {/* Optional: direct contact route */}
-                            <Link
-                                to="/contact"
-                                className="btn-subtle text-white/90 bg-black/10 hover:bg-black/20 backdrop-blur-md"
-                            >
-                                Contact
-                            </Link>
-                        </div>
-
-                        {/* Trust/benefit chips */}
-                        <div className="mt-5 flex flex-wrap gap-2 text-sm text-white/80">
-                            <span className="px-3 py-1 rounded-lg bg-white/10">Nationwide / Remote</span>
-                            <span className="px-3 py-1 rounded-lg bg-white/10">Fast Loads</span>
-                            <span className="px-3 py-1 rounded-lg bg-white/10">SEO Structure</span>
-                            <span className="px-3 py-1 rounded-lg bg-white/10">Mobile-First</span>
-                            <span className="px-3 py-1 rounded-lg bg-white/10">Conversion Focused</span>
+                            <div className="mt-3 flex gap-2 text-sm text-white/60">
+                                <a href="#projects" className="hover:text-white/90 transition">View Work</a>
+                                <span>·</span>
+                                <Link to="/contact" className="hover:text-white/90 transition">Contact</Link>
+                            </div>
                         </div>
 
                         {/* Quick “productized” strip */}
@@ -99,13 +78,13 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* LEAD MAGNET: FREE AUDIT */}
+            {/* LEAD MAGNET: FREE REVIEW */}
             <section id="audit" className="mx-auto max-w-6xl px-4 py-12 md:py-16">
                 <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 md:p-10">
                     <div className="md:flex md:items-start md:justify-between gap-8">
                         <div className="max-w-2xl">
                             <h2 className="text-2xl md:text-3xl font-bold text-white">
-                                Free Website Audit (No fluff, just fixes)
+                                Free Website Review (No fluff, just fixes)
                             </h2>
                             <p className="mt-2 text-white/80">
                                 Share your site and I’ll send back a direct breakdown of what’s costing you customers — covering speed, mobile experience, SEO structure, and how well your site moves visitors to act.
@@ -123,45 +102,40 @@ export default function Home() {
                 Later we can wire EmailJS/Firebase function right here. */}
                         <div className="mt-6 md:mt-0 w-full md:max-w-sm">
                             <div className="rounded-2xl bg-black/20 border border-white/10 p-4">
-                                <label className="block text-sm text-white/80">Website URL</label>
+                                <label htmlFor="audit-url" className="block text-sm text-white/80">Website URL</label>
                                 <input
+                                    id="audit-url"
                                     type="url"
-                                    value={auditUrl}
-                                    onChange={(e) => setAuditUrl(e.target.value)}
+                                    value={reviewUrl}
+                                    onChange={(e) => setReviewUrl(e.target.value)}
                                     placeholder="https://yourbusiness.com"
                                     className="mt-2 w-full rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-white placeholder:text-white/40 outline-none focus:border-white/30"
                                 />
 
-                                <label className="block text-sm text-white/80 mt-4">Your Industry</label>
+                                <label htmlFor="audit-biz" className="block text-sm text-white/80 mt-4">Your Industry</label>
                                 <input
+                                    id="audit-biz"
                                     type="text"
-                                    value={auditBiz}
-                                    onChange={(e) => setAuditBiz(e.target.value)}
+                                    value={reviewBiz}
+                                    onChange={(e) => setReviewBiz(e.target.value)}
                                     placeholder="e.g. Contractor, restaurant, law firm"
                                     className="mt-2 w-full rounded-xl bg-black/30 border border-white/10 px-3 py-2 text-white placeholder:text-white/40 outline-none focus:border-white/30"
                                 />
 
-                                <div className="mt-4 flex gap-3">
+                                <div className="mt-4">
                                     <button
                                         type="button"
                                         onClick={() => {
                                             const qs = new URLSearchParams();
-                                            qs.set("intent", "audit");
-                                            if (auditUrl.trim()) qs.set("website", auditUrl.trim());
-                                            if (auditBiz.trim()) qs.set("business", auditBiz.trim());
+                                            qs.set("intent", "review");
+                                            if (reviewUrl.trim()) qs.set("website", reviewUrl.trim());
+                                            if (reviewBiz.trim()) qs.set("business", reviewBiz.trim());
                                             navigate(`/contact?${qs.toString()}`);
                                         }}
                                         className="w-full text-center rounded-xl px-4 py-2 bg-white/15 hover:bg-white/20 text-white"
                                     >
                                         Get My Free Review
                                     </button>
-
-                                    <a
-                                        href="#projects"
-                                        className="w-full text-center rounded-xl px-4 py-2 bg-black/20 hover:bg-black/30 text-white/90"
-                                    >
-                                        See Work
-                                    </a>
                                 </div>
 
 
