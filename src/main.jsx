@@ -9,6 +9,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminProjects from "./pages/AdminProjects";
 import RequireAdmin from "./routes/RequireAdmin";
 import FreeAudit from "./pages/FreeAudit";
+import TapLanding from "./pages/TapLanding";
 
 function NotFound() {
   return <div style={{ padding: 24, color: "#fff" }}>Page not found.</div>;
@@ -37,6 +38,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           />
           <Route path="*" element={<NotFound />} />
         </Route>
+
+        {/* Standalone — no Navbar/Footer/SiteBackground */}
+        <Route path="tap" element={<TapLanding />} />
       </Routes>
     </Router>
   </React.StrictMode>
