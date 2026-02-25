@@ -25,7 +25,10 @@ const FIELDS = [
     { key: "message", label: "Anything else?", required: false, placeholder: "Tell me about your business or what you need...", type: "textarea" },
 ];
 
-const INITIAL_VALUES = Object.fromEntries(FIELDS.map((f) => [f.key, ""]));
+const INITIAL_VALUES = {
+    ...Object.fromEntries(FIELDS.map((f) => [f.key, ""])),
+    message: `Tell me about your business.\n\nIf you have a website, drop the link.\nIf not, tell me what you do and what you want help with.\n\nMore leads? Better mobile? Faster site?\nLet's fix it.`,
+};
 
 // ---------------------------------------------------------------------------
 // Component
@@ -158,7 +161,7 @@ export default function TapLanding() {
 
                                         {type === "textarea" ? (
                                             <textarea
-                                                rows={3}
+                                                rows={7}
                                                 className="input mt-1"
                                                 placeholder={placeholder}
                                                 value={values[key]}
