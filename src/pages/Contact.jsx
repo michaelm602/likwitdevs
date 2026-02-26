@@ -3,6 +3,12 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
 
+function normalizeUrl(value) {
+    const v = value.trim();
+    if (!v) return v;
+    return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+}
+
 export default function Contact({ embedded = false, source = "contact", intent: intentProp = "" }) {
     const formRef = useRef(null);
     const [status, setStatus] = useState({ sending: false, ok: null, msg: "" });
@@ -119,7 +125,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         const name = form.from_name.value.trim();
         const email = form.from_email.value.trim();
         const message = form.message.value.trim();
-        const websiteVal = (form.website_url?.value || "").trim() || website;
+        const websiteVal = normalizeUrl((form.website_url?.value || "").trim() || website);
         const businessVal = (form.business_type?.value || "").trim() || business;
 
         if (!name || !email || !message) {
@@ -283,6 +289,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                                 className="input mt-1"
                                 placeholder="https://yourbusiness.com"
                                 defaultValue={website}
+                                onBlur={(e) => { e.target.value = normalizeUrl(e.target.value); }}
                             />
                         </div>
                         <div>
