@@ -80,7 +80,13 @@ export default function TestimonialsSection() {
                         rel="noopener noreferrer"
                         className="inline-block rounded-xl border border-white/15 bg-black/20 hover:bg-black/30 backdrop-blur-md px-6 py-2.5 text-sm text-white transition"
                     >
-                        Read More Reviews on Google
+                        Read More Reviews on{" "}
+                        <span style={{color:"#4285F4"}}>G</span>
+                        <span style={{color:"#EA4335"}}>o</span>
+                        <span style={{color:"#FBBC05"}}>o</span>
+                        <span style={{color:"#4285F4"}}>g</span>
+                        <span style={{color:"#34A853"}}>l</span>
+                        <span style={{color:"#EA4335"}}>e</span>
                     </a>
                 </div>
             </div>
