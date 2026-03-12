@@ -41,7 +41,15 @@ export default function TestimonialsSection() {
                     <div className="flex items-center gap-2 rounded-full border border-white/15 bg-black/20 backdrop-blur-md px-4 py-2 text-sm text-white/80">
                         <span className="text-yellow-400 font-semibold">5.0 ★</span>
                         <span className="text-white/50">|</span>
-                        <span>Google Rating</span>
+                        <span>
+                            <span style={{color:"#4285F4"}}>G</span>
+                            <span style={{color:"#EA4335"}}>o</span>
+                            <span style={{color:"#FBBC05"}}>o</span>
+                            <span style={{color:"#4285F4"}}>g</span>
+                            <span style={{color:"#34A853"}}>l</span>
+                            <span style={{color:"#EA4335"}}>e</span>
+                            {" "}Rating
+                        </span>
                     </div>
                     <div className="rounded-full border border-white/15 bg-black/20 backdrop-blur-md px-4 py-2 text-sm text-white/60">
                         2 Google Reviews
