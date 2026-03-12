@@ -4,6 +4,7 @@ import Typewriter from "../components/Typewriter";
 import ProjectsSection from "../sections/ProjectsSection";
 import AboutSection from "../sections/AboutSection";
 import PricingSection from "../sections/PricingSection";
+import TestimonialsSection from "../sections/TestimonialsSection";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -78,9 +79,12 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* TESTIMONIALS */}
+            <TestimonialsSection />
+
             {/* LEAD MAGNET: FREE REVIEW */}
             <section id="audit" className="mx-auto max-w-6xl px-4 py-12 md:py-16">
-                <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur p-6 md:p-10">
+                <div className="rounded-3xl border border-white/15 bg-black/20 backdrop-blur-md p-6 md:p-10">
                     <div className="md:flex md:items-start md:justify-between gap-8">
                         <div className="max-w-2xl">
                             <h2 className="text-2xl md:text-3xl font-bold text-white">
