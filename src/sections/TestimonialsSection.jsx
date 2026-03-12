@@ -4,7 +4,7 @@ const testimonials = [
     {
         text: "Great experience working with LikWitDevs on my website. Fast communication, clean design, and they delivered exactly what I needed. Highly recommend for anyone looking for reliable web development.",
         name: "Elysia Hernandez",
-        business: null,
+        business: "Elegance By Elysia",
     },
     {
         text: "I'm so happy with the website they created for my nail business! From the beginning they listened to what I wanted and made the whole process easy and stress-free. The design is beautiful, professional, and exactly what I envisioned.",
