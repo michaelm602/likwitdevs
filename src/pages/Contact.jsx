@@ -28,7 +28,15 @@ export default function Contact({ embedded = false, source = "contact", intent: 
             ? "Free Website Audit"
             : intent === "review"
                 ? "Free Website Review"
-                : plan;
+                : intent === "seo"
+                    ? "On-Page SEO"
+                    : intent === "webdev"
+                        ? "Web Design & Development"
+                        : intent === "quote-webdev"
+                            ? "Web Design Quote"
+                            : intent === "quote-seo"
+                                ? "SEO Quote"
+                                : plan;
 
     const plans = ["Starter Site", "Business Site", "E-commerce / Booking"];
     const [selectOpen, setSelectOpen] = useState(false);
@@ -37,6 +45,36 @@ export default function Contact({ embedded = false, source = "contact", intent: 
     const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
     const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+    const intentPrefills = {
+        audit:
+            `Hi! I'd like a fast website audit.\n\n` +
+            `Website URL:\n` +
+            `Main issue I'm noticing:\n` +
+            `Business type:\n`,
+        review:
+            `Hi! I'd like a free website review.\n\n` +
+            `Main goal:\n` +
+            `• More calls / leads\n` +
+            `• Better mobile experience\n` +
+            `• Faster load speed\n` +
+            `• Cleaner design / trust\n\n` +
+            `Website URL:\n`,
+        "quote-webdev":
+            `Hi! I'd like a quote for a new website.\n\n` +
+            `Business name:\n` +
+            `Type of business:\n` +
+            `Do you already have a website?\n` +
+            `What pages / features do you need?\n` +
+            `Timeline:\n`,
+        "quote-seo":
+            `Hi! I'd like a quote for SEO help.\n\n` +
+            `Website URL:\n` +
+            `Business type:\n` +
+            `City / service area:\n` +
+            `Main goal:\n` +
+            `Any current SEO issues you know about:\n`,
+    };
+
     // Prefill message on load
     useEffect(() => {
         const form = formRef.current;
@@ -44,28 +82,9 @@ export default function Contact({ embedded = false, source = "contact", intent: 
 
         const current = form.message.value.trim();
 
-        // Audit prefill
-        if (intent === "audit" && !current) {
-            form.message.value =
-                `Hi! I'd like a free website audit.\n\n` +
-                `What I want help with:\n` +
-                `• More leads / calls\n` +
-                `• Better mobile experience\n` +
-                `• Speed + SEO improvements\n\n` +
-                `Anything else you should know:\n`;
-            return;
-        }
-
-        // Review prefill (CTA)
-        if (intent === "review" && !current) {
-            form.message.value =
-                `Hi! I'd like a free website review.\n\n` +
-                `Main goal (pick one):\n` +
-                `• More calls / leads\n` +
-                `• Better mobile experience\n` +
-                `• Faster load speed\n` +
-                `• Cleaner design / trust\n\n` +
-                `Anything else you should know:\n`;
+        // Intent-based prefill
+        if (intent && intentPrefills[intent] && !current) {
+            form.message.value = intentPrefills[intent];
             return;
         }
 
@@ -185,7 +204,11 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                         ? "Free Website Audit"
                         : intent === "review"
                             ? "Free Website Review"
-                            : "Contact"}
+                            : intent === "quote-webdev"
+                                ? "Web Design Quote"
+                                : intent === "quote-seo"
+                                    ? "SEO Quote"
+                                    : "Contact"}
                 </h2>
 
                 <div className="h-px bg-white/10" />

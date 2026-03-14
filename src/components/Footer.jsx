@@ -78,9 +78,13 @@ export default function Footer() {
                     <Reveal>
                         <div className="space-y-2">
                             <p className="text-white/60 font-medium">Services</p>
-                            <span className="block text-white/70">Portfolio Sites</span>
-                            <span className="block text-white/70">E-commerce</span>
-                            <span className="block text-white/70">Brand Visuals</span>
+                            <Link className="block hover:text-white" to="/web-design-portland">Web Design Portland</Link>
+                            <Link className="block hover:text-white" to="/web-design-for-salons">Salon Websites</Link>
+                            <Link className="block hover:text-white" to="/web-design-for-restaurants">Restaurant Websites</Link>
+                            <Link className="block hover:text-white" to="/web-design-for-home-services">Home Service Websites</Link>
+                            <Link className="block hover:text-white" to="/small-business-website-design">Small Business Websites</Link>
+                            <Link className="block hover:text-white" to="/web-design-for-tattoo-shops">Tattoo Shop Websites</Link>
+                            <Link className="block hover:text-white" to="/website-design-for-tattoo-artists">Tattoo Artist Portfolios</Link>
                         </div>
                     </Reveal>
                 </nav>

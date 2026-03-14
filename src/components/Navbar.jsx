@@ -78,6 +78,10 @@ export default function Navbar() {
                             Work
                         </button>
 
+                        <NavLink to="/services" className={linkClass}>
+                            Services
+                        </NavLink>
+
                         <button
                             onClick={() => goTo("pricing")}
                             className="px-3 py-2 rounded-lg text-sm text-white/80 hover:text-white hover:bg-white/10 transition"
@@ -147,6 +151,16 @@ export default function Navbar() {
                                 >
                                     Work
                                 </button>
+                            </li>
+
+                            <li>
+                                <NavLink
+                                    to="/services"
+                                    className={linkClass}
+                                    onClick={() => setOpen(false)}
+                                >
+                                    Services
+                                </NavLink>
                             </li>
 
                             <li>
