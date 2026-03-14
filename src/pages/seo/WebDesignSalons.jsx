@@ -93,7 +93,7 @@ export default function WebDesignSalons() {
           </p>
           <p className="mt-4 text-white/50 text-sm">
             Trusted by: <span className="text-white/70">Elegance By Elysia</span> &amp;{" "}
-            <span className="text-white/70">Blessed N Polished</span> — Portland, OR
+            <span className="text-white/70">Blessed N Polished</span>
           </p>
           <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
         </Reveal>
