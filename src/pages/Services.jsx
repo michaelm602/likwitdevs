@@ -50,15 +50,17 @@ export default function Services() {
 
         {/* Page header */}
         <Reveal once>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">What We Do</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white">
+            Web Design & SEO Services for Small Businesses
+          </h1>
           <p className="mt-2 text-white/70 max-w-2xl">
-            Clean, conversion-focused websites — and the SEO foundation to get found.
-            No fluff, no bloat.
+            We build fast, conversion-focused websites that help small businesses get found on Google,
+            generate more calls, and turn visitors into paying clients. No fluff, no bloat.
           </p>
         </Reveal>
 
         {/* Web Design & Development */}
-        <Reveal y={24} once className="rounded-3xl border border-white/10 bg-black/20 backdrop-blur-md p-6 md:p-10 text-white">
+        <Reveal y={24} once className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-6 md:p-10 text-white">
             <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white/80">
@@ -67,16 +69,16 @@ export default function Services() {
               </svg>
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-2">Web Design & Development</h2>
-            <p className="text-white/70 mb-6 max-w-2xl">
-              Fast, mobile-first websites designed to turn visitors into paying customers.
-              Built clean, launched reliably.
+            <p className="text-white/75 mb-6 max-w-2xl">
+              We build mobile-first websites designed to get you more calls and bookings.
+              Every layout, heading, and button is structured to push visitors toward action — not just look good.
             </p>
             <BulletList items={webDevBullets} />
             <Link to="/contact?intent=quote-webdev" className="btn">Get a Quote</Link>
         </Reveal>
 
         {/* On-Page SEO */}
-        <Reveal y={24} once className="rounded-3xl border border-white/10 bg-black/20 backdrop-blur-md p-6 md:p-10 text-white">
+        <Reveal y={24} once className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-6 md:p-10 text-white">
             <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white/80">
@@ -85,12 +87,60 @@ export default function Services() {
               </svg>
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-2">On-Page SEO</h2>
-            <p className="text-white/70 mb-6 max-w-2xl">
-              Help your site show up when people search for what you do. No black-hat tricks
-              — just clean structure that Google can read.
+            <p className="text-white/75 mb-6 max-w-2xl">
+              We set up your site so Google can find it and rank it. Local search, structured data,
+              and clean on-page signals that put you in front of customers already looking for what you offer.
             </p>
             <BulletList items={seoBullets} />
             <Link to="/contact?intent=quote-seo" className="btn">Get a Quote</Link>
+        </Reveal>
+
+        {/* Industry-Specific Services */}
+        <Reveal y={24} once>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            Explore Industry-Specific Services
+          </h2>
+          <p className="text-white/70 mb-6 max-w-2xl">
+            We specialize in a few key industries. If your business is listed below, we already know
+            what your site needs to compete locally.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              {
+                heading: "Web Design in Portland, OR",
+                description: "Local web design built for Portland businesses that want to show up and stand out.",
+                href: "/web-design-portland",
+              },
+              {
+                heading: "Small Business Websites",
+                description: "Affordable, professional websites for small businesses that need more leads — not just a web presence.",
+                href: "/small-business-websites",
+              },
+              {
+                heading: "Contractor & Home Service Websites",
+                description: "Sites built for contractors, tradespeople, and home service pros who need calls coming in.",
+                href: "/contractor-websites",
+              },
+              {
+                heading: "Tattoo Shop Websites",
+                description: "Booking-ready websites for tattoo artists and studios that want to fill their calendar.",
+                href: "/tattoo-websites",
+              },
+            ].map(({ heading, description, href }) => (
+              <div
+                key={href}
+                className="rounded-2xl bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md border border-white/10 shadow-lg p-5 flex flex-col gap-3"
+              >
+                <div>
+                  <h3 className="text-white font-semibold text-lg">{heading}</h3>
+                  <p className="text-white/75 text-sm mt-1">{description}</p>
+                </div>
+                <Link to={href} className="self-start text-sm text-white/80 hover:text-white transition underline underline-offset-4">
+                  Learn more →
+                </Link>
+              </div>
+            ))}
+          </div>
         </Reveal>
 
       </div>

@@ -25,7 +25,7 @@ export default function SiteBackground() {
                 />
             </div>
 
-            <div aria-hidden className="fixed inset-0 bg-black/40 -z-20 pointer-events-none" />
+            <div aria-hidden className="fixed inset-0 bg-black/50 -z-20 pointer-events-none" />
 
             {showFx && (
                 <div

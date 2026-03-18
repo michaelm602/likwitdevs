@@ -98,19 +98,19 @@ export default function SmallBusinessWebDesign() {
         <Reveal y={24} once>
           <div className="grid gap-4 sm:grid-cols-3">
             {features.map((f) => (
-              <div key={f.title} className="rounded-2xl bg-white/5 border border-white/10 p-5 text-white">
+              <div key={f.title} className="rounded-2xl bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md border border-white/10 shadow-lg p-5 text-white">
                 <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center mb-3 text-white/80">
                   {f.icon}
                 </div>
                 <p className="font-semibold mb-1">{f.title}</p>
-                <p className="text-white/60 text-sm">{f.desc}</p>
+                <p className="text-white/75 text-sm">{f.desc}</p>
               </div>
             ))}
           </div>
         </Reveal>
 
         {/* What's included */}
-        <Reveal y={24} once className="rounded-3xl border border-white/15 bg-black/20 backdrop-blur-md p-6 md:p-10 text-white">
+        <Reveal y={24} once className="rounded-3xl border border-white/15 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-6 md:p-10 text-white">
             <h2 className="text-xl font-semibold mb-6">What's Included</h2>
             <ul className="space-y-3">
               {bullets.map((b, i) => (
@@ -125,13 +125,13 @@ export default function SmallBusinessWebDesign() {
         </Reveal>
 
         {/* FAQ */}
-        <Reveal y={24} once className="rounded-3xl border border-white/15 bg-black/20 backdrop-blur-md p-6 md:p-10 text-white">
+        <Reveal y={24} once className="rounded-3xl border border-white/15 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-6 md:p-10 text-white">
             <h2 className="text-xl font-semibold mb-6">Frequently Asked Questions</h2>
             <div className="space-y-6">
               {faqs.map(({ q, a }) => (
                 <div key={q}>
                   <p className="font-medium text-white">{q}</p>
-                  <p className="mt-1 text-white/60 text-sm leading-relaxed">{a}</p>
+                  <p className="mt-1 text-white/75 text-sm leading-relaxed">{a}</p>
                 </div>
               ))}
             </div>
@@ -139,13 +139,13 @@ export default function SmallBusinessWebDesign() {
 
         {/* Internal links */}
         <Reveal y={16} once>
-          <p className="text-white/40 text-xs uppercase tracking-wide mb-3">Also serving Portland businesses in:</p>
+          <p className="text-white/80 text-xs uppercase tracking-wider mb-3">Also serving Portland businesses in:</p>
           <div className="flex flex-wrap gap-2">
             {relatedLinks.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
-                className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-sm text-white/60 hover:text-white/90 transition"
+                className="rounded-full border border-white/15 bg-black/50 px-3 py-1 text-sm text-white/85 hover:text-white hover:bg-black/70 transition"
               >
                 {label}
               </Link>
@@ -154,9 +154,9 @@ export default function SmallBusinessWebDesign() {
         </Reveal>
 
         {/* CTA */}
-        <Reveal y={24} once className="rounded-3xl border border-white/15 bg-black/20 backdrop-blur-md p-8 md:p-12 text-center text-white">
+        <Reveal y={24} once className="rounded-3xl border border-white/15 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-8 md:p-12 text-center text-white">
             <h2 className="text-2xl font-bold mb-2">Ready to get started?</h2>
-            <p className="text-white/60 mb-6">Get a free review of your current site — or let's talk about building something new.</p>
+            <p className="text-white/75 mb-6">Get a free review of your current site — or let's talk about building something new.</p>
             <Link to="/free-review" className="btn">Get a Free Website Review</Link>
         </Reveal>
 

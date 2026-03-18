@@ -22,20 +22,23 @@ export default function Home() {
                     <div className="relative py-14 md:py-24">
                         {/* Headline = outcome, not tech */}
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white">
-                            Websites that turn visitors into paying clients.
+                            Web Design for Small Businesses That Need More Clients.
                         </h1>
 
                         {/* Subtext = business value, still using your Typewriter */}
                         <p className="mt-3 text-base sm:text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
+                            <span className="block mb-1 text-white/70 text-sm sm:text-base">
+                                Serving Portland, OR and small businesses everywhere.
+                            </span>
                             <Typewriter
                                 texts={[
-                                    "Fast load times so customers don’t leave before you say hello.",
-                                    "Built for mobile, where most of your traffic lives.",
-                                    "Structured to show up when people search for what you do.",
-                                    "Clear next steps so visitors actually take action.",
+                                    "Get more calls, bookings, and paying clients — not just clicks.",
+                                    "Built for contractors, local shops, and service businesses.",
+                                    "Show up on Google when customers are ready to hire.",
+                                    "Turn every visitor into a lead with a site built to convert.",
                                 ]}
                                 speed={70}
-                                pause={1600}
+                                pause={2200}
                             />
                         </p>
 
