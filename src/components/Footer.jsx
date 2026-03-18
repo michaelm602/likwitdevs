@@ -109,13 +109,23 @@ export default function Footer() {
                             >
                                 <Github size={18} />
                             </a>
+                            <a
+                                href="https://www.facebook.com/profile.php?id=61577710374352"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                    <path d="M22 12a10 10 0 1 0-11.5 9.87v-6.99h-2.3V12h2.3V9.8c0-2.27 1.35-3.53 3.42-3.53.99 0 2.03.18 2.03.18v2.23h-1.14c-1.13 0-1.48.7-1.48 1.42V12h2.52l-.4 2.88h-2.12v6.99A10 10 0 0 0 22 12z"/>
+                                </svg>
+                            </a>
                         </div>
                     </Reveal>
                 </div>
             </div>
 
             <div className="border-t border-white/10 text-center text-xs text-white/60 py-4">
-                © {year} Likwit Devs. All rights reserved.
+                © 2025 Likwit Devs. All rights reserved.
             </div>
         </footer>
     );
