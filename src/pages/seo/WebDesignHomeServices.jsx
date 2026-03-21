@@ -88,9 +88,10 @@ const faqs = [
 
 const relatedLinks = [
   { to: "/web-design-portland", label: "Web Design Portland" },
-  { to: "/small-business-websites", label: "Small Business Websites" },
-  { to: "/web-design-for-salons", label: "Salons & Beauty" },
-  { to: "/web-design-for-restaurants", label: "Restaurants & Food" },
+  { to: "/web-design-for-contractors", label: "Contractors" },
+  { to: "/web-design-for-painters", label: "Painters" },
+  { to: "/small-business-website-design", label: "Small Business" },
+  { to: "/", label: "← Homepage" },
 ];
 
 export default function WebDesignHomeServices() {
@@ -118,6 +119,22 @@ export default function WebDesignHomeServices() {
             or buried on page two, they hire someone else. We build fast, professional websites for home
             service businesses that rank locally, build trust immediately, and make it effortless for
             customers to reach you the moment they decide they need help.
+          </p>
+          <p className="mt-3 text-white/50 text-sm max-w-2xl">
+            Part of our{" "}
+            <Link to="/web-design-portland" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              web design for Portland businesses
+            </Link>
+            {" "}— covering contractors, trades, and all local service industries. Looking for more
+            specific help? See our pages for{" "}
+            <Link to="/web-design-for-contractors" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              web design for contractors in Portland
+            </Link>
+            {" "}and{" "}
+            <Link to="/web-design-for-painters" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              painter websites
+            </Link>
+            .
           </p>
           <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
         </Reveal>

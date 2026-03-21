@@ -91,6 +91,7 @@ const relatedLinks = [
   { to: "/website-design-for-tattoo-artists", label: "Tattoo Artist Portfolios" },
   { to: "/web-design-for-salons", label: "Salons & Beauty" },
   { to: "/small-business-website-design", label: "Small Business" },
+  { to: "/", label: "← Homepage" },
 ];
 
 export default function WebDesignTattooShops() {
@@ -117,6 +118,17 @@ export default function WebDesignTattooShops() {
             Clients look you up before they walk in — and they're judging your work on a phone screen.
             We build tattoo industry websites that showcase every artist's portfolio, make booking
             frictionless, and show up on Google when someone nearby is ready to get tattooed.
+          </p>
+          <p className="mt-3 text-white/50 text-sm max-w-2xl">
+            Part of our{" "}
+            <Link to="/web-design-portland" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              web design for Portland businesses
+            </Link>
+            . Individual artist?{" "}
+            <Link to="/website-design-for-tattoo-artists" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              See our tattoo artist portfolio sites
+            </Link>
+            .
           </p>
           <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
         </Reveal>

@@ -66,6 +66,7 @@ const relatedLinks = [
   { to: "/web-design-for-salons", label: "Salons & Beauty" },
   { to: "/web-design-for-restaurants", label: "Restaurants & Food" },
   { to: "/web-design-for-home-services", label: "Home Services" },
+  { to: "/", label: "← Homepage" },
 ];
 
 export default function SmallBusinessWebDesign() {
@@ -90,6 +91,21 @@ export default function SmallBusinessWebDesign() {
             We build websites for small businesses that need to look professional, load fast, and show
             up on Google. No bloated page builders, no monthly subscriptions for a template. Just a
             clean site that actually brings in customers.
+          </p>
+          <p className="mt-3 text-white/50 text-sm max-w-2xl">
+            Part of our{" "}
+            <Link to="/web-design-portland" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              Portland web design services for small businesses
+            </Link>
+            . We also specialize in{" "}
+            <Link to="/web-design-for-home-services" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              web design for home service businesses
+            </Link>
+            {" "}and{" "}
+            <Link to="/web-design-for-salons" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              salon websites in Portland
+            </Link>
+            .
           </p>
           <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
         </Reveal>

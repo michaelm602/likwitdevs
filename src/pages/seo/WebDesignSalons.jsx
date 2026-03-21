@@ -64,8 +64,9 @@ const faqs = [
 const relatedLinks = [
   { to: "/web-design-portland", label: "Web Design Portland" },
   { to: "/web-design-for-restaurants", label: "Restaurants & Food" },
-  { to: "/web-design-for-home-services", label: "Home Services" },
+  { to: "/website-design-for-tattoo-artists", label: "Tattoo Artist Portfolios" },
   { to: "/small-business-website-design", label: "Small Business" },
+  { to: "/", label: "← Homepage" },
 ];
 
 export default function WebDesignSalons() {
@@ -90,6 +91,21 @@ export default function WebDesignSalons() {
             We've built websites for nail salons, lash techs, and beauty studios. We know what your
             clients are looking for — a clean portfolio, easy booking, and a site that works on their
             phone. We handle the tech so you can focus on your clients.
+          </p>
+          <p className="mt-3 text-white/50 text-sm max-w-2xl">
+            Part of our{" "}
+            <Link to="/web-design-portland" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              web design for Portland salons and service businesses
+            </Link>
+            . Also see:{" "}
+            <Link to="/web-design-for-restaurants" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              restaurant website design
+            </Link>
+            {" "}and{" "}
+            <Link to="/website-design-for-tattoo-artists" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              tattoo artist portfolios
+            </Link>
+            .
           </p>
           <p className="mt-4 text-white/50 text-sm">
             Trusted by: <span className="text-white/70">Elegance By Elysia</span> &amp;{" "}

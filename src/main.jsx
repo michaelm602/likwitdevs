@@ -18,6 +18,8 @@ import WebDesignHomeServices from "./pages/seo/WebDesignHomeServices";
 import SmallBusinessWebDesign from "./pages/seo/SmallBusinessWebDesign";
 import WebDesignTattooShops from "./pages/seo/WebDesignTattooShops";
 import WebDesignTattooArtists from "./pages/seo/WebDesignTattooArtists";
+import WebDesignContractors from "./pages/seo/WebDesignContractors";
+import WebDesignPainters from "./pages/seo/WebDesignPainters";
 
 function NotFound() {
   return <div style={{ padding: 24, color: "#fff" }}>Page not found.</div>;
@@ -42,6 +44,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route path="small-business-website-design" element={<SmallBusinessWebDesign />} />
           <Route path="web-design-for-tattoo-shops" element={<WebDesignTattooShops />} />
           <Route path="website-design-for-tattoo-artists" element={<WebDesignTattooArtists />} />
+          <Route path="web-design-for-contractors" element={<WebDesignContractors />} />
+          <Route path="web-design-for-painters" element={<WebDesignPainters />} />
           <Route path="free-audit" element={<FreeAudit mode="qr" />} />
           <Route path="free-review" element={<FreeAudit mode="cta" />} />
           <Route path="admin/login" element={<AdminLogin />} />

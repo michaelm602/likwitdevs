@@ -46,7 +46,7 @@ export default function ProjectCard({ project }) {
                     <div className="mt-4 flex items-center justify-between gap-3">
                         {tags.length > 0 && (
                             <div className="flex flex-wrap gap-2">
-                                {tags.map(t => (
+                                {[...new Set(tags)].map(t => (
                                     <span key={t} className="text-xs px-2 py-1 rounded-full bg-white/10 border border-white/10 text-white/85">
                                         {t}
                                     </span>

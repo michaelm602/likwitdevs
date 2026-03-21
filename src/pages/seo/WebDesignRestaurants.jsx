@@ -67,6 +67,7 @@ const relatedLinks = [
   { to: "/web-design-for-salons", label: "Salons & Beauty" },
   { to: "/web-design-for-home-services", label: "Home Services" },
   { to: "/small-business-website-design", label: "Small Business" },
+  { to: "/", label: "← Homepage" },
 ];
 
 export default function WebDesignRestaurants() {
@@ -91,6 +92,21 @@ export default function WebDesignRestaurants() {
             Your menu, your hours, your vibe — all on a fast, mobile-first website that ranks on Google
             and loads before your customers get impatient. We build restaurant sites that drive
             reservations, online orders, and foot traffic.
+          </p>
+          <p className="mt-3 text-white/50 text-sm max-w-2xl">
+            Part of our{" "}
+            <Link to="/web-design-portland" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              web design for Portland restaurants and local businesses
+            </Link>
+            . Also building for{" "}
+            <Link to="/web-design-for-salons" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              salons and beauty businesses
+            </Link>
+            {" "}and{" "}
+            <Link to="/small-business-website-design" className="text-white/65 underline underline-offset-2 hover:text-white transition">
+              small businesses in Portland
+            </Link>
+            .
           </p>
           <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
         </Reveal>
