@@ -79,17 +79,18 @@ export default function TapLanding() {
             <div className="min-h-screen text-white flex flex-col px-4 py-10">
 
                 {/* Brand mark */}
-                <p className="text-center text-3xl font-bold tracking-[0.3em] uppercase text-white/60 mb-10">
+                <p className="text-center text-3xl font-bold tracking-[0.3em] uppercase text-white/60 mb-8">
                     Likwit Developers
                 </p>
 
                 {/* ── Hero ── */}
-                <section className="max-w-lg mx-auto w-full text-center space-y-4 mb-12">
+                <section className="max-w-lg mx-auto w-full text-center space-y-4 mb-8">
                     <h1 className="text-fluid-h1 font-bold leading-tight">
-                        Professional Websites for Small Businesses — Without Agency Prices.
+                        Your Website Might Be Costing You Customers.
                     </h1>
                     <p className="text-fluid-body text-white/70 max-w-md mx-auto">
-                        I help small brands, market vendors, and local businesses build fast, modern websites that actually convert.
+                        Every day without a fast, professional site is leads going to someone else.
+                        Drop your info below — I'll tell you exactly what's holding you back. Free.
                     </p>
                     <button
                         onClick={scrollToForm}
@@ -115,29 +116,19 @@ export default function TapLanding() {
 
                     <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-3">
                         <h2 className="text-xs font-semibold uppercase tracking-widest text-white/40">
-                            What you get
+                            What changes
                         </h2>
                         <ul className="space-y-2 text-white/80 text-sm">
-                            <li>✅&nbsp; Clean, mobile-friendly websites</li>
-                            <li>✅&nbsp; Booking systems or online sales</li>
-                            <li>✅&nbsp; Fast turnaround</li>
-                            <li>✅&nbsp; Affordable starter packages</li>
+                            <li>✅&nbsp; Customers find you on Google</li>
+                            <li>✅&nbsp; Leads come in while you're working</li>
+                            <li>✅&nbsp; Clients trust you before they call</li>
+                            <li>✅&nbsp; Live in 1–3 weeks, priced for real businesses</li>
                         </ul>
                     </div>
                 </section>
 
-                {/* ── Pricing line ── */}
-                <div className="max-w-lg mx-auto w-full mb-12">
-                    <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md px-5 py-4 text-center">
-                        <p className="text-white/70 text-sm">
-                            Yes, this card is 3D printed.{" "}
-                            <span className="text-white/85 font-medium">I also create custom NFC branding tools.</span>
-                        </p>
-                    </div>
-                </div>
-
                 {/* ── Lead form ── */}
-                <section id="lead-form" className="max-w-lg mx-auto w-full mb-16 scroll-mt-6">
+                <section id="lead-form" className="max-w-lg mx-auto w-full mb-8 scroll-mt-6">
                     <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-6 space-y-5">
                         <h2 className="text-xl font-semibold">Get a Free Website Review</h2>
                         <div className="h-px bg-white/10" />
@@ -212,6 +203,7 @@ export default function TapLanding() {
                 {/* Footer */}
                 <p className="text-center text-white/25 text-xs mt-auto">
                     © {new Date().getFullYear()} Likwit Developers
+                    <span className="block text-white/15 mt-1">Yes, this card is 3D printed. I also build custom NFC branding tools.</span>
                 </p>
             </div>
         </>
