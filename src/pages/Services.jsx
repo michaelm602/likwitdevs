@@ -114,17 +114,17 @@ export default function Services() {
               {
                 heading: "Small Business Websites",
                 description: "Affordable, professional websites for small businesses that need more leads — not just a web presence.",
-                href: "/small-business-websites",
+                href: "/small-business-website-design",
               },
               {
                 heading: "Contractor & Home Service Websites",
                 description: "Sites built for contractors, tradespeople, and home service pros who need calls coming in.",
-                href: "/contractor-websites",
+                href: "/web-design-for-contractors",
               },
               {
                 heading: "Tattoo Shop Websites",
                 description: "Booking-ready websites for tattoo artists and studios that want to fill their calendar.",
-                href: "/tattoo-websites",
+                href: "/web-design-for-tattoo-shops",
               },
             ].map(({ heading, description, href }) => (
               <div
