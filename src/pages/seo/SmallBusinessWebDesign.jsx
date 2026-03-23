@@ -71,9 +71,9 @@ const relatedLinks = [
 
 export default function SmallBusinessWebDesign() {
   useSEO({
-    title: "Small Business Website Design | Likwit Devs",
+    title: "Small Business Website Design That Brings Real Customers",
     description:
-      "Affordable small business website design. Fast, mobile-first sites that help customers find you and take action.",
+      "Most small business sites don't convert. We build fast, clear websites that turn visitors into calls, bookings, and sales.",
     canonical: "https://www.likwitdevs.com/small-business-website-design",
   });
 

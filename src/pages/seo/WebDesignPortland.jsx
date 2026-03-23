@@ -155,9 +155,9 @@ const relatedLinks = [
 
 export default function WebDesignPortland() {
     useSEO({
-        title: "Web Design Portland, OR | Likwit Devs — Built to Get You More Calls",
+        title: "Portland Web Design That Gets You More Calls | Free Review",
         description:
-            "Portland web designer specializing in contractor, salon, and service business websites. Fast, mobile-first sites built to rank locally and turn visitors into paying clients. Free website review available.",
+            "Tired of a website that does nothing? We fix what's costing you leads and turn traffic into real calls. Portland-based. Free review.",
         canonical: "https://www.likwitdevs.com/web-design-portland",
     });
 

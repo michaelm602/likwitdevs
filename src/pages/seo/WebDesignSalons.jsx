@@ -71,9 +71,9 @@ const relatedLinks = [
 
 export default function WebDesignSalons() {
   useSEO({
-    title: "Salon & Beauty Website Design | Likwit Devs",
+    title: "Salon Website Design Portland (Turn Visitors Into Booked Clients)",
     description:
-      "Website design for hair salons, nail salons, lash techs, and beauty businesses. Booking-ready, mobile-first, and Google-friendly.",
+      "Stop relying only on Instagram. Get a salon website that ranks, builds trust, and fills your calendar with real bookings.",
     canonical: "https://www.likwitdevs.com/web-design-for-salons",
   });
 

@@ -180,9 +180,9 @@ const relatedLinks = [
 
 export default function WebDesignTattooArtists() {
   useSEO({
-    title: "Portfolio Websites for Tattoo Artists | Likwit Devs",
+    title: "Tattoo Artist Website Design (Get Found Beyond Instagram)",
     description:
-      "Portfolio websites for independent tattoo artists in Portland. Showcase your style, rank on Google, and take bookings — without relying on Instagram alone.",
+      "Instagram isn't a portfolio. Get a site that ranks on Google, showcases your work, and makes booking easy. Free review.",
     canonical: "https://www.likwitdevs.com/website-design-for-tattoo-artists",
   });
 

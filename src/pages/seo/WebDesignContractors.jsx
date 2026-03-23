@@ -154,9 +154,9 @@ const relatedLinks = [
 
 export default function WebDesignContractors() {
   useSEO({
-    title: "Contractor Website Design Portland | Likwit Devs",
+    title: "Contractor Web Design Portland (Get More Bids, Not Just Traffic)",
     description:
-      "Website design for Portland contractors. Service area SEO, quote request forms, and project galleries built to generate more calls and bids.",
+      "Not getting enough jobs? We build contractor websites that rank locally and turn visits into real bids. No fluff. Free review.",
     canonical: "https://www.likwitdevs.com/web-design-for-contractors",
   });
 

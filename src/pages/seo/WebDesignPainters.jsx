@@ -154,9 +154,9 @@ const relatedLinks = [
 
 export default function WebDesignPainters() {
   useSEO({
-    title: "Painter Website Design Portland | Likwit Devs",
+    title: "Painter Website Design Portland (Stop Losing Jobs to Better Sites)",
     description:
-      "Website design for Portland painters. Portfolio galleries, local SEO, and quote forms built to get you more calls and win better jobs.",
+      "Your work is solid—but your site might not show it. We build painter websites that win trust and turn visitors into booked jobs.",
     canonical: "https://www.likwitdevs.com/web-design-for-painters",
   });
 

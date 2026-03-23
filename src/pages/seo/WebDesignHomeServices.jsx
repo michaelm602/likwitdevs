@@ -96,9 +96,9 @@ const relatedLinks = [
 
 export default function WebDesignHomeServices() {
   useSEO({
-    title: "Website Design for Contractors & Home Service Companies | Likwit Devs",
+    title: "Home Service Website Design Portland (More Calls, Less Guesswork)",
     description:
-      "Web design for contractors, plumbers, electricians, roofers, and landscapers. Built to rank locally and generate more calls and quote requests.",
+      "If your phone isn't ringing, your site isn't working. We build home service websites that rank locally and drive real leads.",
     canonical: "https://www.likwitdevs.com/web-design-for-home-services",
   });
 

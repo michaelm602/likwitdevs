@@ -72,9 +72,9 @@ const relatedLinks = [
 
 export default function WebDesignRestaurants() {
   useSEO({
-    title: "Restaurant Website Design | Likwit Devs",
+    title: "Restaurant Website Design Portland (More Orders, Less Confusion)",
     description:
-      "Website design for restaurants, cafes, and food trucks in Portland, OR. Menu integration, online ordering, and Google-ready.",
+      "If customers can't find or use your site, they leave. We build restaurant websites that drive orders, bookings, and foot traffic.",
     canonical: "https://www.likwitdevs.com/web-design-for-restaurants",
   });
 
