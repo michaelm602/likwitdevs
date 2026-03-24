@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
+import useSEO from "../hooks/useSEO";
 
 function normalizeUrl(value) {
     const v = value.trim();
@@ -21,6 +22,12 @@ export default function Contact({ embedded = false, source = "contact", intent: 
     const intent = intentProp || searchParams.get("intent") || "";
     const website = searchParams.get("website") || "";
     const business = searchParams.get("business") || "";
+
+    useSEO({
+        title: "Contact Us | Likwit Devs",
+        description: "Ready to get more calls from your website? Reach out to Likwit Devs — Portland-based web design for local service businesses.",
+        canonical: "https://www.likwitdevs.com/contact",
+    });
 
     // Badge label logic
     const selectedLabel =
