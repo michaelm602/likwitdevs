@@ -19,11 +19,11 @@ export default function useSEO({ title, description, canonical }) {
 
     // Reset to defaults on unmount so the homepage values are restored
     return () => {
-      document.title = "Web Design Portland – Get More Calls & Win More Clients";
+      document.title = "Your Website Is Losing You Customers";
       if (metaDesc)
         metaDesc.setAttribute(
           "content",
-          "We build websites for Portland contractors and local service businesses that turn traffic into calls and paying clients — and we work with clients nationwide."
+          "Most small business websites drive people away without the owner ever knowing. We fix that — and turn your site into something that actually rings your phone."
         );
       if (canonicalLink)
         canonicalLink.setAttribute("href", "https://www.likwitdevs.com/");

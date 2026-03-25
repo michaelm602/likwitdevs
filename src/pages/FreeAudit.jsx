@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import Contact from "./Contact";
+import useSEO from "../hooks/useSEO";
 
 const checkItems = [
   { label: "Load speed", desc: "What's slowing you down and costing you rankings" },
@@ -11,6 +12,13 @@ const checkItems = [
 ];
 
 export default function FreeAudit({ mode = "cta" }) {
+  useSEO({
+    title: "Find Out What Your Website Is Costing You",
+    description:
+      "We'll go through your site and tell you exactly what's driving customers away — for free. No pitch, no pressure. Just an honest look at what's broken and what it's worth to fix it.",
+    canonical: "https://www.likwitdevs.com/free-review",
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const isQR = mode === "qr";

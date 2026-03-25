@@ -24,8 +24,9 @@ export default function Contact({ embedded = false, source = "contact", intent: 
     const business = searchParams.get("business") || "";
 
     useSEO({
-        title: "Contact Us | Likwit Devs",
-        description: "Ready to get more calls from your website? Reach out to Likwit Devs — Portland-based web design for local service businesses.",
+        title: "Ready to Stop Losing Customers?",
+        description:
+          "Tell us about your business and we'll show you exactly how we can help. Most clients start seeing more calls and bookings within the first 30 days.",
         canonical: "https://www.likwitdevs.com/contact",
     });
 

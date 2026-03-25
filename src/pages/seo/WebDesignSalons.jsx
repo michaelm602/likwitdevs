@@ -71,9 +71,9 @@ const relatedLinks = [
 
 export default function WebDesignSalons() {
   useSEO({
-    title: "Salon Website Design Portland (Turn Visitors Into Booked Clients)",
+    title: "Your Salon Deserves a Full Book Every Week",
     description:
-      "Stop relying only on Instagram. Get a salon website that ranks, builds trust, and fills your calendar with real bookings.",
+      "If your website makes booking feel like work, clients go somewhere easier. We build salon sites that turn first-time visitors into loyal, recurring appointments.",
     canonical: "https://www.likwitdevs.com/web-design-for-salons",
   });
 

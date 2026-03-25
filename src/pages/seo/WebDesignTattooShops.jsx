@@ -96,9 +96,9 @@ const relatedLinks = [
 
 export default function WebDesignTattooShops() {
   useSEO({
-    title: "Website Design for Tattoo Shops & Studios | Likwit Devs",
+    title: "Empty Chairs Cost More Than a Website",
     description:
-      "Web design for tattoo shops, private studios, and solo artists. Artist portfolios, online booking, and local SEO — built to fill your calendar.",
+      "If clients can't find your shop or can't book online easily, they're going somewhere else tonight. We build tattoo shop websites that keep your artists busy and your chairs full.",
     canonical: "https://www.likwitdevs.com/web-design-for-tattoo-shops",
   });
 

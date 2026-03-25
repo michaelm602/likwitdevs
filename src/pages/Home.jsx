@@ -6,12 +6,19 @@ import ProjectsSection from "../sections/ProjectsSection";
 import AboutSection from "../sections/AboutSection";
 import PricingSection from "../sections/PricingSection";
 import TestimonialsSection from "../sections/TestimonialsSection";
+import useSEO from "../hooks/useSEO";
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 export default function Home() {
+  useSEO({
+    title: "Your Website Is Losing You Customers",
+    description:
+      "Most small business websites drive people away without the owner ever knowing. We fix that — and turn your site into something that actually rings your phone.",
+    canonical: "https://www.likwitdevs.com/",
+  });
     const [reviewName, setReviewName] = useState("");
     const [reviewEmail, setReviewEmail] = useState("");
     const [reviewUrl, setReviewUrl] = useState("");

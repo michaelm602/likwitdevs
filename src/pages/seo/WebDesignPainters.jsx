@@ -154,9 +154,9 @@ const relatedLinks = [
 
 export default function WebDesignPainters() {
   useSEO({
-    title: "Painter Website Design Portland (Stop Losing Jobs to Better Sites)",
+    title: "Painters: Stop Competing on Price Alone",
     description:
-      "Your work is solid—but your site might not show it. We build painter websites that win trust and turn visitors into booked jobs.",
+      "A cheap-looking website makes clients lowball you before you even pick up the phone. We build painting company sites that show off your work and bring in customers who don't argue about your rates.",
     canonical: "https://www.likwitdevs.com/web-design-for-painters",
   });
 

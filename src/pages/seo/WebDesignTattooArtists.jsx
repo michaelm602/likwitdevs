@@ -180,9 +180,9 @@ const relatedLinks = [
 
 export default function WebDesignTattooArtists() {
   useSEO({
-    title: "Tattoo Artist Website Design (Get Found Beyond Instagram)",
+    title: "Instagram Won't Pay Your Rent",
     description:
-      "Instagram isn't a portfolio. Get a site that ranks on Google, showcases your work, and makes booking easy. Free review.",
+      "You're posting great work but still chasing bookings. A real website means clients find you, trust you, and book you — without the algorithm deciding whether they see it.",
     canonical: "https://www.likwitdevs.com/website-design-for-tattoo-artists",
   });
 

@@ -155,9 +155,9 @@ const relatedLinks = [
 
 export default function WebDesignPortland() {
     useSEO({
-        title: "Portland Web Design That Gets You More Calls | Free Review",
+        title: "Portland Sites That Actually Get You Calls",
         description:
-            "Tired of a website that does nothing? We fix what's costing you leads and turn traffic into real calls. Portland-based. Free review.",
+            "If your Portland competitors have a better website, they're getting your customers right now. We build local business sites that rank, convert, and put your number in front of the right people.",
         canonical: "https://www.likwitdevs.com/web-design-portland",
     });
 

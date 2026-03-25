@@ -72,9 +72,9 @@ const relatedLinks = [
 
 export default function WebDesignRestaurants() {
   useSEO({
-    title: "Restaurant Website Design Portland (More Orders, Less Confusion)",
+    title: "Hungry Customers Are Picking Someone Else",
     description:
-      "If customers can't find or use your site, they leave. We build restaurant websites that drive orders, bookings, and foot traffic.",
+      "If your restaurant's site is slow, hard to read on mobile, or buried on Google — they're ordering from your competitor. We fix that fast, and you'll feel it.",
     canonical: "https://www.likwitdevs.com/web-design-for-restaurants",
   });
 

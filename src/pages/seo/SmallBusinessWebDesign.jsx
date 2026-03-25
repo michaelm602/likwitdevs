@@ -71,9 +71,9 @@ const relatedLinks = [
 
 export default function SmallBusinessWebDesign() {
   useSEO({
-    title: "Small Business Website Design That Brings Real Customers",
+    title: "Your DIY Site Might Be Hurting Your Business",
     description:
-      "Most small business sites don't convert. We build fast, clear websites that turn visitors into calls, bookings, and sales.",
+      "Most small business websites look fine to the owner and terrible to customers. We build sites that actually convert visitors into calls, bookings, and real revenue.",
     canonical: "https://www.likwitdevs.com/small-business-website-design",
   });
 

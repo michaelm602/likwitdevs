@@ -154,9 +154,9 @@ const relatedLinks = [
 
 export default function WebDesignContractors() {
   useSEO({
-    title: "Contractor Web Design Portland (Get More Bids, Not Just Traffic)",
+    title: "Contractors: Your Website Is Costing You Jobs",
     description:
-      "Not getting enough jobs? We build contractor websites that rank locally and turn visits into real bids. No fluff. Free review.",
+      "If your site looks outdated or doesn't show up on Google, you're losing bids before you ever get the call. We build contractor websites that bring in real quote requests — not tire kickers.",
     canonical: "https://www.likwitdevs.com/web-design-for-contractors",
   });
 
