@@ -172,27 +172,27 @@ export default function WebDesignPortland() {
                             Portland, OR · Web Design & Development
                         </p>
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight max-w-3xl">
-                            Portland Web Designer for Businesses That Need More Calls
+                            Most Portland Websites Don't Get You Calls — Here's Why
                         </h1>
                         <p className="mt-4 text-lg text-white/80 max-w-2xl leading-relaxed">
-                            If your website isn't bringing in leads, it's not doing its job. We build fast, mobile-first websites for Portland contractors, service businesses, and local shops — designed to rank on Google and turn visitors into paying customers.
+                            If your website isn't bringing in leads, it's not doing its job. We fix what's broken and turn it into something that actually gets you customers.
                         </p>
                         <p className="mt-3 text-white/60 max-w-2xl">
-                            Not a template shop. Not an agency that farms your project out. One Portland web developer, hands-on from first call to launch day.
+                            Not a template shop. Not outsourced overseas. One Portland developer — hands-on from first call to launch.
                         </p>
                     </Reveal>
 
                     <Reveal once delay={100}>
                         <div className="mt-7 flex flex-wrap gap-3">
                             <Link to="/free-review" className="inline-block rounded-xl px-6 py-3 bg-white text-black font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-lg">
-                                Get a Free Website Review →
+                                Find Out What Your Website Is Costing You →
                             </Link>
                             <a href="#projects" className="inline-block rounded-xl px-6 py-3 bg-white/10 border border-white/15 text-white text-sm font-medium hover:bg-white/15 transition-colors backdrop-blur">
                                 View Our Work
                             </a>
                         </div>
                         <p className="mt-4 text-xs text-white/45">
-                            5.0 ★ Google Rating · Portland-based · 10+ sites launched · 1–3 week turnaround
+                            5.0 ★ Rating · Portland-based · Fast turnaround
                         </p>
                     </Reveal>
                 </section>
