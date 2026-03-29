@@ -65,7 +65,7 @@ export default function Home() {
                                 href="#audit"
                                 className="inline-block rounded-xl px-6 py-3 bg-white text-black font-semibold text-sm sm:text-base hover:bg-neutral-100 transition-colors shadow-lg"
                             >
-                                Get a Free Website Review →
+                                Find Out What Your Website Is Costing You →
                             </a>
                             <div className="mt-3 flex gap-2 text-sm text-white/60">
                                 <a href="#projects" className="hover:text-white/90 transition">View Work</a>
@@ -115,12 +115,12 @@ export default function Home() {
                         {
                             title: "Contractors",
                             desc: "Bid request pages and local SEO that gets you calls from your service area.",
-                            to: "/web-design-for-home-services",
+                            to: "/web-design-for-contractors",
                         },
                         {
                             title: "Painters",
                             desc: "Portfolio sites that show your best work and make it easy to request a quote.",
-                            to: "/web-design-for-home-services",
+                            to: "/web-design-for-painters",
                         },
                         {
                             title: "Tattoo Artists",

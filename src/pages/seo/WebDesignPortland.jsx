@@ -155,9 +155,9 @@ const relatedLinks = [
 
 export default function WebDesignPortland() {
     useSEO({
-        title: "Portland Web Design That Actually Gets You Calls",
+        title: "Your Website Is Losing You Customers (Portland)",
         description:
-            "If your website isn't bringing in calls, it's costing you money. We build Portland business websites that get found on Google and turn visitors into real customers.",
+            "Most Portland business websites look fine—but quietly lose customers every day. If your competitors are getting the calls, this is why.",
         canonical: "https://www.likwitdevs.com/web-design-portland",
     });
 
@@ -263,7 +263,7 @@ export default function WebDesignPortland() {
                                         Every site we build is custom — no Squarespace, no Wix, no drag-and-drop templates. Fast load times, local SEO from the start, and a layout that pushes visitors toward calling or booking — not scrolling and bouncing.
                                     </p>
                                     <Link to="/free-review" className="inline-block mt-6 rounded-xl px-5 py-2.5 bg-white text-black font-semibold text-sm hover:bg-neutral-100 transition-colors">
-                                        Start With a Free Review →
+                                        Find Out What Your Website Is Costing You →
                                     </Link>
                                 </div>
 
@@ -463,7 +463,7 @@ export default function WebDesignPortland() {
                                 to="/free-review"
                                 className="inline-block rounded-xl px-7 py-3.5 bg-white text-black font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-lg"
                             >
-                                Get My Free Website Review →
+                                Find Out What Your Website Is Costing You →
                             </Link>
                             <p className="mt-4 text-xs text-white/45">
                                 No spam. Reply within 1 business day. No commitment required.

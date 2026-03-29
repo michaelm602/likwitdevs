@@ -136,7 +136,7 @@ export default function WebDesignHomeServices() {
             </Link>
             .
           </p>
-          <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
+          <Link to="/free-review" className="btn mt-6 inline-block">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
         {/* Feature cards */}
@@ -222,7 +222,7 @@ export default function WebDesignHomeServices() {
             Get a free review of your current site — or let's build something that works as hard as you do
             and brings in leads while you're on the job.
           </p>
-          <Link to="/free-review" className="btn">Get a Free Website Review</Link>
+          <Link to="/free-review" className="btn">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
       </div>

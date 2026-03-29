@@ -84,7 +84,7 @@ export default function WebDesignRestaurants() {
 
         {/* Hero */}
         <Reveal once>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Restaurant & Food Business Website Design</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white">If Your Website Isn't Making People Hungry, It's Costing You Customers</h1>
           <p className="mt-3 text-white/70 max-w-2xl text-lg">
             A site that makes people hungry before they even walk in.
           </p>
@@ -108,7 +108,7 @@ export default function WebDesignRestaurants() {
             </Link>
             .
           </p>
-          <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
+          <Link to="/free-review" className="btn mt-6 inline-block">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
         {/* Feature cards */}
@@ -174,7 +174,7 @@ export default function WebDesignRestaurants() {
         <Reveal y={24} once className="rounded-3xl border border-white/15 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-8 md:p-12 text-center text-white">
             <h2 className="text-2xl font-bold mb-2">Ready to get started?</h2>
             <p className="text-white/75 mb-6">Get a free review of your current site — or let's talk about building something new.</p>
-            <Link to="/free-review" className="btn">Get a Free Website Review</Link>
+            <Link to="/free-review" className="btn">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
       </div>

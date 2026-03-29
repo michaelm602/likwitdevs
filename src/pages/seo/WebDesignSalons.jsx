@@ -83,7 +83,7 @@ export default function WebDesignSalons() {
 
         {/* Hero */}
         <Reveal once>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">Website Design for Salons & Beauty Businesses</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white">Your Salon Website Should Be Booking Clients—Not Sitting There</h1>
           <p className="mt-3 text-white/70 max-w-2xl text-lg">
             Turn Instagram followers into booked appointments.
           </p>
@@ -111,7 +111,7 @@ export default function WebDesignSalons() {
             Trusted by: <span className="text-white/70">Elegance By Elysia</span> &amp;{" "}
             <span className="text-white/70">Blessed N Polished</span>
           </p>
-          <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
+          <Link to="/free-review" className="btn mt-6 inline-block">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
         {/* Feature cards */}
@@ -177,7 +177,7 @@ export default function WebDesignSalons() {
         <Reveal y={24} once className="rounded-3xl border border-white/15 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-8 md:p-12 text-center text-white">
             <h2 className="text-2xl font-bold mb-2">Ready to get started?</h2>
             <p className="text-white/75 mb-6">Get a free review of your current site — or let's talk about building something new.</p>
-            <Link to="/free-review" className="btn">Get a Free Website Review</Link>
+            <Link to="/free-review" className="btn">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
       </div>

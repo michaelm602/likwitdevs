@@ -189,7 +189,7 @@ export default function WebDesignPainters() {
             </Link>
             .
           </p>
-          <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
+          <Link to="/free-review" className="btn mt-6 inline-block">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
         {/* Problems */}
@@ -355,7 +355,7 @@ export default function WebDesignPainters() {
             Get a free review of your current online presence — or let's build a portfolio site
             that shows the quality of your work and fills your schedule with the right jobs.
           </p>
-          <Link to="/free-review" className="btn">Get a Free Website Review</Link>
+          <Link to="/free-review" className="btn">Find Out What Your Website Is Costing You →</Link>
           <p className="mt-4 text-white/40 text-xs">
             Portland-based · responds within 1 business day · no obligation
           </p>

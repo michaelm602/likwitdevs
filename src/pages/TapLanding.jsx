@@ -96,7 +96,7 @@ export default function TapLanding() {
                         onClick={scrollToForm}
                         className="btn-solid px-6 py-3 text-base font-semibold mt-2"
                     >
-                        Get a Free Website Review
+                        Find Out What Your Website Is Costing You →
                     </button>
                 </section>
 

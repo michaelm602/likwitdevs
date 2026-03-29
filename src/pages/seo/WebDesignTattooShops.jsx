@@ -130,7 +130,7 @@ export default function WebDesignTattooShops() {
             </Link>
             .
           </p>
-          <Link to="/free-review" className="btn mt-6 inline-block">Get a Free Website Review</Link>
+          <Link to="/free-review" className="btn mt-6 inline-block">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
         {/* Feature cards */}
@@ -230,7 +230,7 @@ export default function WebDesignTattooShops() {
           <p className="text-white/75 mb-6">
             Get a free review of your current site — or let's talk about building something that books for you around the clock.
           </p>
-          <Link to="/free-review" className="btn">Get a Free Website Review</Link>
+          <Link to="/free-review" className="btn">Find Out What Your Website Is Costing You →</Link>
         </Reveal>
 
       </div>

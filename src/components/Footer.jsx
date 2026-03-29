@@ -82,6 +82,8 @@ export default function Footer() {
                             <Link className="block hover:text-white" to="/web-design-for-salons">Salon Websites</Link>
                             <Link className="block hover:text-white" to="/web-design-for-restaurants">Restaurant Websites</Link>
                             <Link className="block hover:text-white" to="/web-design-for-home-services">Home Service Websites</Link>
+                            <Link className="block hover:text-white" to="/web-design-for-contractors">Contractor Websites</Link>
+                            <Link className="block hover:text-white" to="/web-design-for-painters">Painter Websites</Link>
                             <Link className="block hover:text-white" to="/small-business-website-design">Small Business Websites</Link>
                             <Link className="block hover:text-white" to="/web-design-for-tattoo-shops">Tattoo Shop Websites</Link>
                             <Link className="block hover:text-white" to="/website-design-for-tattoo-artists">Tattoo Artist Portfolios</Link>

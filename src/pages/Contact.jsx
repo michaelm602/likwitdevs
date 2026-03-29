@@ -216,7 +216,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                                 ? "Web Design Quote"
                                 : intent === "quote-seo"
                                     ? "SEO Quote"
-                                    : "Contact"}
+                                    : "Let's Fix What's Costing You Customers"}
                 </h2>
 
                 <div className="h-px bg-white/10" />
