@@ -172,7 +172,7 @@ export default function WebDesignPortland() {
                             Portland, OR · Web Design & Development
                         </p>
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight max-w-3xl">
-                            Most Portland Websites Don't Get You Calls — Here's Why
+                            Your Portland Website Isn't Getting Calls — Here's Why
                         </h1>
                         <p className="mt-4 text-lg text-white/80 max-w-2xl leading-relaxed">
                             If your website isn't bringing in leads, it's not doing its job. We fix what's broken and turn it into something that actually gets you customers.
@@ -192,7 +192,7 @@ export default function WebDesignPortland() {
                             </a>
                         </div>
                         <p className="mt-4 text-xs text-white/45">
-                            5.0 ★ Rating · Portland-based · Fast turnaround
+                            Portland-based · Real client work · Built to get you calls
                         </p>
                     </Reveal>
                 </section>
@@ -204,7 +204,7 @@ export default function WebDesignPortland() {
                             Most Portland Business Websites Don't Get You Customers
                         </h2>
                         <p className="text-white/70 max-w-2xl mb-8">
-                            Every week your site underperforms, a competitor gets the call you should have had. Here's what's usually going wrong.
+                            Every week your website sits there, someone else gets the call you should've had. Here's what's usually going wrong.
                         </p>
                     </Reveal>
                     <div className="grid gap-4 sm:grid-cols-3">
@@ -216,6 +216,33 @@ export default function WebDesignPortland() {
                                     </div>
                                     <p className="font-semibold mb-1">{p.title}</p>
                                     <p className="text-white/70 text-sm leading-relaxed">{p.desc}</p>
+                                </div>
+                            </Reveal>
+                        ))}
+                    </div>
+                </section>
+
+                {/* ── WHAT THIS MEANS ──────────────────────────────── */}
+                <section>
+                    <Reveal once>
+                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                            What This Actually Means for Your Business
+                        </h2>
+                        <p className="text-white/70 max-w-2xl mb-8">
+                            A website problem usually doesn't look dramatic. It just shows up as fewer calls, fewer quote requests, and competitors getting picked before you even know someone was searching.
+                        </p>
+                    </Reveal>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        {[
+                            { title: "Lost Calls", desc: "People are landing on your site, hesitating, and leaving without reaching out." },
+                            { title: "Missed Local Searches", desc: "If you're not showing up when someone searches in Portland, you're not even in the running." },
+                            { title: "Weaker First Impressions", desc: "A slow, outdated, or confusing site makes people trust the next business instead." },
+                            { title: "Revenue Leaks", desc: "Most bad websites don't fail loudly—they just quietly cost you work every week." },
+                        ].map((c, i) => (
+                            <Reveal key={c.title} once y={16} delay={i * 80}>
+                                <div className="h-full rounded-2xl bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md border border-white/10 shadow-lg p-5 text-white">
+                                    <p className="font-semibold mb-1">{c.title}</p>
+                                    <p className="text-white/70 text-sm leading-relaxed">{c.desc}</p>
                                 </div>
                             </Reveal>
                         ))}
