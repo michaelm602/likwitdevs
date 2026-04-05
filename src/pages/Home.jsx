@@ -16,7 +16,7 @@ export default function Home() {
   useSEO({
     title: "Your Website Is Losing You Customers",
     description:
-      "Most small business websites drive people away without the owner ever knowing. We fix that — and turn your site into something that actually rings your phone.",
+      "Most small business websites drive people away without the owner ever knowing. We fix that -- and turn your site into something that actually rings your phone.",
     canonical: "https://www.likwitdevs.com/",
   });
     const [reviewName, setReviewName] = useState("");
@@ -36,15 +36,18 @@ export default function Home() {
                     <div className="relative py-14 md:py-24">
                         {/* Headline = outcome, not tech */}
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white">
-                            Get More Calls. Win More Clients.
+                            Your Website Isn't Getting You Calls... And It's Costing You Jobs
                         </h1>
 
-                        {/* Subheadline — static so visitors and crawlers read it instantly */}
+                        {/* Subheadline -- static so visitors and crawlers read it instantly */}
                         <p className="mt-3 text-base sm:text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
-                            We build fast, mobile-first websites for Portland contractors, painters, tattoo artists, and service businesses — designed to get you found and get you hired.
+                            I build conversion-focused websites for Portland service businesses that turn visitors into real calls, quote requests, and booked work.
+                        </p>
+                        <p className="mt-3 text-sm sm:text-base text-white/65 max-w-2xl">
+                            Every day your site underperforms, people click, hesitate, and hire someone else.
                         </p>
 
-                        {/* Typewriter — decorative secondary line */}
+                        {/* Typewriter -- decorative secondary line */}
                         <p className="mt-2 text-sm sm:text-base text-white/55 h-6">
                             <Typewriter
                                 texts={[
@@ -76,7 +79,7 @@ export default function Home() {
                             </div>
                             {/* Trust signal */}
                             <p className="mt-3 text-xs text-white/50">
-                                5.0 ★ Google Rating · Portland-based · 10+ sites launched
+                                5.0 ★ Google Rating · Portland-based · Work directly with me · Launch in 1-3 weeks
                             </p>
                         </div>
 
@@ -85,7 +88,7 @@ export default function Home() {
                             <div className="rounded-2xl bg-white/5 border border-white/10 p-4 backdrop-blur">
                                 <div className="text-white font-semibold">Get Found in Portland</div>
                                 <p className="text-white/75 text-sm mt-1">
-                                    Show up when locals search for what you do — built-in SEO from day one.
+                                    Show up when locals search for what you do -- built-in SEO from day one.
                                 </p>
                             </div>
                             <div className="rounded-2xl bg-white/5 border border-white/10 p-4 backdrop-blur">
@@ -97,7 +100,7 @@ export default function Home() {
                             <div className="rounded-2xl bg-white/5 border border-white/10 p-4 backdrop-blur">
                                 <div className="text-white font-semibold">Turn Visitors Into Calls</div>
                                 <p className="text-white/75 text-sm mt-1">
-                                    Every page built to push people toward booking — not just browsing.
+                                    Every page built to push people toward booking -- not just browsing.
                                 </p>
                             </div>
                         </div>
@@ -107,34 +110,34 @@ export default function Home() {
 
             {/* WHO WE BUILD FOR */}
             <section className="mx-auto max-w-6xl px-4 py-10 md:py-14">
-                <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Who We Build For</h2>
-                <p className="text-white/60 text-sm mb-6">Portland-area service businesses that need a site that actually works.</p>
+                <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Who This Is For</h2>
+                <p className="text-white/60 text-sm mb-6">If your website looks fine but isn't bringing in calls, quote requests, or booked work, this is for you.</p>
                 <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
 
                     {[
                         {
                             title: "Contractors",
-                            desc: "Bid request pages and local SEO that gets you calls from your service area.",
+                            desc: "For contractors losing calls because their site isn't building trust fast enough or making it easy to request a quote.",
                             to: "/web-design-for-contractors",
                         },
                         {
                             title: "Painters",
-                            desc: "Portfolio sites that show your best work and make it easy to request a quote.",
+                            desc: "For painters whose work sells in person, but their website isn't doing enough to bring in estimate requests.",
                             to: "/web-design-for-painters",
                         },
                         {
                             title: "Tattoo Artists",
-                            desc: "Instagram-quality portfolio sites that rank on Google and book appointments.",
+                            desc: "For artists relying on Instagram DMs while serious clients are searching Google and booking somewhere else.",
                             to: "/website-design-for-tattoo-artists",
                         },
                         {
                             title: "Salons",
-                            desc: "Booking-ready sites for hair, nails, lash techs, and beauty pros.",
+                            desc: "For salon owners missing bookings because their site feels outdated, unclear, or harder to trust than the competition.",
                             to: "/web-design-for-salons",
                         },
                         {
                             title: "Restaurants",
-                            desc: "Menu, hours, and reservation-ready sites that load fast on mobile.",
+                            desc: "For restaurants losing hungry customers because their site is slow on mobile, hard to use, or missing the basics people need fast.",
                             to: "/web-design-for-restaurants",
                         },
                     ].map((niche) => (
@@ -153,7 +156,7 @@ export default function Home() {
                     <Link to="/web-design-portland" className="text-white/60 underline underline-offset-2 hover:text-white/90 transition">
                         Portland web design services
                     </Link>{" "}
-                    — process, pricing, and what sets us apart from agencies.
+                    -- process, pricing, and what sets us apart from agencies.
                 </p>
             </section>
 
@@ -174,7 +177,7 @@ export default function Home() {
                                 Free Website Review (No fluff, just fixes)
                             </h2>
                             <p className="mt-2 text-white/80">
-                                Share your site and I’ll send back a direct breakdown of what’s costing you customers — covering speed, mobile experience, SEO structure, and how well your site moves visitors to act.
+                                Share your site and I'll send back a direct breakdown of what's costing you customers -- covering speed, mobile experience, SEO structure, and how well your site moves visitors to act.
                             </p>
 
                             <ul className="mt-4 space-y-2 text-white/75 text-sm">
@@ -189,7 +192,7 @@ export default function Home() {
                             {reviewStatus.ok === true ? (
                                 <div className="rounded-2xl bg-black/20 border border-white/10 p-6 text-center">
                                     <div className="text-2xl mb-2">✅</div>
-                                    <p className="text-white font-semibold">Got it — I’ll be in touch.</p>
+                                    <p className="text-white font-semibold">Got it -- I'll be in touch.</p>
                                     <p className="text-white/60 text-sm mt-1">Expect a real breakdown within 1 business day.</p>
                                 </div>
                             ) : (
@@ -235,7 +238,7 @@ export default function Home() {
                                     />
 
                                     {reviewStatus.ok === false && (
-                                        <p className="mt-3 text-sm text-red-400">Something went wrong — try emailing me directly at likwitdevs@gmail.com</p>
+                                        <p className="mt-3 text-sm text-red-400">Something went wrong -- try emailing me directly at likwitdevs@gmail.com</p>
                                     )}
 
                                     <div className="mt-4">
@@ -268,12 +271,12 @@ export default function Home() {
                                             }}
                                             className="w-full text-center rounded-xl px-4 py-2.5 bg-white text-black font-semibold hover:bg-neutral-100 transition-colors disabled:opacity-50"
                                         >
-                                            {reviewStatus.sending ? "Sending…" : "Send Me My Free Review →"}
+                                            {reviewStatus.sending ? "Sending..." : "Send Me My Free Review →"}
                                         </button>
                                     </div>
 
                                     <p className="mt-3 text-xs text-white/50">
-                                        No spam. I’ll reply within 1 business day with a real breakdown, not a template.
+                                        No spam. I'll reply within 1 business day with a real breakdown, not a template.
                                     </p>
                                 </div>
                             )}
@@ -287,3 +290,5 @@ export default function Home() {
         </>
     );
 }
+
+
