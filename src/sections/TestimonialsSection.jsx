@@ -11,6 +11,11 @@ const testimonials = [
         name: "Katrina Garcia",
         business: "Blessed N Polished",
     },
+    {
+        text: "Very responsive and professional. Every question and concern were immediately answered in a way that I could understand. I highly recommend this service. It's nice to have a trusted service in this industry.",
+        name: "Nathaniel Forest",
+        business: "Forest Pathways",
+    },
 ];
 
 function StarRow() {
@@ -52,7 +57,7 @@ export default function TestimonialsSection() {
                         </span>
                     </div>
                     <div className="rounded-full border border-white/15 bg-black/20 backdrop-blur-md px-4 py-2 text-sm text-white/60">
-                        2 Google Reviews
+                        3 Google Reviews
                     </div>
                 </div>
 
