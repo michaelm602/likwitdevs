@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
 import useSEO from "../hooks/useSEO";
+import PolicyNotice from "../components/PolicyNotice";
 
 function normalizeUrl(value) {
     const v = value.trim();
@@ -344,6 +345,8 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                         placeholder="How can I help?"
                     />
                 </div>
+
+                <PolicyNotice />
 
                 <button type="submit" disabled={status.sending} className="w-full btn disabled:opacity-60">
                     {status.sending ? "Sending..." : "Send"}

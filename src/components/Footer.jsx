@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Mail, Github } from "lucide-react";
 import Reveal from "./Reveal";
 import logoMark from "../assets/likwitdevs-logo-white.png";
+import PolicyNotice from "./PolicyNotice";
 
 
 export default function Footer() {
@@ -136,7 +137,9 @@ export default function Footer() {
                 </div>
             </div>
 
-            <div className="border-t border-white/10 text-center text-xs text-white/60 py-4">
+            <PolicyNotice compact />
+
+            <div className="text-center text-xs text-white/60 py-4">
                 © 2025 Likwit Devs. All rights reserved.
             </div>
         </footer>

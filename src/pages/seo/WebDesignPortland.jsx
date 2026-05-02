@@ -1,4 +1,5 @@
 // rebuild trigger
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "../../components/Reveal";
 import useSEO from "../../hooks/useSEO";
@@ -156,11 +157,58 @@ const relatedLinks = [
 
 export default function WebDesignPortland() {
     useSEO({
-        title: "Your Website Is Losing You Customers (Portland)",
+        title: "Portland Web Design for Small Businesses | Starting at $300 | Likwit Devs",
         description:
-            "Most Portland business websites look fine—but quietly lose customers every day. If your competitors are getting the calls, this is why.",
+            "Portland web design starting at $300. Mobile-first, local SEO built in, no templates. Work directly with one developer. Free site review →",
         canonical: "https://www.likwitdevs.com/web-design-portland",
     });
+
+    useEffect(() => {
+        const faqSchema = document.createElement("script");
+        faqSchema.type = "application/ld+json";
+        faqSchema.id = "schema-faq-portland";
+        faqSchema.text = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map(({ q, a }) => ({
+                "@type": "Question",
+                name: q,
+                acceptedAnswer: { "@type": "Answer", text: a },
+            })),
+        });
+
+        const bizSchema = document.createElement("script");
+        bizSchema.type = "application/ld+json";
+        bizSchema.id = "schema-localbusiness-portland";
+        bizSchema.text = JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            name: "Likwit Devs",
+            url: "https://www.likwitdevs.com",
+            email: "likwitdevs@gmail.com",
+            priceRange: "$300+",
+            address: {
+                "@type": "PostalAddress",
+                addressLocality: "Portland",
+                addressRegion: "OR",
+                addressCountry: "US",
+            },
+            areaServed: { "@type": "City", name: "Portland, OR" },
+            aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: "5.0",
+                reviewCount: "3",
+            },
+        });
+
+        document.head.appendChild(faqSchema);
+        document.head.appendChild(bizSchema);
+
+        return () => {
+            document.getElementById("schema-faq-portland")?.remove();
+            document.getElementById("schema-localbusiness-portland")?.remove();
+        };
+    }, []);
 
     return (
         <div className="min-h-screen bg-transparent px-4 pt-28 pb-20">
@@ -173,13 +221,16 @@ export default function WebDesignPortland() {
                             Portland, OR · Web Design & Development
                         </p>
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight max-w-3xl">
-                            Your Portland Website Isn't Getting Calls — Here's Why
+                            Web Design for Portland Businesses That Need More Calls
                         </h1>
                         <p className="mt-4 text-lg text-white/80 max-w-2xl leading-relaxed">
                             If your website isn't bringing in leads, it's not doing its job. We fix what's broken and turn it into something that actually gets you customers.
                         </p>
                         <p className="mt-3 text-white/60 max-w-2xl">
                             Not a template shop. Not outsourced overseas. One Portland developer — hands-on from first call to launch.
+                        </p>
+                        <p className="mt-3 text-sm text-white/55">
+                            Sites from $300 · No templates · No lock-in · Built to get you calls
                         </p>
                     </Reveal>
 
@@ -193,7 +244,7 @@ export default function WebDesignPortland() {
                             </a>
                         </div>
                         <p className="mt-4 text-xs text-white/45">
-                            Portland-based · Real client work · Built to get you calls
+                            5.0 ★ Google Rating · Portland-based · Real client work
                         </p>
                     </Reveal>
                 </section>
@@ -427,6 +478,26 @@ export default function WebDesignPortland() {
                                 Read our Google reviews ↗
                             </a>
                         </p>
+                    </Reveal>
+                </section>
+
+                {/* ── MID-PAGE CTA ──────────────────────────────────── */}
+                <section>
+                    <Reveal once>
+                        <div className="rounded-3xl border border-white/15 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-8 text-center text-white">
+                            <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                                Ready to Stop Losing Calls?
+                            </h2>
+                            <p className="text-white/70 max-w-lg mx-auto mb-6 text-sm leading-relaxed">
+                                Send your site and we'll show you exactly what's holding it back — free, no pitch.
+                            </p>
+                            <Link
+                                to="/free-review"
+                                className="inline-block rounded-xl px-6 py-3 bg-white text-black font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-lg"
+                            >
+                                Get a Free Website Review →
+                            </Link>
+                        </div>
                     </Reveal>
                 </section>
 
