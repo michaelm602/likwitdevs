@@ -4,14 +4,25 @@
 
 /* ---------- Base / Resets ---------- */
 @layer base {
-  :root { --nav-h: 5.5rem; }
+  :root {
+    --nav-h:     5.5rem;
+    --bg:        #0a0a0b;
+    --bg-card:   #101013;
+    --bg-lift:   #141417;
+    --border:    #1e1e23;
+    --border-hi: #2a2a30;
+    --text-1:    #f0efe9;
+    --text-2:    rgba(240, 239, 233, 0.60);
+    --text-3:    rgba(240, 239, 233, 0.28);
+    --text-4:    rgba(240, 239, 233, 0.13);
+  }
 
   html, body, #root { height: 100%; }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
 
   /* keep page behind everything dark & avoid rubber-band showing bg */
-    html, body { background: transparent; }
+    html, body { background: var(--bg); }
 
   body {
     margin: 0;
@@ -99,4 +110,29 @@
     backface-visibility: hidden;
     transform: translateZ(0);
   }
+}
+
+/* ---------- Rise-in animation (hero stagger) ---------- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rise-1 { animation: rise 0.7s cubic-bezier(.22, 1, .36, 1) 0.10s both; }
+.rise-2 { animation: rise 0.7s cubic-bezier(.22, 1, .36, 1) 0.25s both; }
+.rise-3 { animation: rise 0.7s cubic-bezier(.22, 1, .36, 1) 0.40s both; }
+.rise-4 { animation: rise 0.7s cubic-bezier(.22, 1, .36, 1) 0.55s both; }
+.rise-5 { animation: rise 0.7s cubic-bezier(.22, 1, .36, 1) 0.70s both; }
+.rise-6 { animation: rise 0.7s cubic-bezier(.22, 1, .36, 1) 0.85s both; }
+
+/* ---------- Marquee ticker ---------- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: inline-flex;
+  will-change: transform;
+  animation: marquee 28s linear infinite;
 }
