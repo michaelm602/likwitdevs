@@ -17,7 +17,13 @@
     --text-4:    rgba(240, 239, 233, 0.13);
   }
 
-  html, body, #root { height: 100%; }
+  html, body, #root {
+    height: 100%;
+  }
+
+  #root {
+    isolation: isolate;
+  }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
 
