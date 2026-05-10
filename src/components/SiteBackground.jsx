@@ -142,7 +142,7 @@ export default function SiteBackground() {
         className="fixed inset-0 -z-20 pointer-events-none select-none"
         style={{
           background:
-            'radial-gradient(ellipse 70% 55% at 50% 0%, rgba(255,255,255,0.035) 0%, transparent 100%)',
+            'radial-gradient(ellipse 90% 40% at 50% 0%, rgba(255,255,255,0.025) 0%, transparent 100%)',
         }}
       />
     </>

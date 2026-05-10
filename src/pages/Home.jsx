@@ -28,7 +28,7 @@ export default function Home() {
     return (
         <>
             {/* HERO */}
-            <section className="relative overflow-hidden hero-stable">
+            <section className="relative">
 
                 {/* Content */}
                 <div className="mx-auto max-w-6xl px-4">
