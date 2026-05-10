@@ -23,7 +23,7 @@ function CanvasBeams() {
         phase: (i / beamCount) * Math.PI * 2,
         period: 3 + (i % 3) * 1.5,
         width: 50 + (i % 4) * 40,
-        baseOpacity: 0.022 + (i % 3) * 0.012,
+        baseOpacity: 0.04 + (i % 3) * 0.02,
         gradient: null,
       }));
     }

@@ -29,7 +29,6 @@ export default function Home() {
         <>
             {/* HERO */}
             <section className="relative overflow-hidden hero-stable">
-                <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-transparent" />
 
                 {/* Content */}
                 <div className="mx-auto max-w-6xl px-4">
