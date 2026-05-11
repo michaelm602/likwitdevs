@@ -261,6 +261,88 @@ function CanvasBeams() {
       return texture;
     }
 
+    function createShimmerTexture(width) {
+      const texture = document.createElement('canvas');
+      texture.width = Math.max(24, Math.ceil(width));
+      texture.height = 512;
+
+      const textureCtx = texture.getContext('2d');
+      const crossGradient = textureCtx.createLinearGradient(0, 0, texture.width, 0);
+      crossGradient.addColorStop(0, 'rgba(255,248,226,0)');
+      crossGradient.addColorStop(0.34, 'rgba(255,248,226,0.08)');
+      crossGradient.addColorStop(0.5, 'rgba(255,250,235,1)');
+      crossGradient.addColorStop(0.66, 'rgba(255,248,226,0.08)');
+      crossGradient.addColorStop(1, 'rgba(255,248,226,0)');
+
+      textureCtx.fillStyle = crossGradient;
+      textureCtx.fillRect(0, 0, texture.width, texture.height);
+
+      textureCtx.globalCompositeOperation = 'destination-in';
+      const lengthGradient = textureCtx.createLinearGradient(0, 0, 0, texture.height);
+      lengthGradient.addColorStop(0, 'rgba(0,0,0,0)');
+      lengthGradient.addColorStop(0.14, 'rgba(0,0,0,0.04)');
+      lengthGradient.addColorStop(0.26, 'rgba(0,0,0,0.24)');
+      lengthGradient.addColorStop(0.38, 'rgba(0,0,0,0.08)');
+      lengthGradient.addColorStop(0.52, 'rgba(0,0,0,0.28)');
+      lengthGradient.addColorStop(0.66, 'rgba(0,0,0,0.06)');
+      lengthGradient.addColorStop(0.8, 'rgba(0,0,0,0.18)');
+      lengthGradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+      textureCtx.fillStyle = lengthGradient;
+      textureCtx.fillRect(0, 0, texture.width, texture.height);
+      textureCtx.globalCompositeOperation = 'source-over';
+      return texture;
+    }
+
+    function createTravelBandTexture(width) {
+      const texture = document.createElement('canvas');
+      texture.width = Math.max(8, Math.ceil(width));
+      texture.height = 192;
+
+      const textureCtx = texture.getContext('2d');
+      const crossGradient = textureCtx.createLinearGradient(0, 0, texture.width, 0);
+      crossGradient.addColorStop(0, 'rgba(255,248,226,0)');
+      crossGradient.addColorStop(0.24, 'rgba(255,248,226,0.1)');
+      crossGradient.addColorStop(0.5, 'rgba(255,252,244,1)');
+      crossGradient.addColorStop(0.76, 'rgba(255,248,226,0.1)');
+      crossGradient.addColorStop(1, 'rgba(255,248,226,0)');
+
+      textureCtx.fillStyle = crossGradient;
+      textureCtx.fillRect(0, 0, texture.width, texture.height);
+
+      textureCtx.globalCompositeOperation = 'destination-in';
+      const lengthGradient = textureCtx.createLinearGradient(0, 0, 0, texture.height);
+      lengthGradient.addColorStop(0, 'rgba(0,0,0,0)');
+      lengthGradient.addColorStop(0.16, 'rgba(0,0,0,0.18)');
+      lengthGradient.addColorStop(0.5, 'rgba(0,0,0,1)');
+      lengthGradient.addColorStop(0.84, 'rgba(0,0,0,0.18)');
+      lengthGradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+      textureCtx.fillStyle = lengthGradient;
+      textureCtx.fillRect(0, 0, texture.width, texture.height);
+      textureCtx.globalCompositeOperation = 'source-over';
+      return texture;
+    }
+
+    function createFlareTexture(sizePx) {
+      const texture = document.createElement('canvas');
+      texture.width = sizePx;
+      texture.height = sizePx;
+
+      const textureCtx = texture.getContext('2d');
+      const radius = sizePx / 2;
+      const gradient = textureCtx.createRadialGradient(radius, radius, 0, radius, radius, radius);
+      gradient.addColorStop(0, 'rgba(255,255,255,1)');
+      gradient.addColorStop(0.08, 'rgba(255,250,232,0.82)');
+      gradient.addColorStop(0.26, 'rgba(239,232,214,0.28)');
+      gradient.addColorStop(0.58, 'rgba(210,205,196,0.08)');
+      gradient.addColorStop(1, 'rgba(239,232,214,0)');
+
+      textureCtx.fillStyle = gradient;
+      textureCtx.fillRect(0, 0, sizePx, sizePx);
+      return texture;
+    }
+
     function createBloomTexture(sizePx, stops) {
       const texture = document.createElement('canvas');
       texture.width = sizePx;
@@ -304,6 +386,24 @@ function CanvasBeams() {
     function getVolumeTexture(width, type) {
       const key = `${type}-${Math.round(width)}`;
       if (scene.volumeTextures.has(key)) return scene.volumeTextures.get(key);
+
+      if (type === 'shimmer') {
+        const texture = createShimmerTexture(width);
+        scene.volumeTextures.set(key, texture);
+        return texture;
+      }
+
+      if (type === 'shimmerBand') {
+        const texture = createTravelBandTexture(width);
+        scene.volumeTextures.set(key, texture);
+        return texture;
+      }
+
+      if (type === 'flare') {
+        const texture = createFlareTexture(Math.round(width));
+        scene.volumeTextures.set(key, texture);
+        return texture;
+      }
 
       const stopsByType = {
         haze: [
@@ -371,8 +471,12 @@ function CanvasBeams() {
         index,
         lengthPx: scene.diagonal * volume.length,
         hazeTexture: getVolumeTexture(volume.hazeWidth, 'haze'),
+        shimmerTexture: getVolumeTexture(Math.max(120, volume.hazeWidth * 0.72), 'shimmer'),
+        shimmerBandTexture: getVolumeTexture(Math.max(10, Math.min(46, volume.glowWidth * 0.18)), 'shimmerBand'),
         glowTexture: getVolumeTexture(volume.glowWidth, 'glow'),
         coreTexture: volume.coreWidth > 0 ? getVolumeTexture(volume.coreWidth, 'core') : null,
+        travelGlintTexture: volume.coreWidth > 0 ? getVolumeTexture(Math.max(4, volume.coreWidth * 0.22), 'core') : null,
+        flareTexture: getVolumeTexture(volume.coreWidth > 0 ? 54 : 34, 'flare'),
       }));
     }
 
@@ -477,6 +581,69 @@ function CanvasBeams() {
       ctx.drawImage(texture, x - width / 2, y - length / 2, width, length);
     }
 
+    function getIrregularPulse(t, phase, speed, power = 4) {
+      const primary = (Math.sin(t * speed + phase) + 1) / 2;
+      const secondary = 0.62 + 0.38 * ((Math.sin(t * speed * 0.37 + phase * 2.31) + 1) / 2);
+      return Math.pow(primary, power) * secondary;
+    }
+
+    function getBeamTravelProgress(elapsed, volume, isRightCore) {
+      const phaseOffset = (volume.phase * 0.173 + volume.index * 0.217) % 1;
+      const speed = isRightCore
+        ? 0.115 + (volume.index % 3) * 0.012
+        : volume.coreWidth > 0
+          ? 0.07 + (volume.index % 4) * 0.006
+          : 0.038 + (volume.index % 5) * 0.004;
+
+      return (elapsed * speed + phaseOffset) % 1;
+    }
+
+    function drawTravelingShimmer(volume, x, y, elapsed, hazeMotion) {
+      if (prefersReducedMotion) return;
+      if (isTouchDevice && volume.index !== 0 && volume.index !== 3 && !volume.coreWidth) return;
+      if (volume.glowOpacity < 0.05) return;
+
+      const isRightCore = volume.coreWidth > 0 && volume.x > 0.7;
+      const progress = getBeamTravelProgress(elapsed, volume, isRightCore);
+      const gateShape = Math.pow(Math.sin(progress * Math.PI), isRightCore ? 1.25 : 1.8);
+      const gate = isRightCore ? 0.18 + gateShape * 0.82 : 0.04 + gateShape * 0.96;
+      const travelRange = volume.lengthPx * 1.08;
+      const bandY = y - travelRange / 2 + progress * travelRange;
+      const width = Math.max(18, Math.min(76, volume.glowWidth * (volume.coreWidth ? 0.3 : 0.23)));
+      const length = Math.max(138, volume.lengthPx * (volume.coreWidth ? 0.12 : 0.1));
+      const strength = isRightCore ? 0.36 : volume.coreWidth ? 0.27 : 0.13;
+      const touchScale = isTouchDevice ? 0.45 : 1;
+
+      drawVolumeTexture(
+        volume.shimmerBandTexture,
+        x + hazeMotion * 2.2,
+        bandY,
+        width,
+        length,
+        volume.glowOpacity * strength * gate * touchScale,
+      );
+    }
+
+    function drawTravelingCoreGlint(volume, x, y, elapsed, hazeMotion) {
+      if (prefersReducedMotion || isTouchDevice || !volume.travelGlintTexture) return;
+
+      const isRightCore = volume.x > 0.7;
+      const progress = getBeamTravelProgress(elapsed + 1.85, volume, isRightCore);
+      const gateShape = Math.pow(Math.sin(progress * Math.PI), isRightCore ? 1.9 : 3);
+      const gate = (isRightCore ? 0.1 : 0.025) + gateShape * getIrregularPulse(elapsed, volume.phase, 0.13, 1.15);
+      const glintRange = volume.lengthPx * 0.9;
+      const glintY = y - glintRange / 2 + progress * glintRange;
+
+      drawVolumeTexture(
+        volume.travelGlintTexture,
+        x + hazeMotion * 5,
+        glintY,
+        Math.max(5, volume.coreWidth * 0.32),
+        Math.max(72, volume.lengthPx * 0.06),
+        volume.coreOpacity * (isRightCore ? 0.34 : 0.16) * gate,
+      );
+    }
+
     function drawVolumes(elapsed, scrollY, pointerStrength) {
       const t = prefersReducedMotion ? 0 : elapsed;
 
@@ -484,6 +651,8 @@ function CanvasBeams() {
         const volume = scene.volumes[i];
         const wave = Math.sin((t / volume.period) * Math.PI * 2 + volume.phase);
         const breathe = 0.78 + 0.22 * ((wave + 1) / 2);
+        const hazeMotion = prefersReducedMotion ? 0 : Math.sin(t * 0.13 + volume.phase * 1.7);
+        const brightnessDrift = prefersReducedMotion ? 1 : 0.97 + 0.03 * ((Math.sin(t * 0.19 + volume.phase) + 1) / 2);
         const x =
           (volume.x - 0.5) * size.width +
           wave * volume.drift +
@@ -500,12 +669,76 @@ function CanvasBeams() {
         ctx.rotate(ANGLE_RAD + ((volume.angleOffset || 0) * Math.PI) / 180);
         ctx.globalCompositeOperation = 'screen';
 
-        drawVolumeTexture(volume.hazeTexture, x, y, volume.hazeWidth, volume.lengthPx, volume.hazeOpacity * breathe);
-        drawVolumeTexture(volume.glowTexture, x, y, volume.glowWidth, volume.lengthPx * 0.92, volume.glowOpacity * breathe);
+        drawVolumeTexture(
+          volume.hazeTexture,
+          x + hazeMotion * 1.6,
+          y + hazeMotion * 0.8,
+          volume.hazeWidth * (1 + hazeMotion * 0.006),
+          volume.lengthPx,
+          volume.hazeOpacity * breathe * brightnessDrift,
+        );
+
+        if (!isTouchDevice && volume.glowOpacity >= 0.05) {
+          const shimmerPulse = 0.62 + 0.38 * ((Math.sin(t * 0.27 + volume.phase * 2.4) + 1) / 2);
+          const shimmerTravel = Math.sin(t * 0.1 + volume.phase) * volume.lengthPx * 0.035;
+          drawVolumeTexture(
+            volume.shimmerTexture,
+            x - hazeMotion * 2.4,
+            y + shimmerTravel,
+            volume.hazeWidth * 0.72,
+            volume.lengthPx * 0.88,
+            volume.hazeOpacity * 0.86 * shimmerPulse,
+          );
+        }
+
+        drawVolumeTexture(
+          volume.glowTexture,
+          x,
+          y,
+          volume.glowWidth,
+          volume.lengthPx * 0.92,
+          volume.glowOpacity * breathe * (0.98 + (brightnessDrift - 0.97)),
+        );
 
         if (volume.coreTexture) {
           drawVolumeTexture(volume.coreTexture, x, y, volume.coreWidth, volume.lengthPx * 0.72, volume.coreOpacity * breathe);
         }
+
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.restore();
+      }
+    }
+
+    function drawTravelingHighlights(elapsed, scrollY, pointerStrength) {
+      if (prefersReducedMotion) return;
+
+      const t = elapsed;
+
+      for (let i = 0; i < scene.volumes.length; i += 1) {
+        const volume = scene.volumes[i];
+        if (volume.glowOpacity < 0.05) continue;
+
+        const wave = Math.sin((t / volume.period) * Math.PI * 2 + volume.phase);
+        const hazeMotion = Math.sin(t * 0.13 + volume.phase * 1.7);
+        const x =
+          (volume.x - 0.5) * size.width +
+          wave * volume.drift +
+          pointer.x * volume.parallax * pointerStrength -
+          scrollY * 0.012;
+        const y =
+          (volume.y - 0.5) * size.height +
+          Math.cos((t / volume.period) * Math.PI * 2 + volume.phase) * volume.drift * 0.35 +
+          pointer.y * volume.parallax * 0.5 * pointerStrength +
+          scrollY * 0.045;
+
+        ctx.save();
+        ctx.translate(size.width / 2, size.height / 2);
+        ctx.rotate(ANGLE_RAD + ((volume.angleOffset || 0) * Math.PI) / 180);
+        ctx.globalCompositeOperation = 'screen';
+
+        drawTravelingShimmer(volume, x, y, t, hazeMotion);
+        drawTravelingCoreGlint(volume, x, y, t, hazeMotion);
 
         ctx.globalAlpha = 1;
         ctx.globalCompositeOperation = 'source-over';
@@ -541,14 +774,13 @@ function CanvasBeams() {
 
       const t = prefersReducedMotion ? 0 : elapsed;
       const glints = [
-        { x: 0.69, y: 0.31, w: 12, h: 178, opacity: 0.34, phase: 0.5 },
-        { x: 0.82, y: 0.2, w: 8, h: 104, opacity: 0.4, phase: 2.1 },
-        { x: 0.84, y: 0.29, w: 4, h: 58, opacity: 0.46, phase: 1.4 },
-        { x: 0.76, y: 0.52, w: 5, h: 72, opacity: 0.36, phase: 3.9 },
-        { x: 0.88, y: 0.42, w: 4, h: 50, opacity: 0.4, phase: 5.8 },
-        { x: 0.56, y: 0.43, w: 7, h: 92, opacity: 0.24, phase: 3.4 },
-        { x: 0.9, y: 0.1, w: 6, h: 76, opacity: 0.24, phase: 4.7 },
-        { x: 0.28, y: 0.72, w: 6, h: 84, opacity: 0.2, phase: 5.4 },
+        { x: 0.69, y: 0.31, w: 14, h: 190, opacity: 0.62, phase: 0.5 },
+        { x: 0.82, y: 0.2, w: 10, h: 132, opacity: 0.76, phase: 2.1 },
+        { x: 0.84, y: 0.29, w: 7, h: 86, opacity: 0.72, phase: 1.4 },
+        { x: 0.76, y: 0.52, w: 8, h: 108, opacity: 0.58, phase: 3.9 },
+        { x: 0.88, y: 0.42, w: 7, h: 82, opacity: 0.62, phase: 5.8 },
+        { x: 0.56, y: 0.43, w: 7, h: 96, opacity: 0.24, phase: 3.4 },
+        { x: 0.28, y: 0.72, w: 6, h: 84, opacity: 0.14, phase: 5.4 },
       ];
 
       ctx.save();
@@ -558,7 +790,8 @@ function CanvasBeams() {
 
       for (let i = 0; i < glints.length; i += 1) {
         const g = glints[i];
-        const pulse = 0.35 + 0.65 * ((Math.sin(t * 0.55 + g.phase) + 1) / 2);
+        const rightSide = g.x > 0.65;
+        const pulse = (rightSide ? 0.28 : 0.12) + (rightSide ? 0.72 : 0.88) * getIrregularPulse(t, g.phase, 0.34, rightSide ? 1.6 : 2.8);
         const texture = getVolumeTexture(g.w, 'core');
         ctx.globalAlpha = g.opacity * pulse;
         ctx.drawImage(
@@ -573,6 +806,113 @@ function CanvasBeams() {
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
       ctx.restore();
+    }
+
+    function findClosestVolume(targetX, targetY, preferCore) {
+      let best = null;
+      let bestDistance = Infinity;
+
+      for (let i = 0; i < scene.volumes.length; i += 1) {
+        const volume = scene.volumes[i];
+        if (preferCore && !volume.coreWidth) continue;
+
+        const distance = Math.abs(volume.x - targetX) + Math.abs(volume.y - targetY) * 0.65;
+        if (distance < bestDistance) {
+          best = volume;
+          bestDistance = distance;
+        }
+      }
+
+      return best;
+    }
+
+    function drawLensFlares(elapsed, scrollY, pointerStrength) {
+      if (prefersReducedMotion) return;
+
+      const t = elapsed;
+      const flares = isTouchDevice
+        ? [
+            { x: 0.82, y: 0.2, vx: 0.82, vy: 0.18, size: 38, opacity: 0.07, phase: 1.1, zone: 0.12, core: true },
+          ]
+        : [
+            { x: 0.82, y: 0.2, vx: 0.82, vy: 0.18, size: 76, opacity: 0.3, phase: 1.1, zone: 0.13, core: true },
+            { x: 0.76, y: 0.52, vx: 0.72, vy: 0.36, size: 62, opacity: 0.25, phase: 3.8, zone: 0.16, core: true },
+            { x: 0.88, y: 0.42, vx: 0.82, vy: 0.18, size: 52, opacity: 0.22, phase: 6.2, zone: 0.13, core: true },
+            { x: 0.69, y: 0.31, vx: 0.72, vy: 0.36, size: 58, opacity: 0.2, phase: 4.6, zone: 0.15, core: true },
+            { x: 0.9, y: 0.1, vx: 0.82, vy: 0.18, size: 44, opacity: 0.15, phase: 2.2, zone: 0.12, core: true },
+            { x: 0.56, y: 0.43, vx: 0.48, vy: 0.46, size: 36, opacity: 0.06, phase: 2.7, zone: 0.18, core: false },
+            { x: 0.28, y: 0.72, vx: 0.28, vy: 0.86, size: 30, opacity: 0.042, phase: 5.1, zone: 0.2, core: false },
+          ];
+
+      for (let i = 0; i < flares.length; i += 1) {
+        const flare = flares[i];
+        const volume = findClosestVolume(flare.vx, flare.vy, flare.core);
+        if (!volume) continue;
+
+        const rightSide = flare.x > 0.65;
+        const wave = Math.sin((t / volume.period) * Math.PI * 2 + volume.phase);
+        const hazeMotion = Math.sin(t * 0.13 + volume.phase * 1.7);
+        const volumeX =
+          (volume.x - 0.5) * size.width +
+          wave * volume.drift +
+          pointer.x * volume.parallax * pointerStrength -
+          scrollY * 0.012;
+        const volumeY =
+          (volume.y - 0.5) * size.height +
+          Math.cos((t / volume.period) * Math.PI * 2 + volume.phase) * volume.drift * 0.35 +
+          pointer.y * volume.parallax * 0.5 * pointerStrength +
+          scrollY * 0.045;
+        const progress = getBeamTravelProgress(t + flare.phase * 0.7, volume, rightSide && volume.coreWidth > 0);
+        const travelRange = volume.lengthPx * 1.08;
+        const movingY = volumeY - travelRange / 2 + progress * travelRange;
+        const anchorY = (flare.y - 0.5) * size.height;
+        const distance = Math.abs(movingY - anchorY);
+        const zone = Math.max(90, volume.lengthPx * flare.zone);
+        const proximity = Math.max(0, 1 - distance / zone);
+        const pulse = Math.pow(proximity, rightSide ? 1.6 : 2.2) * (0.72 + 0.28 * getIrregularPulse(t, flare.phase, 0.17, 1.2));
+        if (pulse <= 0.002) continue;
+
+        const flareX = (flare.x - 0.5) * size.width + hazeMotion * (rightSide ? 5 : 2);
+        const flareY = movingY;
+        const texture = getVolumeTexture(flare.size, 'flare');
+        const coreTexture = getVolumeTexture(Math.max(5, flare.size * 0.12), 'core');
+
+        ctx.save();
+        ctx.translate(size.width / 2, size.height / 2);
+        ctx.rotate(ANGLE_RAD + ((volume.angleOffset || 0) * Math.PI) / 180);
+        ctx.globalCompositeOperation = 'screen';
+
+        ctx.globalAlpha = flare.opacity * pulse;
+        ctx.drawImage(
+          texture,
+          flareX - flare.size / 2,
+          flareY - flare.size / 2,
+          flare.size,
+          flare.size,
+        );
+
+        ctx.globalAlpha = flare.opacity * pulse * (rightSide ? 0.9 : 0.45);
+        ctx.drawImage(
+          coreTexture,
+          flareX - Math.max(4, flare.size * 0.08) / 2,
+          flareY - flare.size * 0.85,
+          Math.max(4, flare.size * 0.08),
+          flare.size * 1.7,
+        );
+
+        ctx.globalAlpha = flare.opacity * pulse * (rightSide ? 0.42 : 0.18);
+        ctx.drawImage(
+          coreTexture,
+          flareX - flare.size * 0.5,
+          flareY - 2,
+          flare.size,
+          4,
+        );
+
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.restore();
+      }
     }
 
     function drawMasks() {
@@ -631,8 +971,10 @@ function CanvasBeams() {
       drawBloom(elapsed);
       drawVolumes(elapsed, scrollY, pointerStrength);
       drawParticles(elapsed, scrollY);
-      drawEdgeGlints(elapsed);
       drawMasks();
+      drawTravelingHighlights(elapsed, scrollY, pointerStrength);
+      drawLensFlares(elapsed, scrollY, pointerStrength);
+      drawEdgeGlints(elapsed);
       drawGrain(elapsed);
     }
 
