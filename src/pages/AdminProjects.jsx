@@ -97,6 +97,8 @@ export default function AdminProjects() {
         order: 1,
         showOnHome: false,
         homeOrder: "",
+        showOnServices: false,
+        servicesOrder: "",
         published: true,
         file: null,
         preview: "",
@@ -149,6 +151,8 @@ export default function AdminProjects() {
             order: p.order ?? 1,
             showOnHome: !!p.showOnHome,
             homeOrder: p.homeOrder ?? "",
+            showOnServices: !!p.showOnServices,
+            servicesOrder: p.servicesOrder ?? "",
             published: !!p.published,
             // image replace
             newFile: null,
@@ -191,6 +195,8 @@ export default function AdminProjects() {
             order: Number(draft.order) || 1,
             showOnHome: !!draft.showOnHome,
             homeOrder: optionalNumber(draft.homeOrder),
+            showOnServices: !!draft.showOnServices,
+            servicesOrder: optionalNumber(draft.servicesOrder),
             published: !!draft.published,
             updatedAt: serverTimestamp(),
         };
@@ -274,6 +280,8 @@ export default function AdminProjects() {
                 order: Number(form.order) || 1,
                 showOnHome: !!form.showOnHome,
                 homeOrder: optionalNumber(form.homeOrder),
+                showOnServices: !!form.showOnServices,
+                servicesOrder: optionalNumber(form.servicesOrder),
                 published: !!form.published,
                 imagePath: path,
                 imageUrl,
@@ -296,6 +304,8 @@ export default function AdminProjects() {
                 order: 1,
                 showOnHome: false,
                 homeOrder: "",
+                showOnServices: false,
+                servicesOrder: "",
                 published: true,
                 file: null,
                 preview: "",
@@ -473,6 +483,18 @@ export default function AdminProjects() {
                     />
                 </label>
 
+                <label className="grid gap-1 md:col-span-1 text-sm text-white/80">
+                    Services Page Order
+                    <input
+                        className="input"
+                        type="number"
+                        min="1"
+                        placeholder="Optional"
+                        value={form.servicesOrder}
+                        onChange={(e) => setForm((f) => ({ ...f, servicesOrder: e.target.value }))}
+                    />
+                </label>
+
                 <label className="flex items-center gap-2 md:col-span-1 text-white/90">
                     <input
                         type="checkbox"
@@ -489,6 +511,15 @@ export default function AdminProjects() {
                         onChange={(e) => setForm((f) => ({ ...f, showOnHome: e.target.checked }))}
                     />
                     Show on Homepage
+                </label>
+
+                <label className="flex items-center gap-2 md:col-span-1 text-white/90">
+                    <input
+                        type="checkbox"
+                        checked={!!form.showOnServices}
+                        onChange={(e) => setForm((f) => ({ ...f, showOnServices: e.target.checked }))}
+                    />
+                    Show on Services Page
                 </label>
 
                 <div className="md:col-span-2 mt-3 border-t border-white/10 pt-5">
@@ -594,6 +625,10 @@ export default function AdminProjects() {
                                             {p.showOnHome
                                                 ? `Homepage featured${p.homeOrder ? ` #${p.homeOrder}` : ""}`
                                                 : "Not on homepage"}
+                                            {" | "}
+                                            {p.showOnServices
+                                                ? `Services featured${p.servicesOrder ? ` #${p.servicesOrder}` : ""}`
+                                                : "Not on services"}
                                         </div>
 
                                         <a
@@ -651,7 +686,7 @@ export default function AdminProjects() {
                                             onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
                                         />
 
-                                        <div className="grid md:grid-cols-2 gap-3">
+                                        <div className="grid md:grid-cols-3 gap-3">
                                             <input
                                                 className="input"
                                                 placeholder="tags (comma separated)"
@@ -751,9 +786,18 @@ export default function AdminProjects() {
                                                 value={draft?.homeOrder ?? ""}
                                                 onChange={(e) => setDraft((d) => ({ ...d, homeOrder: e.target.value }))}
                                             />
+
+                                            <input
+                                                className="input"
+                                                type="number"
+                                                min="1"
+                                                placeholder="Services Page Order"
+                                                value={draft?.servicesOrder ?? ""}
+                                                onChange={(e) => setDraft((d) => ({ ...d, servicesOrder: e.target.value }))}
+                                            />
                                         </div>
 
-                                        <div className="grid gap-2 md:grid-cols-2">
+                                        <div className="grid gap-2 md:grid-cols-3">
                                             <label className="flex items-center gap-2 text-white/90">
                                                 <input
                                                     type="checkbox"
@@ -770,6 +814,15 @@ export default function AdminProjects() {
                                                     onChange={(e) => setDraft((d) => ({ ...d, showOnHome: e.target.checked }))}
                                                 />
                                                 Show on Homepage
+                                            </label>
+
+                                            <label className="flex items-center gap-2 text-white/90">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={!!draft?.showOnServices}
+                                                    onChange={(e) => setDraft((d) => ({ ...d, showOnServices: e.target.checked }))}
+                                                />
+                                                Show on Services Page
                                             </label>
                                         </div>
 

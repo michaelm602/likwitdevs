@@ -1,149 +1,435 @@
 import { Link } from "react-router-dom";
+import { useMemo } from "react";
 import Reveal from "../components/Reveal";
+import WorkProjectImage from "../components/WorkProjectImage";
+import { workProjects } from "../data/workProjects";
+import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
 
-const webDevBullets = [
-  "Mobile-first responsive design — looks right on every screen",
-  "Fast load times — Core Web Vitals optimised from the start",
-  "Clean, conversion-focused layout with clear CTAs",
-  "Contact form, booking, or payment integration",
-  "Google Analytics setup included",
-  "2 rounds of revisions before launch",
+const problemCards = [
+    {
+        title: "Need More Leads?",
+        solution: "Professional websites and local SEO",
+        href: "#business-websites",
+    },
+    {
+        title: "Need Online Booking?",
+        solution: "Scheduling and booking systems",
+        href: "#booking-systems",
+    },
+    {
+        title: "Need To Replace Paper Forms?",
+        solution: "Intake systems and workflow automation",
+        href: "#workflow-automation",
+    },
+    {
+        title: "Need Custom Software?",
+        solution: "AI tools and business applications",
+        href: "#custom-software",
+    },
 ];
 
-const seoBullets = [
-  "Title tags & meta descriptions for every page",
-  "Heading structure (H1 / H2 / H3) optimised for topic clarity",
-  "Keyword placement without stuffing",
-  "Image alt text for accessibility and search crawlers",
-  "Page speed improvements (compression, lazy load, caching headers)",
-  "Sitemap & robots.txt correctly configured",
-  "Schema markup (LocalBusiness / FAQ) where applicable",
+const services = [
+    {
+        id: "business-websites",
+        eyebrow: "Websites",
+        title: "Business Websites & Website Rebuilds",
+        description:
+            "Fast, mobile-first websites and rebuilds for small businesses that need clearer positioning, stronger trust signals, and a better path from visitor to customer.",
+        bullets: [
+            "Custom website design and development",
+            "Website rebuilds for outdated or unreliable sites",
+            "Service pages, contact paths, and local SEO structure",
+            "Mobile-first layouts built for real customer behavior",
+            "Performance, accessibility, and launch fundamentals",
+            "Clear ownership of your website and content",
+        ],
+        projectSlugs: ["forest-pathways", "nw-autofix", "blessed-n-polished", "freva-construction"],
+        cta: "Plan My Website",
+        contactIntent: "business-website",
+    },
+    {
+        id: "booking-systems",
+        eyebrow: "Booking",
+        title: "Booking & Scheduling Systems",
+        description:
+            "Booking flows that make it easier for customers to request appointments, choose services, and take the next step without sending everything through DMs or scattered messages.",
+        bullets: [
+            "Service and appointment request flows",
+            "Booking-focused landing pages",
+            "Customer contact and preference capture",
+            "Service presentation that supports decision-making",
+            "Calendar, form, or third-party booking integrations",
+            "Mobile-friendly booking paths",
+        ],
+        projectSlugs: ["blessed-n-polished", "nails-by-elysia"],
+        cta: "Build My Booking Flow",
+        contactIntent: "booking-system",
+    },
+    {
+        id: "workflow-automation",
+        eyebrow: "Operations",
+        title: "Intake Systems, Portals & Business Automation",
+        description:
+            "Internal tools and customer workflows that replace scattered paperwork, organize information, and give your business a cleaner way to manage requests.",
+        bullets: [
+            "Multi-step intake forms",
+            "Customer and project information capture",
+            "Photo uploads and structured submissions",
+            "Admin dashboards for reviewing records",
+            "Status tracking, notes, and print-friendly views",
+            "Workflow automation around real business processes",
+        ],
+        projectSlugs: ["diamond-auto"],
+        cta: "Map My Workflow",
+        contactIntent: "workflow-automation",
+    },
+    {
+        id: "custom-software",
+        eyebrow: "Software",
+        title: "AI Tools & Custom Software",
+        description:
+            "Custom applications, AI-assisted tools, dashboards, and software products built around the way your business actually works.",
+        bullets: [
+            "Custom business applications",
+            "AI-assisted tools and workflows",
+            "Customer portals and internal dashboards",
+            "Data capture and management interfaces",
+            "Product prototypes and owned software builds",
+            "Integrations with existing tools where practical",
+        ],
+        projectSlugs: ["iep-compass", "likwit-blvd", "diamond-auto"],
+        cta: "Discuss Custom Software",
+        contactIntent: "custom-software",
+    },
 ];
+
+const processSteps = [
+    {
+        title: "Discovery",
+        copy: "We clarify the business problem, customer path, current tools, and what the system needs to make easier.",
+    },
+    {
+        title: "Planning",
+        copy: "We map the pages, workflow, data, integrations, and launch scope before writing code.",
+    },
+    {
+        title: "Build",
+        copy: "We design, develop, test, and refine the system with clear checkpoints along the way.",
+    },
+    {
+        title: "Launch & Support",
+        copy: "We deploy the finished build, verify the core paths, and stay available for support or next steps.",
+    },
+];
+
+const buildItems = [
+    "Websites",
+    "Website Rebuilds",
+    "Local SEO",
+    "Booking Systems",
+    "Admin Dashboards",
+    "Intake Forms",
+    "Customer Portals",
+    "Workflow Automation",
+    "AI Tools",
+    "SaaS Applications",
+    "E-Commerce",
+    "Custom Software",
+];
+
+const recentBuildSlugs = ["iep-compass", "diamond-auto", "nw-autofix", "forest-pathways"];
+const maxRecentBuilds = 4;
+
+function getProject(slug) {
+    return workProjects.find((project) => project.slug === slug);
+}
+
+function getServicesOrder(project) {
+    return Number.isFinite(Number(project.servicesOrder)) ? Number(project.servicesOrder) : Number.MAX_SAFE_INTEGER;
+}
+
+function sortServicesProjects(a, b) {
+    const servicesOrderDifference = getServicesOrder(a) - getServicesOrder(b);
+    if (servicesOrderDifference !== 0) return servicesOrderDifference;
+
+    return (a.projectOrder ?? a.order ?? 0) - (b.projectOrder ?? b.order ?? 0);
+}
 
 function BulletList({ items }) {
-  return (
-    <ul className="space-y-2 text-white/75 mb-8">
-      {items.map((item, i) => (
-        <Reveal key={item} y={8} delay={100 + i * 40}>
-          <li className="flex gap-2">
-            <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-white/60 flex-shrink-0" />
-            <span>{item}</span>
-          </li>
+    return (
+        <ul className="mt-6 grid gap-3 text-sm text-white/80 sm:grid-cols-2">
+            {items.map((item, index) => (
+                <Reveal key={item} y={8} delay={80 + index * 35}>
+                    <li className="flex gap-2">
+                        <span className="mt-[7px] h-1.5 w-1.5 flex-shrink-0 rounded-full bg-white/60" />
+                        <span>{item}</span>
+                    </li>
+                </Reveal>
+            ))}
+        </ul>
+    );
+}
+
+function RelatedProjects({ slugs }) {
+    const projects = slugs.map(getProject).filter(Boolean);
+
+    if (projects.length === 0) return null;
+
+    return (
+        <div className="mt-7">
+            <p className="text-xs uppercase tracking-[0.16em] text-white/60">Related Work</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+                {projects.map((project) => (
+                    <Link
+                        key={project.slug}
+                        to={`/work/${project.slug}`}
+                        className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-white/80 transition hover:bg-white/[0.08] hover:text-white"
+                    >
+                        {project.name}
+                    </Link>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function RecentBuilds({ projects, loading }) {
+    return (
+        <Reveal y={24} once>
+            <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-white shadow-lg backdrop-blur-md md:p-8">
+                <div className="max-w-3xl">
+                    <p className="text-xs uppercase tracking-[0.18em] text-white/60">Recent Builds</p>
+                    <h2 className="mt-2 text-2xl md:text-3xl font-bold text-white">
+                        Systems, sites, and software already in motion.
+                    </h2>
+                    <p className="mt-3 text-sm md:text-base leading-relaxed text-white/80">
+                        A few examples of the range Likwit Devs builds across websites, internal workflows, and owned products.
+                    </p>
+                </div>
+
+                <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                    {projects.map((project, index) => (
+                        <Reveal key={project.slug} y={16} delay={index * 60}>
+                            <article className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:bg-white/[0.08]">
+                                <WorkProjectImage project={project} loading={loading} className="rounded-xl" />
+                                <h3 className="mt-4 text-lg font-semibold text-white">{project.name}</h3>
+                                <p
+                                    className="mt-2 overflow-hidden text-sm leading-relaxed text-white/75"
+                                    style={{
+                                        display: "-webkit-box",
+                                        WebkitBoxOrient: "vertical",
+                                        WebkitLineClamp: 1,
+                                    }}
+                                >
+                                    {project.summary}
+                                </p>
+                                <Link
+                                    to={`/work/${project.slug}`}
+                                    className="mt-auto inline-flex pt-5 text-sm font-semibold text-white/80 underline underline-offset-4 transition hover:text-white"
+                                >
+                                    See The Build -&gt;
+                                </Link>
+                            </article>
+                        </Reveal>
+                    ))}
+                </div>
+            </section>
         </Reveal>
-      ))}
-    </ul>
-  );
+    );
 }
 
 export default function Services() {
-  useSEO({
-    title: "Web Design & SEO Services | Likwit Devs",
-    description:
-      "Likwit Devs offers fast web design and on-page SEO services for small businesses in Portland, OR and beyond.",
-    canonical: "https://www.likwitdevs.com/services",
-  });
+    const { projects: enrichedProjects, loading } = useEnrichedWorkProjects();
+    const recentBuildProjects = useMemo(() => {
+        const selectedProjects = enrichedProjects
+            .filter((project) => project.showOnServices === true)
+            .sort(sortServicesProjects);
+        const selectedSlugs = new Set(selectedProjects.map((project) => project.slug));
+        const fallbackProjects = recentBuildSlugs
+            .map((slug) => enrichedProjects.find((project) => project.slug === slug))
+            .filter(Boolean)
+            .filter((project) => !selectedSlugs.has(project.slug))
+            .filter((project) => !(project.servicesVisibilityConfigured && project.showOnServices === false))
+            .sort(sortServicesProjects);
 
-  return (
-    <section className="min-h-screen bg-transparent px-4 pt-28 pb-16">
-      <div className="mx-auto max-w-6xl space-y-12">
+        return [...selectedProjects, ...fallbackProjects].slice(0, maxRecentBuilds);
+    }, [enrichedProjects]);
 
-        {/* Page header */}
-        <Reveal once>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">
-            Web Design & SEO Services for Small Businesses
-          </h1>
-          <p className="mt-2 text-white/70 max-w-2xl">
-            We build fast, conversion-focused websites that help small businesses get found on Google,
-            generate more calls, and turn visitors into paying clients. No fluff, no bloat.
-          </p>
-        </Reveal>
+    useSEO({
+        title: "Business Websites, Booking Systems & Custom Software | Likwit Devs",
+        description:
+            "Likwit Devs builds websites, booking systems, customer portals, intake workflows, AI tools, and custom software for small businesses.",
+        canonical: "https://www.likwitdevs.com/services",
+    });
 
-        {/* Web Design & Development */}
-        <Reveal y={24} once className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-6 md:p-10 text-white">
-            <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white/80">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0H3" />
-              </svg>
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">Web Design & Development</h2>
-            <p className="text-white/75 mb-6 max-w-2xl">
-              We build mobile-first websites designed to get you more calls and bookings.
-              Every layout, heading, and button is structured to push visitors toward action — not just look good.
-            </p>
-            <BulletList items={webDevBullets} />
-            <Link to="/contact?intent=quote-webdev" className="btn">Get a Quote</Link>
-        </Reveal>
+    return (
+        <section className="min-h-screen bg-transparent px-4 pt-28 pb-16">
+            <div className="mx-auto max-w-6xl space-y-12">
+                <Reveal once>
+                    <header className="max-w-4xl">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/60">Services</p>
+                        <h1 className="mt-3 text-3xl md:text-5xl font-bold leading-tight text-white">
+                            Build the Systems Your Business Runs On
+                        </h1>
+                        <p className="mt-4 max-w-3xl text-base md:text-lg leading-relaxed text-white/80">
+                            We build websites, booking systems, customer portals, intake workflows, and custom software that help small businesses attract customers, stay organized, and grow.
+                        </p>
+                        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                            <Link to="/contact?intent=free-review" className="btn">
+                                Get a Free Website Review
+                            </Link>
+                            <Link
+                                to="/work"
+                                className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white/85 transition hover:bg-white/[0.08] hover:text-white"
+                            >
+                                See Our Work
+                            </Link>
+                        </div>
+                    </header>
+                </Reveal>
 
-        {/* On-Page SEO */}
-        <Reveal y={24} once className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md shadow-lg p-6 md:p-10 text-white">
-            <div className="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white/80">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">On-Page SEO</h2>
-            <p className="text-white/75 mb-6 max-w-2xl">
-              We set up your site so Google can find it and rank it. Local search, structured data,
-              and clean on-page signals that put you in front of customers already looking for what you offer.
-            </p>
-            <BulletList items={seoBullets} />
-            <Link to="/contact?intent=quote-seo" className="btn">Get a Quote</Link>
-        </Reveal>
+                <Reveal y={24} once>
+                    <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-white shadow-lg backdrop-blur-md md:p-8">
+                        <div className="max-w-3xl">
+                            <p className="text-xs uppercase tracking-[0.18em] text-white/60">Start Here</p>
+                            <h2 className="mt-2 text-2xl md:text-3xl font-bold text-white">
+                                What Problem Are You Trying To Solve?
+                            </h2>
+                        </div>
+                        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            {problemCards.map((card, index) => (
+                                <Reveal key={card.href} y={16} delay={index * 60}>
+                                    <a
+                                        href={card.href}
+                                        className="block h-full rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:bg-white/[0.08]"
+                                    >
+                                        <h3 className="text-lg font-semibold text-white">{card.title}</h3>
+                                        <p className="mt-3 text-sm leading-relaxed text-white/75">
+                                            {card.solution}
+                                        </p>
+                                        <span className="mt-5 inline-flex text-sm font-semibold text-white/80 underline underline-offset-4">
+                                            Jump to service -&gt;
+                                        </span>
+                                    </a>
+                                </Reveal>
+                            ))}
+                        </div>
+                    </section>
+                </Reveal>
 
-        {/* Industry-Specific Services */}
-        <Reveal y={24} once>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-            Explore Industry-Specific Services
-          </h2>
-          <p className="text-white/70 mb-6 max-w-2xl">
-            We specialize in a few key industries. If your business is listed below, we already know
-            what your site needs to compete locally.
-          </p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              {
-                heading: "Web Design in Portland, OR",
-                description: "Local web design built for Portland businesses that want to show up and stand out.",
-                href: "/web-design-portland",
-              },
-              {
-                heading: "Small Business Websites",
-                description: "Affordable, professional websites for small businesses that need more leads — not just a web presence.",
-                href: "/small-business-website-design",
-              },
-              {
-                heading: "Contractor & Home Service Websites",
-                description: "Sites built for contractors, tradespeople, and home service pros who need calls coming in.",
-                href: "/web-design-for-contractors",
-              },
-              {
-                heading: "Tattoo Shop Websites",
-                description: "Booking-ready websites for tattoo artists and studios that want to fill their calendar.",
-                href: "/web-design-for-tattoo-shops",
-              },
-            ].map(({ heading, description, href }) => (
-              <div
-                key={href}
-                className="rounded-2xl bg-gradient-to-b from-black/50 to-black/30 backdrop-blur-md border border-white/10 shadow-lg p-5 flex flex-col gap-3"
-              >
-                <div>
-                  <h3 className="text-white font-semibold text-lg">{heading}</h3>
-                  <p className="text-white/75 text-sm mt-1">{description}</p>
+                <Reveal y={24} once>
+                    <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-white shadow-lg backdrop-blur-md md:p-8">
+                        <div className="max-w-3xl">
+                            <p className="text-xs uppercase tracking-[0.18em] text-white/60">How We Work</p>
+                            <h2 className="mt-2 text-2xl md:text-3xl font-bold text-white">
+                                Clear steps from idea to launch.
+                            </h2>
+                        </div>
+                        <div className="mt-6 grid gap-4 md:grid-cols-4">
+                            {processSteps.map((step, index) => (
+                                <Reveal key={step.title} y={16} delay={index * 60}>
+                                    <article className="h-full rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-bold text-black">
+                                            {index + 1}
+                                        </div>
+                                        <h3 className="mt-4 text-lg font-semibold text-white">{step.title}</h3>
+                                        <p className="mt-2 text-sm leading-relaxed text-white/75">{step.copy}</p>
+                                    </article>
+                                </Reveal>
+                            ))}
+                        </div>
+                    </section>
+                </Reveal>
+
+                <Reveal y={24} once>
+                    <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-white shadow-lg backdrop-blur-md md:p-8">
+                        <div className="max-w-3xl">
+                            <p className="text-xs uppercase tracking-[0.18em] text-white/60">What We Build</p>
+                            <h2 className="mt-2 text-2xl md:text-3xl font-bold text-white">
+                                Practical systems for customer-facing and internal work.
+                            </h2>
+                        </div>
+                        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                            {buildItems.map((item, index) => (
+                                <Reveal key={item} y={12} delay={index * 30}>
+                                    <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/80">
+                                        {item}
+                                    </div>
+                                </Reveal>
+                            ))}
+                        </div>
+                    </section>
+                </Reveal>
+
+                <div className="space-y-8">
+                    {services.map((service, index) => (
+                        <Reveal
+                            key={service.id}
+                            id={service.id}
+                            y={24}
+                            once
+                            className="scroll-mt-32 rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-white shadow-lg backdrop-blur-md md:p-10"
+                        >
+                            <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-start">
+                                <div>
+                                    <p className="text-xs uppercase tracking-[0.18em] text-white/60">
+                                        {service.eyebrow}
+                                    </p>
+                                    <h2 className="mt-2 text-2xl md:text-3xl font-bold text-white">
+                                        {service.title}
+                                    </h2>
+                                    <p className="mt-3 max-w-2xl text-sm md:text-base leading-relaxed text-white/80">
+                                        {service.description}
+                                    </p>
+                                    <BulletList items={service.bullets} />
+                                </div>
+
+                                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                                    <RelatedProjects slugs={service.projectSlugs} />
+                                    <Link
+                                        to={`/contact?intent=${service.contactIntent}`}
+                                        className="btn mt-7 w-full"
+                                    >
+                                        {service.cta}
+                                    </Link>
+                                    <p className="mt-3 text-xs leading-relaxed text-white/60">
+                                        We will map the scope first, then recommend the simplest build that solves the actual business problem.
+                                    </p>
+                                </div>
+                            </div>
+                            {index < services.length - 1 && (
+                                <div className="mt-8 h-px bg-white/10" aria-hidden="true" />
+                            )}
+                        </Reveal>
+                    ))}
                 </div>
-                <Link to={href} className="self-start text-sm text-white/80 hover:text-white transition underline underline-offset-4">
-                  Learn more →
-                </Link>
-              </div>
-            ))}
-          </div>
-        </Reveal>
 
-      </div>
-    </section>
-  );
+                <RecentBuilds projects={recentBuildProjects} loading={loading} />
+
+                <Reveal y={24} once>
+                    <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-center text-white shadow-lg backdrop-blur-md md:p-10">
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/60">Next Step</p>
+                        <h2 className="mx-auto mt-2 max-w-3xl text-2xl md:text-4xl font-bold leading-tight text-white">
+                            Let's Build Something That Solves a Real Problem
+                        </h2>
+                        <p className="mx-auto mt-4 max-w-2xl text-sm md:text-base leading-relaxed text-white/80">
+                            Bring the workflow, website problem, or software idea. We will sort out the simplest build that moves the business forward.
+                        </p>
+                        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+                            <Link to="/contact?intent=free-review" className="btn">
+                                Get a Free Website Review
+                            </Link>
+                            <Link
+                                to="/work"
+                                className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white/85 transition hover:bg-white/[0.08] hover:text-white"
+                            >
+                                See Our Work
+                            </Link>
+                        </div>
+                    </section>
+                </Reveal>
+            </div>
+        </section>
+    );
 }

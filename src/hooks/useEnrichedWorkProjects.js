@@ -76,7 +76,9 @@ function mergeProject(project, record, projectOrder = 0) {
     const imageUrl = getProjectImage(record);
     const category = normalizeCategory(record?.category) || project.category || "client";
     const recordHasHomeVisibility = typeof record?.showOnHome === "boolean";
+    const recordHasServicesVisibility = typeof record?.showOnServices === "boolean";
     const homeOrder = toOptionalNumber(record?.homeOrder) ?? toOptionalNumber(project.homeOrder);
+    const servicesOrder = toOptionalNumber(record?.servicesOrder) ?? toOptionalNumber(project.servicesOrder);
     const order = toOptionalNumber(record?.order) ?? toOptionalNumber(project.order) ?? projectOrder + 1;
     const liveUrl = getLiveProjectUrl(record, project);
 
@@ -99,6 +101,9 @@ function mergeProject(project, record, projectOrder = 0) {
         showOnHome: recordHasHomeVisibility ? record.showOnHome : Boolean(project.showOnHome),
         homeOrder,
         homeVisibilityConfigured: recordHasHomeVisibility,
+        showOnServices: recordHasServicesVisibility ? record.showOnServices : Boolean(project.showOnServices),
+        servicesOrder,
+        servicesVisibilityConfigured: recordHasServicesVisibility,
         imageUrl,
         imageFocus: record?.imageFocus || project.imageFocus || "50% 25%",
         imageAlt: `${record?.title || project.name} project preview`,
