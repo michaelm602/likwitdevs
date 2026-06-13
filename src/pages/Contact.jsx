@@ -1,14 +1,66 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
 import useSEO from "../hooks/useSEO";
 import PolicyNotice from "../components/PolicyNotice";
 
+const MotionForm = motion.form;
+
 function normalizeUrl(value) {
     const v = value.trim();
     if (!v) return v;
     return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+}
+
+const projectTypeByIntent = {
+    audit: "Free Website Audit",
+    review: "Free Website Review",
+    "free-review": "Free Website Review",
+    webdev: "Business Website / Website Rebuild",
+    "quote-webdev": "Business Website / Website Rebuild",
+    seo: "Business Website / Website Rebuild",
+    "quote-seo": "Business Website / Website Rebuild",
+    "business-website": "Business Website / Website Rebuild",
+    "booking-system": "Booking or Scheduling System",
+    "workflow-automation": "Intake System / Workflow Automation",
+    "custom-software": "Custom Software / AI Tool",
+};
+
+const projectTypeOptions = [
+    "Not sure yet",
+    "Free Website Review",
+    "Business Website / Website Rebuild",
+    "Booking or Scheduling System",
+    "Intake System / Workflow Automation",
+    "Custom Software / AI Tool",
+];
+
+const subjectLabelByProjectType = {
+    "Free Website Audit": "Website Audit",
+    "Free Website Review": "Website Review",
+    "Business Website / Website Rebuild": "Business Website",
+    "Booking or Scheduling System": "Booking System",
+    "Intake System / Workflow Automation": "Workflow Automation",
+    "Custom Software / AI Tool": "Custom Software",
+};
+
+function sanitizeSubjectPart(value) {
+    return String(value || "")
+        .replace(/&(?:#x2F|#47|sol);/gi, "-")
+        .replace(/&amp;/gi, "&")
+        .replace(/\s*\/\s*/g, " - ")
+        .replace(/[<>]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function getInquiryTitle(projectType, name) {
+    const subjectProjectType = subjectLabelByProjectType[projectType] || projectType || "Website Inquiry";
+    const safeProjectType = sanitizeSubjectPart(subjectProjectType);
+    const safeName = sanitizeSubjectPart(name) || "New Inquiry";
+
+    return `[${safeProjectType}] ${safeName}`;
 }
 
 export default function Contact({ embedded = false, source = "contact", intent: intentProp = "" }) {
@@ -23,6 +75,9 @@ export default function Contact({ embedded = false, source = "contact", intent: 
     const intent = intentProp || searchParams.get("intent") || "";
     const website = searchParams.get("website") || "";
     const business = searchParams.get("business") || "";
+    const intentProjectType = projectTypeByIntent[intent] || "";
+    const hasIntentProjectType = Boolean(intentProjectType);
+    const [projectType, setProjectType] = useState("");
 
     useSEO({
         title: "Ready to Stop Losing Customers?",
@@ -33,19 +88,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
 
     // Badge label logic
     const selectedLabel =
-        intent === "audit"
-            ? "Free Website Audit"
-            : intent === "review"
-                ? "Free Website Review"
-                : intent === "seo"
-                    ? "On-Page SEO"
-                    : intent === "webdev"
-                        ? "Web Design & Development"
-                        : intent === "quote-webdev"
-                            ? "Web Design Quote"
-                            : intent === "quote-seo"
-                                ? "SEO Quote"
-                                : plan;
+        intentProjectType || plan;
 
     const plans = ["Starter Site", "Business Site", "E-commerce / Booking"];
     const [selectOpen, setSelectOpen] = useState(false);
@@ -54,7 +97,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
     const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
     const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-    const intentPrefills = {
+    const intentPrefills = useMemo(() => ({
         audit:
             `Hi! I'd like a fast website audit.\n\n` +
             `Website URL:\n` +
@@ -68,6 +111,39 @@ export default function Contact({ embedded = false, source = "contact", intent: 
             `• Faster load speed\n` +
             `• Cleaner design / trust\n\n` +
             `Website URL:\n`,
+        "free-review":
+            `Hi! I'd like a free website review.\n\n` +
+            `Main goal:\n` +
+            `â€¢ More calls / leads\n` +
+            `â€¢ Better mobile experience\n` +
+            `â€¢ Faster load speed\n` +
+            `â€¢ Cleaner design / trust\n\n` +
+            `Website URL:\n`,
+        "business-website":
+            `Hi! I'm interested in a business website or website rebuild.\n\n` +
+            `Business name:\n` +
+            `Current website, if any:\n` +
+            `Main goal:\n` +
+            `Pages or features needed:\n` +
+            `Timeline:\n`,
+        "booking-system":
+            `Hi! I'm interested in a booking or scheduling system.\n\n` +
+            `Business name:\n` +
+            `Services people need to book:\n` +
+            `Current booking process:\n` +
+            `What should happen after someone books?\n`,
+        "workflow-automation":
+            `Hi! I'm interested in an intake system or workflow automation.\n\n` +
+            `Business name:\n` +
+            `Current manual process:\n` +
+            `Information you need to collect:\n` +
+            `Who needs to review or manage submissions?\n`,
+        "custom-software":
+            `Hi! I'm interested in custom software or an AI tool.\n\n` +
+            `Business / project name:\n` +
+            `Problem the tool should solve:\n` +
+            `Who will use it:\n` +
+            `Existing tools or data involved:\n`,
         "quote-webdev":
             `Hi! I'd like a quote for a new website.\n\n` +
             `Business name:\n` +
@@ -82,7 +158,11 @@ export default function Contact({ embedded = false, source = "contact", intent: 
             `City / service area:\n` +
             `Main goal:\n` +
             `Any current SEO issues you know about:\n`,
-    };
+    }), []);
+
+    useEffect(() => {
+        setProjectType(intentProjectType || "");
+    }, [intentProjectType]);
 
     // Prefill message on load
     useEffect(() => {
@@ -106,7 +186,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 `• Pages / features needed:\n` +
                 `• Timeline:\n`;
         }
-    }, [plan, intent, website, business]);
+    }, [plan, intent, website, business, intentPrefills]);
 
     function setPlan(newPlan) {
         const form = formRef.current;
@@ -155,6 +235,12 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         const message = form.message.value.trim();
         const websiteVal = normalizeUrl((form.website_url?.value || "").trim() || website);
         const businessVal = (form.business_type?.value || "").trim() || business;
+        const projectTypeVal = projectType || "Not sure yet";
+        const inquiryTitle = getInquiryTitle(projectTypeVal, name);
+        const submittedMessage =
+            `Project Type: ${projectTypeVal}\n` +
+            `Raw Intent: ${intent || "none"}\n\n` +
+            message;
 
         if (!name || !email || !message) {
             setStatus({ sending: false, ok: false, msg: "Please fill out all fields." });
@@ -168,13 +254,22 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 SERVICE_ID,
                 TEMPLATE_ID,
                 {
+                    title: inquiryTitle,
+                    name,
+                    email,
                     from_name: name,
                     from_email: email,
-                    message,
+                    message: submittedMessage,
+                    raw_message: message,
                     plan,
                     intent,
+                    project_type: projectTypeVal,
+                    projectType: projectTypeVal,
+                    raw_intent: intent,
                     website: websiteVal,
+                    website_url: websiteVal,
                     business: businessVal,
+                    business_type: businessVal,
                     reply_to: email,
                     source,
                 },
@@ -200,7 +295,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                     : "min-h-screen grid place-items-center bg-transparent px-4 pt-28"
             }
         >
-            <motion.form
+            <MotionForm
                 ref={formRef}
                 onSubmit={handleSubmit}
                 initial={{ y: 12 }}
@@ -209,15 +304,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                     }`}
             >
                 <h2 className="text-2xl font-semibold">
-                    {intent === "audit"
-                        ? "Free Website Audit"
-                        : intent === "review"
-                            ? "Free Website Review"
-                            : intent === "quote-webdev"
-                                ? "Web Design Quote"
-                                : intent === "quote-seo"
-                                    ? "SEO Quote"
-                                    : "Let's Fix What's Costing You Customers"}
+                    {intentProjectType || "Let's Fix What's Costing You Customers"}
                 </h2>
 
                 <div className="h-px bg-white/10" />
@@ -240,7 +327,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                                 {selectedLabel}
                             </span>
 
-                            {intent !== "audit" && intent !== "review" && (
+                            {!hasIntentProjectType && (
                                 <button
                                     type="button"
                                     onClick={() => setSelectOpen((v) => !v)}
@@ -294,6 +381,12 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                     </div>
                 )}
 
+                {intentProjectType && (
+                    <p className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white/80">
+                        You're asking about: <span className="font-semibold text-white">{intentProjectType}</span>
+                    </p>
+                )}
+
                 <div className="grid md:grid-cols-2 gap-4">
                     <div>
                         <label className="text-sm text-white/80">Your name</label>
@@ -311,7 +404,26 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                     </div>
                 </div>
 
-                {(intent === "review" || intent === "audit") && (
+                <div>
+                    <label className="text-sm text-white/80">Project Type</label>
+                    <select
+                        name="project_type"
+                        className="input mt-1"
+                        value={projectType}
+                        onChange={(e) => setProjectType(e.target.value)}
+                    >
+                        <option value="">Not sure yet</option>
+                        {projectTypeOptions
+                            .filter((option) => option !== "Not sure yet")
+                            .map((option) => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                    </select>
+                </div>
+
+                {(intent === "review" || intent === "free-review" || intent === "audit") && (
                     <div className="grid md:grid-cols-2 gap-4">
                         <div>
                             <label className="text-sm text-white/80">Website URL</label>
@@ -354,7 +466,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
 
                 {status.ok === true && <p className="text-green-300">{status.msg}</p>}
                 {status.ok === false && <p className="text-red-300">{status.msg}</p>}
-            </motion.form>
+            </MotionForm>
         </section>
     );
 }
