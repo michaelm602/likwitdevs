@@ -6,7 +6,6 @@ import PolicyNotice from "./PolicyNotice";
 
 
 export default function Footer() {
-    const year = new Date().getFullYear();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -24,7 +23,7 @@ export default function Footer() {
     };
 
     return (
-        <footer className="mt-10 border-t border-white/10 bg-white/5 backdrop-blur-md">
+        <footer className="mt-10 border-t border-white/10 bg-white/5 pb-24 backdrop-blur-md md:pb-0">
             <div className="mx-auto max-w-6xl px-4 py-10 grid gap-8 md:gap-8 md:grid-cols-3 items-start text-white/90">
                 {/* Brand */}
                 <Reveal>
@@ -56,6 +55,8 @@ export default function Footer() {
                             <p className="text-white/60 font-medium">Pages</p>
 
                             <Link className="block hover:text-white" to="/">Home</Link>
+
+                            <Link className="block hover:text-white" to="/work">Work</Link>
 
                             {/* Keep links visually consistent: block, no padding */}
                             <button

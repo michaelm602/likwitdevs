@@ -11,6 +11,9 @@ import RequireAdmin from "./routes/RequireAdmin";
 import FreeAudit from "./pages/FreeAudit";
 import TapLanding from "./pages/TapLanding";
 import Services from "./pages/Services";
+import Work from "./pages/Work";
+import WorkDetail from "./pages/WorkDetail";
+import NotFound from "./pages/NotFound";
 import WebDesignPortland from "./pages/seo/WebDesignPortland";
 import WebDesignSalons from "./pages/seo/WebDesignSalons";
 import WebDesignRestaurants from "./pages/seo/WebDesignRestaurants";
@@ -20,10 +23,6 @@ import WebDesignTattooShops from "./pages/seo/WebDesignTattooShops";
 import WebDesignTattooArtists from "./pages/seo/WebDesignTattooArtists";
 import WebDesignContractors from "./pages/seo/WebDesignContractors";
 import WebDesignPainters from "./pages/seo/WebDesignPainters";
-
-function NotFound() {
-  return <div style={{ padding: 24, color: "#fff" }}>Page not found.</div>;
-}
 
 // Use HashRouter ONLY on GitHub Pages
 const isGitHubPages = window.location.hostname.includes("github.io");
@@ -37,6 +36,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           <Route index element={<Home />} />
           <Route path="contact" element={<Contact />} />
           <Route path="services" element={<Services />} />
+          <Route path="work" element={<Work />} />
+          <Route path="work/:slug" element={<WorkDetail />} />
           <Route path="web-design-portland" element={<WebDesignPortland />} />
           <Route path="web-design-for-salons" element={<WebDesignSalons />} />
           <Route path="web-design-for-restaurants" element={<WebDesignRestaurants />} />

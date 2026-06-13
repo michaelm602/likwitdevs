@@ -21,6 +21,51 @@
     <changefreq>yearly</changefreq>
   </url>
   <url>
+    <loc>https://www.likwitdevs.com/work</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.likwitdevs.com/work/forest-pathways</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.likwitdevs.com/work/nw-autofix</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.likwitdevs.com/work/diamond-auto</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.likwitdevs.com/work/blessed-n-polished</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.likwitdevs.com/work/freva-construction</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.likwitdevs.com/work/nails-by-elysia</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.likwitdevs.com/work/iep-compass</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.likwitdevs.com/work/likwit-blvd</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
     <loc>https://www.likwitdevs.com/web-design-portland</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>

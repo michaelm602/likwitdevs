@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import useAuthGate from "../hooks/useAuthGate";
@@ -20,6 +20,11 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 
 import { applyOrderChange } from "../utils/orderUtils";
 
+const PROJECT_CATEGORY_OPTIONS = [
+    { value: "client", label: "Client Work" },
+    { value: "owned", label: "Owned Product" },
+];
+
 // helpers
 function slugify(s) {
     return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -33,6 +38,12 @@ function toTags(s) {
 function tagsToText(tags) {
     return Array.isArray(tags) ? tags.join(", ") : "";
 }
+function textToList(s) {
+    return toTags(s);
+}
+function listToText(items) {
+    return tagsToText(items);
+}
 
 // ✅ always return absolute https:// URL
 function normalizeUrl(u = "") {
@@ -40,6 +51,12 @@ function normalizeUrl(u = "") {
     if (!s) return "";
     if (/^https?:\/\//i.test(s)) return s;
     return `https://${s}`;
+}
+
+function optionalNumber(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
 }
 
 async function batchUpdateOrders(projects) {
@@ -71,7 +88,15 @@ export default function AdminProjects() {
         summary: "",
         description: "",
         tags: "",
+        category: "client",
+        badges: "",
+        overview: "",
+        challenge: "",
+        solution: "",
+        status: "",
         order: 1,
+        showOnHome: false,
+        homeOrder: "",
         published: true,
         file: null,
         preview: "",
@@ -89,8 +114,6 @@ export default function AdminProjects() {
         });
         return () => unsub();
     }, []);
-
-    const isEditing = useMemo(() => !!editingId, [editingId]);
 
     if (authLoading) {
         return <div className="min-h-screen grid place-items-center p-6 text-white">Checking access…</div>;
@@ -117,7 +140,15 @@ export default function AdminProjects() {
             summary: p.summary ?? "",
             description: p.description ?? "",
             tags: tagsToText(p.tags),
+            category: p.category ?? "client",
+            badges: listToText(p.badges),
+            overview: p.overview ?? "",
+            challenge: p.challenge ?? "",
+            solution: p.solution ?? "",
+            status: p.status ?? "",
             order: p.order ?? 1,
+            showOnHome: !!p.showOnHome,
+            homeOrder: p.homeOrder ?? "",
             published: !!p.published,
             // image replace
             newFile: null,
@@ -151,7 +182,15 @@ export default function AdminProjects() {
             summary: draft.summary.trim(),
             description: draft.description.trim(),
             tags: toTags(draft.tags),
+            category: draft.category || "client",
+            badges: textToList(draft.badges),
+            overview: draft.overview.trim(),
+            challenge: draft.challenge.trim(),
+            solution: draft.solution.trim(),
+            status: draft.status.trim(),
             order: Number(draft.order) || 1,
+            showOnHome: !!draft.showOnHome,
+            homeOrder: optionalNumber(draft.homeOrder),
             published: !!draft.published,
             updatedAt: serverTimestamp(),
         };
@@ -226,7 +265,15 @@ export default function AdminProjects() {
                 summary: form.summary,
                 description: form.description,
                 tags: toTags(form.tags),
+                category: form.category || "client",
+                badges: textToList(form.badges),
+                overview: form.overview.trim(),
+                challenge: form.challenge.trim(),
+                solution: form.solution.trim(),
+                status: form.status.trim(),
                 order: Number(form.order) || 1,
+                showOnHome: !!form.showOnHome,
+                homeOrder: optionalNumber(form.homeOrder),
                 published: !!form.published,
                 imagePath: path,
                 imageUrl,
@@ -240,7 +287,15 @@ export default function AdminProjects() {
                 summary: "",
                 description: "",
                 tags: "",
+                category: "client",
+                badges: "",
+                overview: "",
+                challenge: "",
+                solution: "",
+                status: "",
                 order: 1,
+                showOnHome: false,
+                homeOrder: "",
                 published: true,
                 file: null,
                 preview: "",
@@ -264,7 +319,7 @@ export default function AdminProjects() {
                 published: !p.published,
                 updatedAt: serverTimestamp(),
             });
-        } catch (e) {
+        } catch {
             rollback();
         }
     }
@@ -372,6 +427,31 @@ export default function AdminProjects() {
                     onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
                 />
 
+                <label className="grid gap-1 md:col-span-1 text-sm text-white/80">
+                    Category / Type
+                    <select
+                        className="input"
+                        value={form.category}
+                        onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+                    >
+                        {PROJECT_CATEGORY_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                <label className="grid gap-1 md:col-span-1 text-sm text-white/80">
+                    Project Kind / Badges
+                    <input
+                        className="input"
+                        placeholder="Website, Business System, Local SEO"
+                        value={form.badges}
+                        onChange={(e) => setForm((f) => ({ ...f, badges: e.target.value }))}
+                    />
+                </label>
+
                 <input
                     className="input md:col-span-1"
                     type="number"
@@ -381,6 +461,18 @@ export default function AdminProjects() {
                     onChange={(e) => setForm((f) => ({ ...f, order: e.target.value }))}
                 />
 
+                <label className="grid gap-1 md:col-span-1 text-sm text-white/80">
+                    Homepage Order
+                    <input
+                        className="input"
+                        type="number"
+                        min="1"
+                        placeholder="Optional"
+                        value={form.homeOrder}
+                        onChange={(e) => setForm((f) => ({ ...f, homeOrder: e.target.value }))}
+                    />
+                </label>
+
                 <label className="flex items-center gap-2 md:col-span-1 text-white/90">
                     <input
                         type="checkbox"
@@ -388,6 +480,66 @@ export default function AdminProjects() {
                         onChange={(e) => setForm((f) => ({ ...f, published: e.target.checked }))}
                     />
                     Published
+                </label>
+
+                <label className="flex items-center gap-2 md:col-span-1 text-white/90">
+                    <input
+                        type="checkbox"
+                        checked={!!form.showOnHome}
+                        onChange={(e) => setForm((f) => ({ ...f, showOnHome: e.target.checked }))}
+                    />
+                    Show on Homepage
+                </label>
+
+                <div className="md:col-span-2 mt-3 border-t border-white/10 pt-5">
+                    <h2 className="text-lg font-semibold text-white">Case Study Content</h2>
+                    <p className="mt-1 text-sm text-white/70">
+                        Optional. Use only verified project history; leave blank when details are not documented.
+                    </p>
+                </div>
+
+                <label className="grid gap-1 md:col-span-2 text-sm text-white/80">
+                    Overview
+                    <textarea
+                        className="input"
+                        rows={4}
+                        placeholder="Neutral overview of what was built. Leave blank if project history is not documented."
+                        value={form.overview}
+                        onChange={(e) => setForm((f) => ({ ...f, overview: e.target.value }))}
+                    />
+                </label>
+
+                <label className="grid gap-1 md:col-span-2 text-sm text-white/80">
+                    Challenge
+                    <textarea
+                        className="input"
+                        rows={4}
+                        placeholder="Verified project challenge only. Do not add assumed metrics, revenue, traffic, or lead claims."
+                        value={form.challenge}
+                        onChange={(e) => setForm((f) => ({ ...f, challenge: e.target.value }))}
+                    />
+                </label>
+
+                <label className="grid gap-1 md:col-span-2 text-sm text-white/80">
+                    Solution
+                    <textarea
+                        className="input"
+                        rows={4}
+                        placeholder="Describe what was actually built or fixed."
+                        value={form.solution}
+                        onChange={(e) => setForm((f) => ({ ...f, solution: e.target.value }))}
+                    />
+                </label>
+
+                <label className="grid gap-1 md:col-span-2 text-sm text-white/80">
+                    Current Status
+                    <textarea
+                        className="input"
+                        rows={4}
+                        placeholder="Verified current status only. Leave blank if not documented."
+                        value={form.status}
+                        onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
+                    />
                 </label>
 
                 <div className="md:col-span-1 flex items-center gap-3">
@@ -436,6 +588,13 @@ export default function AdminProjects() {
                                         <div className="font-semibold">{p.title}</div>
                                         {p.summary && <div className="text-sm text-white/85">{p.summary}</div>}
                                         {p.description && <div className="text-xs text-white/70 mt-1">{p.description}</div>}
+                                        <div className="mt-2 text-xs text-white/60">
+                                            {p.category === "owned" ? "Owned Product" : "Client Work"}
+                                            {" | "}
+                                            {p.showOnHome
+                                                ? `Homepage featured${p.homeOrder ? ` #${p.homeOrder}` : ""}`
+                                                : "Not on homepage"}
+                                        </div>
 
                                         <a
                                             href={hrefAbs}
@@ -447,6 +606,11 @@ export default function AdminProjects() {
                                         </a>
 
                                         <div className="mt-2 flex flex-wrap gap-2">
+                                            {(p.badges || []).map((badge) => (
+                                                <span key={badge} className="text-xs px-2 py-1 rounded-full bg-white/15 border border-white/10">
+                                                    {badge}
+                                                </span>
+                                            ))}
                                             {(p.tags || []).map((t) => (
                                                 <span key={t} className="text-xs px-2 py-1 rounded-full bg-white/10 border border-white/10">
                                                     {t}
@@ -495,6 +659,80 @@ export default function AdminProjects() {
                                                 onChange={(e) => setDraft((d) => ({ ...d, tags: e.target.value }))}
                                             />
 
+                                            <select
+                                                className="input"
+                                                value={draft?.category || "client"}
+                                                onChange={(e) => setDraft((d) => ({ ...d, category: e.target.value }))}
+                                            >
+                                                {PROJECT_CATEGORY_OPTIONS.map((option) => (
+                                                    <option key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <input
+                                            className="input"
+                                            placeholder="Project Kind / Badges (Website, Business System, Local SEO)"
+                                            value={draft?.badges || ""}
+                                            onChange={(e) => setDraft((d) => ({ ...d, badges: e.target.value }))}
+                                        />
+
+                                        <div className="grid gap-3 rounded-xl border border-white/10 bg-black/10 p-4">
+                                            <div>
+                                                <h3 className="font-semibold text-white">Case Study Content</h3>
+                                                <p className="text-sm text-white/70">
+                                                    Optional. Use only verified project history; leave blank when details are not documented.
+                                                </p>
+                                            </div>
+
+                                            <label className="grid gap-1 text-sm text-white/80">
+                                                Overview
+                                                <textarea
+                                                    className="input"
+                                                    rows={4}
+                                                    placeholder="Neutral overview of what was built."
+                                                    value={draft?.overview || ""}
+                                                    onChange={(e) => setDraft((d) => ({ ...d, overview: e.target.value }))}
+                                                />
+                                            </label>
+
+                                            <label className="grid gap-1 text-sm text-white/80">
+                                                Challenge
+                                                <textarea
+                                                    className="input"
+                                                    rows={4}
+                                                    placeholder="Verified project challenge only."
+                                                    value={draft?.challenge || ""}
+                                                    onChange={(e) => setDraft((d) => ({ ...d, challenge: e.target.value }))}
+                                                />
+                                            </label>
+
+                                            <label className="grid gap-1 text-sm text-white/80">
+                                                Solution
+                                                <textarea
+                                                    className="input"
+                                                    rows={4}
+                                                    placeholder="Describe what was actually built or fixed."
+                                                    value={draft?.solution || ""}
+                                                    onChange={(e) => setDraft((d) => ({ ...d, solution: e.target.value }))}
+                                                />
+                                            </label>
+
+                                            <label className="grid gap-1 text-sm text-white/80">
+                                                Current Status
+                                                <textarea
+                                                    className="input"
+                                                    rows={4}
+                                                    placeholder="Verified current status only."
+                                                    value={draft?.status || ""}
+                                                    onChange={(e) => setDraft((d) => ({ ...d, status: e.target.value }))}
+                                                />
+                                            </label>
+                                        </div>
+
+                                        <div className="grid md:grid-cols-2 gap-3">
                                             <input
                                                 className="input"
                                                 type="number"
@@ -504,16 +742,36 @@ export default function AdminProjects() {
                                                 onChange={(e) => setDraft((d) => ({ ...d, order: e.target.value }))}
                                                 onBlur={() => enforceOrder(p.id, draft?.order)}
                                             />
+
+                                            <input
+                                                className="input"
+                                                type="number"
+                                                min="1"
+                                                placeholder="Homepage Order"
+                                                value={draft?.homeOrder ?? ""}
+                                                onChange={(e) => setDraft((d) => ({ ...d, homeOrder: e.target.value }))}
+                                            />
                                         </div>
 
-                                        <label className="flex items-center gap-2 text-white/90">
-                                            <input
-                                                type="checkbox"
-                                                checked={!!draft?.published}
-                                                onChange={(e) => setDraft((d) => ({ ...d, published: e.target.checked }))}
-                                            />
-                                            Published
-                                        </label>
+                                        <div className="grid gap-2 md:grid-cols-2">
+                                            <label className="flex items-center gap-2 text-white/90">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={!!draft?.published}
+                                                    onChange={(e) => setDraft((d) => ({ ...d, published: e.target.checked }))}
+                                                />
+                                                Published
+                                            </label>
+
+                                            <label className="flex items-center gap-2 text-white/90">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={!!draft?.showOnHome}
+                                                    onChange={(e) => setDraft((d) => ({ ...d, showOnHome: e.target.checked }))}
+                                                />
+                                                Show on Homepage
+                                            </label>
+                                        </div>
 
                                         <div className="flex items-center gap-3">
                                             <input
