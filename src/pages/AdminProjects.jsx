@@ -385,7 +385,10 @@ export default function AdminProjects() {
                     {ok && (
                         <>
                             <Link to="/admin" className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
-                                Admin
+                                Projects
+                            </Link>
+                            <Link to="/admin/leads" className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
+                                Leads
                             </Link>
                             <button onClick={handleSignOut} className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
                                 Sign out

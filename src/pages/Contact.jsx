@@ -2,6 +2,8 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../lib/firebase";
 import useSEO from "../hooks/useSEO";
 import PolicyNotice from "../components/PolicyNotice";
 
@@ -61,6 +63,11 @@ function getInquiryTitle(projectType, name) {
     const safeName = sanitizeSubjectPart(name) || "New Inquiry";
 
     return `[${safeProjectType}] ${safeName}`;
+}
+
+function getSourcePage() {
+    if (typeof window === "undefined") return "";
+    return `${window.location.pathname}${window.location.search}`;
 }
 
 export default function Contact({ embedded = false, source = "contact", intent: intentProp = "" }) {
@@ -237,6 +244,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         const businessVal = (form.business_type?.value || "").trim() || business;
         const projectTypeVal = projectType || "Not sure yet";
         const inquiryTitle = getInquiryTitle(projectTypeVal, name);
+        const sourcePage = getSourcePage();
         const submittedMessage =
             `Project Type: ${projectTypeVal}\n` +
             `Raw Intent: ${intent || "none"}\n\n` +
@@ -247,9 +255,34 @@ export default function Contact({ embedded = false, source = "contact", intent: 
             return;
         }
 
-        try {
-            setStatus({ sending: true, ok: null, msg: "" });
+        setStatus({ sending: true, ok: null, msg: "" });
 
+        let leadSaved = false;
+        let emailSent = false;
+
+        try {
+            await addDoc(collection(db, "leads"), {
+                name,
+                email,
+                replyTo: email,
+                website: websiteVal,
+                projectType: projectTypeVal,
+                rawIntent: intent,
+                message: submittedMessage,
+                rawMessage: message,
+                source,
+                sourcePage,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+                status: "New",
+                notes: "",
+            });
+            leadSaved = true;
+        } catch (err) {
+            console.error("Lead save failed", err);
+        }
+
+        try {
             await emailjs.send(
                 SERVICE_ID,
                 TEMPLATE_ID,
@@ -275,16 +308,32 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 },
                 { publicKey: PUBLIC_KEY }
             );
+            emailSent = true;
+        } catch (err) {
+            console.error("EmailJS notification failed", err);
+        }
 
+        if (emailSent) {
             setStatus({ sending: false, ok: true, msg: "Thanks! Your message was sent." });
             form.reset();
-        } catch {
+            return;
+        }
+
+        if (leadSaved) {
             setStatus({
                 sending: false,
-                ok: false,
-                msg: "Could not send. Try again later.",
+                ok: true,
+                msg: "Thanks! Your request was saved. I may need to follow up manually if the email notification is delayed.",
             });
+            form.reset();
+            return;
         }
+
+        setStatus({
+            sending: false,
+            ok: false,
+            msg: "Could not send. Try again later.",
+        });
     }
 
     return (
