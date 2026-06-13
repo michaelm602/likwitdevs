@@ -15,41 +15,57 @@ function ProjectGrid({ title, projects, loading }) {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
-                {projects.map((project) => (
-                    <article
-                        key={project.slug}
-                        className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-md transition-colors hover:bg-white/[0.07]"
-                    >
-                        {/* TODO: Add final cropped screenshots, video clips, or before/after visuals as project media becomes available. */}
-                        <WorkProjectImage project={project} loading={loading} />
+                {projects.map((project) => {
+                    const liveUrl = project.liveUrl || project.liveHref || "";
 
-                        <p className="mt-5 text-xs uppercase tracking-[0.16em] text-white/70">
-                            {project.industry}
-                        </p>
-                        <h3 className="mt-2 text-2xl font-semibold text-white">{project.name}</h3>
-                        <p className="mt-3 text-sm leading-relaxed text-white/90">{project.summary}</p>
-
-                        {project.badges?.length > 0 && (
-                            <div className="mt-4 flex flex-wrap gap-2">
-                                {project.badges.map((badge) => (
-                                    <span
-                                        key={badge}
-                                        className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-white/75"
-                                    >
-                                        {badge}
-                                    </span>
-                                ))}
-                            </div>
-                        )}
-
-                        <Link
-                            to={`/work/${project.slug}`}
-                            className="mt-5 inline-flex text-sm font-semibold text-white/80 underline underline-offset-4 transition hover:text-white"
+                    return (
+                        <article
+                            key={project.slug}
+                            className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-md transition-colors hover:bg-white/[0.07]"
                         >
-                            See The Build -&gt;
-                        </Link>
-                    </article>
-                ))}
+                            {/* TODO: Add final cropped screenshots, video clips, or before/after visuals as project media becomes available. */}
+                            <WorkProjectImage project={project} loading={loading} />
+
+                            <p className="mt-5 text-xs uppercase tracking-[0.16em] text-white/70">
+                                {project.industry}
+                            </p>
+                            <h3 className="mt-2 text-2xl font-semibold text-white">{project.name}</h3>
+                            <p className="mt-3 text-sm leading-relaxed text-white/90">{project.summary}</p>
+
+                            {project.badges?.length > 0 && (
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {project.badges.map((badge) => (
+                                        <span
+                                            key={badge}
+                                            className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-white/75"
+                                        >
+                                            {badge}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+                                <Link
+                                    to={`/work/${project.slug}`}
+                                    className="inline-flex text-sm font-semibold text-white/80 underline underline-offset-4 transition hover:text-white"
+                                >
+                                    See The Build -&gt;
+                                </Link>
+                                {liveUrl && (
+                                    <a
+                                        href={liveUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex w-fit rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-sm font-semibold text-white/85 transition hover:border-white/30 hover:bg-white/[0.1] hover:text-white"
+                                    >
+                                        Visit Live Site -&gt;
+                                    </a>
+                                )}
+                            </div>
+                        </article>
+                    );
+                })}
             </div>
         </section>
     );

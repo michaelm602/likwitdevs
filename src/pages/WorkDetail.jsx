@@ -14,6 +14,7 @@ export default function WorkDetail() {
     const { projects, loading } = useEnrichedWorkProjects();
     const enrichedProject = projects.find((item) => item.slug === slug);
     const project = enrichedProject || staticProject;
+    const liveUrl = project?.liveUrl || project?.liveHref || "";
 
     useSEO({
         title: project ? `${project.name} | Likwit Devs Work` : "Project Not Found | Likwit Devs",
@@ -51,9 +52,21 @@ export default function WorkDetail() {
         <section className="min-h-screen bg-transparent px-4 pt-28 pb-16">
             <div className="mx-auto max-w-5xl space-y-10">
                 <header className="max-w-3xl">
-                    <Link to="/work" className="text-sm font-semibold text-white/70 underline underline-offset-4 hover:text-white">
-                        Back to Work
-                    </Link>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <Link to="/work" className="text-sm font-semibold text-white/70 underline underline-offset-4 hover:text-white">
+                            Back to Work
+                        </Link>
+                        {liveUrl && (
+                            <a
+                                href={liveUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex w-fit rounded-full border border-white/15 bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-neutral-100"
+                            >
+                                Visit Live Site -&gt;
+                            </a>
+                        )}
+                    </div>
                     <p className="mt-6 text-xs uppercase tracking-[0.18em] text-white/60">
                         {getProjectTypeLabel(project)} | {project.industry}
                     </p>

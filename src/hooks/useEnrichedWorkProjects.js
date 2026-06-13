@@ -48,12 +48,37 @@ function toOptionalNumber(value) {
     return Number.isFinite(number) ? number : null;
 }
 
+function isPublicProjectUrl(value) {
+    if (!value) return false;
+
+    try {
+        const url = new URL(value);
+        const hostname = url.hostname.toLowerCase();
+        const pathname = url.pathname.toLowerCase();
+
+        if (!["http:", "https:"].includes(url.protocol)) return false;
+        if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0") return false;
+        if (hostname.startsWith("192.168.") || hostname.startsWith("10.")) return false;
+        if (hostname.includes("admin") || pathname.includes("/admin")) return false;
+
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function getLiveProjectUrl(record, project) {
+    const candidates = [record?.liveUrl, project.liveUrl, record?.href, project.href];
+    return candidates.find(isPublicProjectUrl) || "";
+}
+
 function mergeProject(project, record, projectOrder = 0) {
     const imageUrl = getProjectImage(record);
     const category = normalizeCategory(record?.category) || project.category || "client";
     const recordHasHomeVisibility = typeof record?.showOnHome === "boolean";
     const homeOrder = toOptionalNumber(record?.homeOrder) ?? toOptionalNumber(project.homeOrder);
     const order = toOptionalNumber(record?.order) ?? toOptionalNumber(project.order) ?? projectOrder + 1;
+    const liveUrl = getLiveProjectUrl(record, project);
 
     return {
         ...project,
@@ -67,8 +92,8 @@ function mergeProject(project, record, projectOrder = 0) {
         solution: record?.solution || project.solution || "",
         status: record?.status || project.status || "",
         badges: getRecordBadges(record).length ? getRecordBadges(record) : project.badges || [],
-        liveUrl: record?.liveUrl || record?.href || project.liveUrl || "",
-        liveHref: record?.href || record?.liveUrl || project.liveUrl || "",
+        liveUrl,
+        liveHref: liveUrl,
         order,
         projectOrder,
         showOnHome: recordHasHomeVisibility ? record.showOnHome : Boolean(project.showOnHome),
