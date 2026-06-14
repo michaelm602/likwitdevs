@@ -8,6 +8,7 @@ import Contact from "./pages/Contact";
 import AdminLogin from "./pages/AdminLogin";
 import AdminProjects from "./pages/AdminProjects";
 import AdminLeads from "./pages/AdminLeads";
+import AdminAnalytics from "./pages/AdminAnalytics";
 import RequireAdmin from "./routes/RequireAdmin";
 import FreeAudit from "./pages/FreeAudit";
 import TapLanding from "./pages/TapLanding";
@@ -66,6 +67,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             element={
               <RequireAdmin>
                 <AdminLeads />
+              </RequireAdmin>
+            }
+          />
+          <Route
+            path="admin/analytics"
+            element={
+              <RequireAdmin>
+                <AdminAnalytics />
               </RequireAdmin>
             }
           />

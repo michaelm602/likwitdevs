@@ -351,7 +351,7 @@ export default function Services() {
                                         href={card.href}
                                         onClick={() =>
                                             trackEvent({
-                                                eventName: "service_problem_click",
+                                                eventName: "service_card_click",
                                                 targetPath: card.href,
                                                 metadata: {
                                                     title: card.title,
