@@ -1,4 +1,4 @@
-import { NavLink, useNavigate, Link, useLocation } from "react-router-dom";
+import { NavLink, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import logo from "../assets/likwitdevs-logo-white-long.png";
@@ -15,7 +15,6 @@ export default function Navbar() {
     const [authed, setAuthed] = useState(false);
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => setAuthed(!!u));
@@ -32,21 +31,9 @@ export default function Navbar() {
         }
     }
 
-    // Navigate to Home (if not there) then smooth-scroll to the section id
     const goTo = (id) => {
-        const scroll = () =>
-            document
-                .getElementById(id)
-                ?.scrollIntoView({ behavior: "smooth", block: "start" });
-
         setOpen(false);
-
-        if (location.pathname !== "/") {
-            navigate("/");
-            setTimeout(scroll, 120); // give Home a tick to render
-        } else {
-            scroll();
-        }
+        navigate({ pathname: "/", hash: `#${id}` });
     };
 
     return (

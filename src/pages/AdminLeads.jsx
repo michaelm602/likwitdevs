@@ -35,11 +35,20 @@ function includesSearch(lead, search) {
         lead.name,
         lead.email,
         lead.website,
+        lead.originPage,
+        lead.landingPage,
+        lead.referrer,
         lead.message,
         lead.rawMessage,
     ].join(" ").toLowerCase();
 
     return haystack.includes(search.toLowerCase());
+}
+
+function optionalNumber(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
 }
 
 export default function AdminLeads() {
@@ -257,6 +266,9 @@ export default function AdminLeads() {
                                     <div>Intent: {lead.rawIntent || "none"}</div>
                                     <div>Created: {formatDate(lead.createdAt)}</div>
                                     <div>Source: {lead.source || "unknown"}</div>
+                                    <div>Lead Source: {lead.originPage || lead.sourcePage || "unknown"}</div>
+                                    <div>First Landing Page: {lead.landingPage || "unknown"}</div>
+                                    <div className="break-all">Referrer: {lead.referrer || "direct / unknown"}</div>
                                 </div>
 
                                 <select
@@ -294,6 +306,35 @@ export default function AdminLeads() {
                                     placeholder="Add private follow-up notes..."
                                     disabled={savingId === lead.id}
                                 />
+                            </div>
+
+                            <div className="mt-4 grid gap-3 md:grid-cols-2">
+                                <label className="grid gap-1 text-sm text-white/80">
+                                    Estimated Value
+                                    <input
+                                        className="input"
+                                        type="number"
+                                        min="0"
+                                        step="100"
+                                        defaultValue={lead.estimatedValue ?? ""}
+                                        onBlur={(e) => updateLead(lead.id, { estimatedValue: optionalNumber(e.target.value) })}
+                                        placeholder="Optional"
+                                        disabled={savingId === lead.id}
+                                    />
+                                </label>
+                                <label className="grid gap-1 text-sm text-white/80">
+                                    Proposal Value
+                                    <input
+                                        className="input"
+                                        type="number"
+                                        min="0"
+                                        step="100"
+                                        defaultValue={lead.proposalValue ?? ""}
+                                        onBlur={(e) => updateLead(lead.id, { proposalValue: optionalNumber(e.target.value) })}
+                                        placeholder="Optional"
+                                        disabled={savingId === lead.id}
+                                    />
+                                </label>
                             </div>
 
                             {isExpanded && (

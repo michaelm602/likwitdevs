@@ -6,19 +6,28 @@ import useAuthGate from "../hooks/useAuthGate";
 import { auth, db } from "../lib/firebase";
 
 const eventLimit = 1000;
+const leadLimit = 1000;
 const funnelEvents = ["page_view", "contact_form_started", "contact_form_submitted", "lead_created"];
-const serviceInterestEvents = ["service_card_click", "service_problem_click"];
+const serviceInterestEvents = ["service_card_click", "service_problem_click", "cta_click"];
 const portfolioEvents = ["project_case_study_click", "project_live_site_click"];
 const displayedEventNames = new Set([
     "page_view",
+    "cta_click",
     "contact_form_started",
     "contact_form_submitted",
     "lead_created",
+    "emailjs_sent",
+    "emailjs_failed",
+    "lead_create_failed",
     "service_card_click",
     "service_problem_click",
     "project_case_study_click",
     "project_live_site_click",
+    "admin_lead_status_changed",
+    "admin_lead_note_updated",
 ]);
+const serviceCategories = ["Business Websites", "Workflow Automation", "SEO", "Portfolio", "Other"];
+const openPipelineStatuses = new Set(["New", "Contacted", "Discovery", "Proposal Sent"]);
 
 function toDate(value) {
     const date = value?.toDate ? value.toDate() : value ? new Date(value) : null;
@@ -39,6 +48,66 @@ function formatTimestamp(value) {
 
 function getField(event, key) {
     return event[key] || event.metadata?.[key] || "";
+}
+
+function toNumber(value) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : 0;
+}
+
+function formatMoney(value) {
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+    }).format(value || 0);
+}
+
+function getLeadValue(lead) {
+    return toNumber(lead.proposalValue) || toNumber(lead.estimatedValue);
+}
+
+function getLeadSource(lead) {
+    return lead.originPage || lead.sourcePage || lead.source || "Unknown";
+}
+
+function getLandingPage(lead) {
+    return lead.landingPage || lead.sourcePage || "Unknown";
+}
+
+function getDisplayPageLabel(value) {
+    if (!value) return "Unknown";
+    const rawValue = String(value);
+    if (rawValue.includes("#pricing") || rawValue === "/pricing") return "Pricing Page";
+    const path = rawValue.split("?")[0].split("#")[0] || "/";
+
+    if (path === "/") return "Home Page";
+    if (path.startsWith("/services")) return "Services Page";
+    if (path.startsWith("/work")) return "Work Page";
+    if (path.startsWith("/contact")) return "Contact Page";
+    if (path === "/pricing") return "Pricing Page";
+    return path;
+}
+
+function classifyServiceInterest(event) {
+    const targetPath = getField(event, "targetPath");
+    const serviceIntent = getField(event, "serviceIntent") || event.metadata?.serviceId || event.metadata?.title || "";
+    const haystack = `${targetPath} ${serviceIntent} ${event.metadata?.label || ""} ${event.metadata?.solution || ""}`.toLowerCase();
+
+    if (haystack.includes("business") || haystack.includes("website") || haystack.includes("websites")) {
+        return "Business Websites";
+    }
+    if (haystack.includes("workflow") || haystack.includes("automation") || haystack.includes("intake")) {
+        return "Workflow Automation";
+    }
+    if (haystack.includes("seo") || haystack.includes("local search")) {
+        return "SEO";
+    }
+    if (haystack.includes("portfolio") || haystack.includes("/work") || haystack.includes("#projects")) {
+        return "Portfolio";
+    }
+
+    return "Other";
 }
 
 function startOfToday() {
@@ -121,6 +190,7 @@ export default function AdminAnalytics() {
     const { loading: authLoading, ok } = useAuthGate();
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
+    const [leads, setLeads] = useState([]);
     const [loadingEvents, setLoadingEvents] = useState(true);
     const [error, setError] = useState("");
 
@@ -134,9 +204,18 @@ export default function AdminAnalytics() {
                     orderBy("createdAt", "desc"),
                     limit(eventLimit)
                 );
-                const snapshot = await getDocs(analyticsQuery);
+                const leadsQuery = query(
+                    collection(db, "leads"),
+                    orderBy("createdAt", "desc"),
+                    limit(leadLimit)
+                );
+                const [snapshot, leadsSnapshot] = await Promise.all([
+                    getDocs(analyticsQuery),
+                    getDocs(leadsQuery),
+                ]);
                 if (!mounted) return;
                 setEvents(snapshot.docs.map((eventDoc) => ({ id: eventDoc.id, ...eventDoc.data() })));
+                setLeads(leadsSnapshot.docs.map((leadDoc) => ({ id: leadDoc.id, ...leadDoc.data() })));
                 setError("");
             } catch (err) {
                 console.error("Analytics load failed", err);
@@ -182,13 +261,17 @@ export default function AdminAnalytics() {
             views: topPageCounts.get(path) || 0,
         }));
 
-        const serviceCounts = countBy(
-            events.filter((event) => serviceInterestEvents.includes(event.eventName)),
-            (event) => getField(event, "serviceIntent") || event.metadata?.serviceId || event.metadata?.title
-        );
-        const services = [...serviceCounts.entries()]
-            .map(([service, clicks]) => ({ service, clicks }))
-            .sort((a, b) => b.clicks - a.clicks);
+        const serviceInterestEventsList = events.filter((event) => serviceInterestEvents.includes(event.eventName));
+        const serviceCounts = countBy(serviceInterestEventsList, classifyServiceInterest);
+        const totalServiceInterest = serviceInterestEventsList.length;
+        const services = serviceCategories.map((service) => {
+            const clicks = serviceCounts.get(service) || 0;
+            return {
+                service,
+                clicks,
+                percentage: percent(clicks, totalServiceInterest),
+            };
+        });
 
         const portfolioMap = new Map();
         events
@@ -207,12 +290,55 @@ export default function AdminAnalytics() {
             });
         const portfolio = [...portfolioMap.values()].sort(
             (a, b) => b.caseStudyClicks + b.liveSiteClicks - (a.caseStudyClicks + a.liveSiteClicks)
-        );
+        ).map((project) => ({
+            ...project,
+            totalInterest: project.caseStudyClicks + project.liveSiteClicks,
+        }));
 
         const funnelCounts = funnelEvents.reduce((next, eventName) => {
             next[eventName] = events.filter((event) => event.eventName === eventName).length;
             return next;
         }, {});
+
+        const leadSourceCounts = countBy(leads, (lead) => getDisplayPageLabel(getLeadSource(lead)));
+        const topLeadSources = [...leadSourceCounts.entries()]
+            .map(([source, count]) => ({ source, count }))
+            .sort((a, b) => b.count - a.count);
+
+        const landingPageCounts = countBy(leads, (lead) => getDisplayPageLabel(getLandingPage(lead)));
+        const topLandingPages = [...landingPageCounts.entries()]
+            .map(([landingPage, count]) => ({ landingPage, count }))
+            .sort((a, b) => b.count - a.count);
+
+        const attributionMap = new Map();
+        leads.forEach((lead) => {
+            const source = getDisplayPageLabel(getLeadSource(lead));
+            const landingPage = getDisplayPageLabel(getLandingPage(lead));
+            const key = `${source}__${landingPage}`;
+            const current = attributionMap.get(key) || {
+                source,
+                landingPage,
+                leads: 0,
+                won: 0,
+                pipelineValue: 0,
+            };
+            current.leads += 1;
+            if (lead.status === "Won") current.won += 1;
+            current.pipelineValue += getLeadValue(lead);
+            attributionMap.set(key, current);
+        });
+        const attributionReport = [...attributionMap.values()].sort((a, b) => b.leads - a.leads);
+
+        const revenue = leads.reduce(
+            (totals, lead) => {
+                const value = getLeadValue(lead);
+                if (openPipelineStatuses.has(lead.status || "New")) totals.openPipelineValue += value;
+                if (lead.status === "Won") totals.wonRevenue += value;
+                if (lead.status === "Lost") totals.lostOpportunityValue += value;
+                return totals;
+            },
+            { openPipelineValue: 0, wonRevenue: 0, lostOpportunityValue: 0 }
+        );
 
         const eventNames = [...new Set(events.map((event) => event.eventName).filter(Boolean))].sort();
         const undisplayedEventNames = eventNames.filter((eventName) => !displayedEventNames.has(eventName));
@@ -227,11 +353,15 @@ export default function AdminAnalytics() {
             services,
             portfolio,
             funnelCounts,
+            topLeadSources,
+            topLandingPages,
+            attributionReport,
+            revenue,
             recentEvents: events.slice(0, 25),
             eventNames,
             undisplayedEventNames,
         };
-    }, [events]);
+    }, [events, leads]);
 
     async function handleSignOut() {
         await signOut(auth);
@@ -294,6 +424,15 @@ export default function AdminAnalytics() {
                         </div>
                     </section>
 
+                    <section>
+                        <h2 className="text-lg font-semibold text-white">Revenue Pipeline</h2>
+                        <div className="mt-3 grid gap-3 md:grid-cols-3">
+                            <StatCard label="Open Pipeline Value" value={formatMoney(dashboard.revenue.openPipelineValue)} />
+                            <StatCard label="Won Revenue" value={formatMoney(dashboard.revenue.wonRevenue)} />
+                            <StatCard label="Lost Opportunity Value" value={formatMoney(dashboard.revenue.lostOpportunityValue)} />
+                        </div>
+                    </section>
+
                     <section className="grid gap-6 lg:grid-cols-2">
                         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                             <h2 className="text-lg font-semibold text-white">Top Pages</h2>
@@ -310,13 +449,15 @@ export default function AdminAnalytics() {
                         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                             <h2 className="text-lg font-semibold text-white">Service Interest</h2>
                             <div className="mt-4 space-y-2">
-                                {dashboard.services.length === 0 ? (
+                                {dashboard.services.every((service) => service.clicks === 0) ? (
                                     <p className="text-sm text-white/65">No service card clicks found yet.</p>
                                 ) : (
                                     dashboard.services.map((service) => (
                                         <div key={service.service} className="flex items-center justify-between rounded-xl bg-black/20 px-3 py-2">
                                             <span className="text-sm text-white/80">{service.service}</span>
-                                            <span className="font-semibold text-white">{service.clicks}</span>
+                                            <span className="font-semibold text-white">
+                                                {service.clicks} <span className="text-sm font-normal text-white/55">({service.percentage})</span>
+                                            </span>
                                         </div>
                                     ))
                                 )}
@@ -333,13 +474,14 @@ export default function AdminAnalytics() {
                                         <th className="py-2 pr-4 font-medium">Project</th>
                                         <th className="py-2 pr-4 font-medium">Slug</th>
                                         <th className="py-2 pr-4 font-medium">Case Study Clicks</th>
-                                        <th className="py-2 font-medium">Live Site Clicks</th>
+                                        <th className="py-2 pr-4 font-medium">Live Site Clicks</th>
+                                        <th className="py-2 font-medium">Total Interest</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {dashboard.portfolio.length === 0 ? (
                                         <tr>
-                                            <td colSpan="4" className="py-4 text-white/65">
+                                            <td colSpan="5" className="py-4 text-white/65">
                                                 No project clicks found yet.
                                             </td>
                                         </tr>
@@ -349,7 +491,8 @@ export default function AdminAnalytics() {
                                                 <td className="py-3 pr-4 text-white">{project.name}</td>
                                                 <td className="py-3 pr-4 text-white/70">{project.slug}</td>
                                                 <td className="py-3 pr-4 text-white">{project.caseStudyClicks}</td>
-                                                <td className="py-3 text-white">{project.liveSiteClicks}</td>
+                                                <td className="py-3 pr-4 text-white">{project.liveSiteClicks}</td>
+                                                <td className="py-3 text-white">{project.totalInterest}</td>
                                             </tr>
                                         ))
                                     )}
@@ -377,6 +520,76 @@ export default function AdminAnalytics() {
                                 value={dashboard.funnelCounts.lead_created || 0}
                                 helper={`${percent(dashboard.funnelCounts.lead_created || 0, dashboard.funnelCounts.contact_form_submitted || 0)} of submissions`}
                             />
+                        </div>
+                    </section>
+
+                    <section className="grid gap-6 lg:grid-cols-2">
+                        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                            <h2 className="text-lg font-semibold text-white">Top Lead Sources</h2>
+                            <div className="mt-4 space-y-2">
+                                {dashboard.topLeadSources.length === 0 ? (
+                                    <p className="text-sm text-white/65">No lead source data found yet.</p>
+                                ) : (
+                                    dashboard.topLeadSources.map((source) => (
+                                        <div key={source.source} className="flex items-center justify-between rounded-xl bg-black/20 px-3 py-2">
+                                            <span className="text-sm text-white/80">{source.source}</span>
+                                            <span className="font-semibold text-white">{source.count}</span>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                            <h2 className="text-lg font-semibold text-white">Top Landing Pages</h2>
+                            <div className="mt-4 space-y-2">
+                                {dashboard.topLandingPages.length === 0 ? (
+                                    <p className="text-sm text-white/65">No landing page data found yet.</p>
+                                ) : (
+                                    dashboard.topLandingPages.map((landingPage) => (
+                                        <div key={landingPage.landingPage} className="flex items-center justify-between rounded-xl bg-black/20 px-3 py-2">
+                                            <span className="text-sm text-white/80">{landingPage.landingPage}</span>
+                                            <span className="font-semibold text-white">{landingPage.count}</span>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <h2 className="text-lg font-semibold text-white">Lead Attribution Report</h2>
+                        <div className="mt-4 overflow-x-auto">
+                            <table className="w-full min-w-[700px] text-left text-sm">
+                                <thead className="text-white/60">
+                                    <tr>
+                                        <th className="py-2 pr-4 font-medium">Lead Source</th>
+                                        <th className="py-2 pr-4 font-medium">Landing Page</th>
+                                        <th className="py-2 pr-4 font-medium">Leads</th>
+                                        <th className="py-2 pr-4 font-medium">Won</th>
+                                        <th className="py-2 font-medium">Pipeline Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {dashboard.attributionReport.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="py-4 text-white/65">
+                                                No attribution data found yet.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        dashboard.attributionReport.map((row) => (
+                                            <tr key={`${row.source}-${row.landingPage}`} className="border-t border-white/10">
+                                                <td className="py-3 pr-4 text-white">{row.source}</td>
+                                                <td className="py-3 pr-4 text-white/70">{row.landingPage}</td>
+                                                <td className="py-3 pr-4 text-white">{row.leads}</td>
+                                                <td className="py-3 pr-4 text-white">{row.won}</td>
+                                                <td className="py-3 text-white">{formatMoney(row.pipelineValue)}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
                     </section>
 

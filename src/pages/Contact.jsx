@@ -6,7 +6,7 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import useSEO from "../hooks/useSEO";
 import PolicyNotice from "../components/PolicyNotice";
-import { trackEvent } from "../lib/analytics";
+import { getLeadAttribution, trackEvent } from "../lib/analytics";
 
 const MotionForm = motion.form;
 
@@ -224,14 +224,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
     }
 
     function goPricing() {
-        navigate("/");
-        setTimeout(
-            () =>
-                document
-                    .getElementById("pricing")
-                    ?.scrollIntoView({ behavior: "smooth", block: "start" }),
-            80
-        );
+        navigate({ pathname: "/", hash: "#pricing" });
     }
 
     function handleFormStarted() {
@@ -261,6 +254,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         const projectTypeVal = projectType || "Not sure yet";
         const inquiryTitle = getInquiryTitle(projectTypeVal, name);
         const sourcePage = getSourcePage();
+        const attribution = getLeadAttribution();
         const submittedMessage =
             `Project Type: ${projectTypeVal}\n` +
             `Raw Intent: ${intent || "none"}\n\n` +
@@ -298,10 +292,15 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 rawMessage: message,
                 source,
                 sourcePage,
+                originPage: attribution.originPage,
+                landingPage: attribution.landingPage,
+                referrer: attribution.referrer,
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
                 status: "New",
                 notes: "",
+                estimatedValue: null,
+                proposalValue: null,
             });
             leadId = leadRef.id;
             leadSaved = true;
@@ -309,6 +308,9 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 eventName: "lead_created",
                 serviceIntent: intent,
                 leadId,
+                originPage: attribution.originPage,
+                landingPage: attribution.landingPage,
+                referrer: attribution.referrer,
                 metadata: {
                     source,
                     projectType: projectTypeVal,

@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Github } from "lucide-react";
 import Reveal from "./Reveal";
 import logoMark from "../assets/likwitdevs-logo-white.png";
@@ -7,19 +7,9 @@ import PolicyNotice from "./PolicyNotice";
 
 export default function Footer() {
     const navigate = useNavigate();
-    const location = useLocation();
 
-    // Scroll to a section id, navigating home first if needed
     const goTo = (id) => {
-        const scroll = () =>
-            document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-
-        if (location.pathname !== "/") {
-            navigate("/");
-            setTimeout(scroll, 80);
-        } else {
-            scroll();
-        }
+        navigate({ pathname: "/", hash: `#${id}` });
     };
 
     return (
