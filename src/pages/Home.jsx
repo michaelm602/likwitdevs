@@ -6,6 +6,7 @@ import AboutSection from "../sections/AboutSection";
 import PricingSection from "../sections/PricingSection";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
+import { trackEvent } from "../lib/analytics";
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
@@ -115,6 +116,7 @@ export default function Home() {
     const [reviewBiz, setReviewBiz] = useState("");
     const [reviewStatus, setReviewStatus] = useState({ sending: false, ok: null, message: "" });
     const [reviewErrors, setReviewErrors] = useState({});
+    const [reviewFormStarted, setReviewFormStarted] = useState(false);
     const { projects: enrichedProjects } = useEnrichedWorkProjects();
     const recentProjects = useMemo(() => {
         const selectedProjects = enrichedProjects
@@ -130,6 +132,18 @@ export default function Home() {
 
         return [...selectedProjects, ...fallbackProjects].slice(0, maxHomeProjects);
     }, [enrichedProjects]);
+
+    function handleReviewFormStarted() {
+        if (reviewFormStarted) return;
+        setReviewFormStarted(true);
+        trackEvent({
+            eventName: "contact_form_started",
+            serviceIntent: "free-review",
+            metadata: {
+                source: "home-review-form",
+            },
+        });
+    }
 
     async function handleReviewSubmit(e) {
         e.preventDefault();
@@ -152,6 +166,15 @@ export default function Home() {
         }
 
         setReviewStatus({ sending: true, ok: null, message: "" });
+        trackEvent({
+            eventName: "contact_form_submitted",
+            serviceIntent: "free-review",
+            metadata: {
+                source: "home-review-form",
+                hasWebsite: Boolean(reviewUrl.trim()),
+                hasIndustry: Boolean(reviewBiz.trim()),
+            },
+        });
 
         try {
             await emailjs.send(
@@ -174,11 +197,25 @@ export default function Home() {
                 ok: true,
                 message: "Got it - I will be in touch with a real breakdown within 1 business day.",
             });
+            trackEvent({
+                eventName: "emailjs_sent",
+                serviceIntent: "free-review",
+                metadata: {
+                    source: "home-review-form",
+                },
+            });
         } catch {
             setReviewStatus({
                 sending: false,
                 ok: false,
                 message: "Something went wrong - try emailing me directly at likwitdevs@gmail.com.",
+            });
+            trackEvent({
+                eventName: "emailjs_failed",
+                serviceIntent: "free-review",
+                metadata: {
+                    source: "home-review-form",
+                },
             });
         }
     }
@@ -217,14 +254,55 @@ export default function Home() {
                         <div className="mt-6">
                             <a
                                 href="#audit"
+                                onClick={() =>
+                                    trackEvent({
+                                        eventName: "cta_click",
+                                        targetPath: "#audit",
+                                        serviceIntent: "free-review",
+                                        metadata: {
+                                            label: "Get My Free Review",
+                                            location: "home-hero",
+                                        },
+                                    })
+                                }
                                 className="inline-block rounded-xl px-6 py-3 bg-white text-black font-semibold text-sm sm:text-base hover:bg-neutral-100 transition-colors shadow-lg"
                             >
                                 Get My Free Review
                             </a>
                             <div className="mt-3 flex flex-wrap gap-2 text-sm text-white/75">
-                                <a href="#projects" className="hover:text-white/90 transition">View Work</a>
+                                <a
+                                    href="#projects"
+                                    onClick={() =>
+                                        trackEvent({
+                                            eventName: "cta_click",
+                                            targetPath: "#projects",
+                                            metadata: {
+                                                label: "View Work",
+                                                location: "home-hero-secondary",
+                                            },
+                                        })
+                                    }
+                                    className="hover:text-white/90 transition"
+                                >
+                                    View Work
+                                </a>
                                 <span>|</span>
-                                <Link to="/contact" className="hover:text-white/90 transition">Contact</Link>
+                                <Link
+                                    to="/contact"
+                                    onClick={() =>
+                                        trackEvent({
+                                            eventName: "cta_click",
+                                            targetPath: "/contact",
+                                            metadata: {
+                                                label: "Contact",
+                                                location: "home-hero-secondary",
+                                            },
+                                        })
+                                    }
+                                    className="hover:text-white/90 transition"
+                                >
+                                    Contact
+                                </Link>
                                 <span>|</span>
                                 <Link to="/web-design-portland" className="hover:text-white/90 transition">Portland Web Design</Link>
                             </div>
@@ -337,6 +415,17 @@ export default function Home() {
                                     </p>
                                     <Link
                                         to={`/work/${project.slug}`}
+                                        onClick={() =>
+                                            trackEvent({
+                                                eventName: "project_case_study_click",
+                                                targetPath: `/work/${project.slug}`,
+                                                projectSlug: project.slug,
+                                                projectName: project.name,
+                                                metadata: {
+                                                    location: "home-recent-projects",
+                                                },
+                                            })
+                                        }
                                         className="mt-auto inline-flex pt-5 text-sm font-semibold text-white/80 underline underline-offset-4 transition hover:text-white"
                                     >
                                         See The Build -&gt;
@@ -416,7 +505,12 @@ export default function Home() {
                                     <p className="text-white/80 text-sm mt-1">{reviewStatus.message}</p>
                                 </div>
                             ) : (
-                                <form onSubmit={handleReviewSubmit} noValidate className="rounded-2xl bg-black/20 border border-white/10 p-4">
+                                <form
+                                    onSubmit={handleReviewSubmit}
+                                    onFocus={handleReviewFormStarted}
+                                    noValidate
+                                    className="rounded-2xl bg-black/20 border border-white/10 p-4"
+                                >
                                     <label htmlFor="audit-name" className="block text-sm text-white/90">
                                         Your Name <span className="text-white/70">(required)</span>
                                     </label>
@@ -518,6 +612,17 @@ export default function Home() {
                     {/* TODO: Add a tel: CTA here when a public business phone number is available. */}
                     <a
                         href="#audit"
+                        onClick={() =>
+                            trackEvent({
+                                eventName: "cta_click",
+                                targetPath: "#audit",
+                                serviceIntent: "free-review",
+                                metadata: {
+                                    label: "Free Review",
+                                    location: "mobile-sticky-cta",
+                                },
+                            })
+                        }
                         className="w-full rounded-xl bg-white px-4 py-3 text-center text-sm font-semibold text-black shadow-lg"
                     >
                         Free Review

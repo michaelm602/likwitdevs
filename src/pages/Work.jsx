@@ -3,6 +3,7 @@ import WorkProjectImage from "../components/WorkProjectImage";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
 import { projectCategories } from "../data/workProjects";
+import { trackEvent } from "../lib/analytics";
 
 function ProjectGrid({ title, projects, loading }) {
     if (projects.length === 0) return null;
@@ -48,6 +49,17 @@ function ProjectGrid({ title, projects, loading }) {
                             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
                                 <Link
                                     to={`/work/${project.slug}`}
+                                    onClick={() =>
+                                        trackEvent({
+                                            eventName: "project_case_study_click",
+                                            targetPath: `/work/${project.slug}`,
+                                            projectSlug: project.slug,
+                                            projectName: project.name,
+                                            metadata: {
+                                                location: "work-project-card",
+                                            },
+                                        })
+                                    }
                                     className="inline-flex text-sm font-semibold text-white/80 underline underline-offset-4 transition hover:text-white"
                                 >
                                     See The Build -&gt;
@@ -57,6 +69,17 @@ function ProjectGrid({ title, projects, loading }) {
                                         href={liveUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        onClick={() =>
+                                            trackEvent({
+                                                eventName: "project_live_site_click",
+                                                targetUrl: liveUrl,
+                                                projectSlug: project.slug,
+                                                projectName: project.name,
+                                                metadata: {
+                                                    location: "work-project-card",
+                                                },
+                                            })
+                                        }
                                         className="inline-flex w-fit rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-sm font-semibold text-white/85 transition hover:border-white/30 hover:bg-white/[0.1] hover:text-white"
                                     >
                                         Visit Live Site -&gt;

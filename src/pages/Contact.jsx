@@ -6,6 +6,7 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import useSEO from "../hooks/useSEO";
 import PolicyNotice from "../components/PolicyNotice";
+import { trackEvent } from "../lib/analytics";
 
 const MotionForm = motion.form;
 
@@ -73,6 +74,7 @@ function getSourcePage() {
 export default function Contact({ embedded = false, source = "contact", intent: intentProp = "" }) {
     const formRef = useRef(null);
     const [status, setStatus] = useState({ sending: false, ok: null, msg: "" });
+    const [formStarted, setFormStarted] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -232,6 +234,20 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         );
     }
 
+    function handleFormStarted() {
+        if (formStarted) return;
+        setFormStarted(true);
+        trackEvent({
+            eventName: "contact_form_started",
+            serviceIntent: intent,
+            metadata: {
+                source,
+                hasIntent: Boolean(intent),
+                projectType: projectType || intentProjectType || "Not sure yet",
+            },
+        });
+    }
+
     async function handleSubmit(e) {
         e.preventDefault();
         if (status.sending) return;
@@ -256,12 +272,22 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         }
 
         setStatus({ sending: true, ok: null, msg: "" });
+        trackEvent({
+            eventName: "contact_form_submitted",
+            serviceIntent: intent,
+            metadata: {
+                source,
+                hasIntent: Boolean(intent),
+                projectType: projectTypeVal,
+            },
+        });
 
         let leadSaved = false;
         let emailSent = false;
+        let leadId = "";
 
         try {
-            await addDoc(collection(db, "leads"), {
+            const leadRef = await addDoc(collection(db, "leads"), {
                 name,
                 email,
                 replyTo: email,
@@ -277,9 +303,27 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 status: "New",
                 notes: "",
             });
+            leadId = leadRef.id;
             leadSaved = true;
+            trackEvent({
+                eventName: "lead_created",
+                serviceIntent: intent,
+                leadId,
+                metadata: {
+                    source,
+                    projectType: projectTypeVal,
+                },
+            });
         } catch (err) {
             console.error("Lead save failed", err);
+            trackEvent({
+                eventName: "lead_create_failed",
+                serviceIntent: intent,
+                metadata: {
+                    source,
+                    projectType: projectTypeVal,
+                },
+            });
         }
 
         try {
@@ -309,8 +353,26 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 { publicKey: PUBLIC_KEY }
             );
             emailSent = true;
+            trackEvent({
+                eventName: "emailjs_sent",
+                serviceIntent: intent,
+                leadId,
+                metadata: {
+                    source,
+                    projectType: projectTypeVal,
+                },
+            });
         } catch (err) {
             console.error("EmailJS notification failed", err);
+            trackEvent({
+                eventName: "emailjs_failed",
+                serviceIntent: intent,
+                leadId,
+                metadata: {
+                    source,
+                    projectType: projectTypeVal,
+                },
+            });
         }
 
         if (emailSent) {
@@ -347,6 +409,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
             <MotionForm
                 ref={formRef}
                 onSubmit={handleSubmit}
+                onFocus={handleFormStarted}
                 initial={{ y: 12 }}
                 animate={{ y: 0, transition: { duration: 0.28, ease: "easeOut" } }}
                 className={`w-full max-w-xl card p-6 text-white space-y-5 transform-gpu ${embedded ? "mx-auto" : ""

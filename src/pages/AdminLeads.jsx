@@ -12,6 +12,7 @@ import {
 } from "firebase/firestore";
 import useAuthGate from "../hooks/useAuthGate";
 import { auth, db } from "../lib/firebase";
+import { trackEvent } from "../lib/analytics";
 
 const leadStatuses = ["New", "Contacted", "Discovery", "Proposal Sent", "Won", "Lost", "Spam"];
 
@@ -108,6 +109,25 @@ export default function AdminLeads() {
                 ...patch,
                 updatedAt: serverTimestamp(),
             });
+            if (patch.status) {
+                trackEvent({
+                    eventName: "admin_lead_status_changed",
+                    leadId,
+                    metadata: {
+                        status: patch.status,
+                    },
+                });
+            }
+            if (Object.prototype.hasOwnProperty.call(patch, "notes")) {
+                trackEvent({
+                    eventName: "admin_lead_note_updated",
+                    leadId,
+                    metadata: {
+                        hasNotes: Boolean(patch.notes),
+                        noteLength: String(patch.notes || "").length,
+                    },
+                });
+            }
         } catch (err) {
             console.error("Lead update failed", err);
             setError("Could not update lead.");

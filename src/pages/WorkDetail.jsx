@@ -3,6 +3,7 @@ import WorkProjectImage from "../components/WorkProjectImage";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
 import { getWorkProject, missingProjectHistory, projectCategories } from "../data/workProjects";
+import { trackEvent } from "../lib/analytics";
 
 function getProjectTypeLabel(project) {
     return projectCategories[project.category] || "Project";
@@ -61,6 +62,17 @@ export default function WorkDetail() {
                                 href={liveUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                onClick={() =>
+                                    trackEvent({
+                                        eventName: "project_live_site_click",
+                                        targetUrl: liveUrl,
+                                        projectSlug: project.slug,
+                                        projectName: project.name,
+                                        metadata: {
+                                            location: "work-detail-hero",
+                                        },
+                                    })
+                                }
                                 className="inline-flex w-fit rounded-full border border-white/15 bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-neutral-100"
                             >
                                 Visit Live Site -&gt;

@@ -24,6 +24,7 @@ import WebDesignTattooShops from "./pages/seo/WebDesignTattooShops";
 import WebDesignTattooArtists from "./pages/seo/WebDesignTattooArtists";
 import WebDesignContractors from "./pages/seo/WebDesignContractors";
 import WebDesignPainters from "./pages/seo/WebDesignPainters";
+import AnalyticsRouteTracker from "./components/AnalyticsRouteTracker";
 
 // Use HashRouter ONLY on GitHub Pages
 const isGitHubPages = window.location.hostname.includes("github.io");
@@ -32,6 +33,7 @@ const Router = isGitHubPages ? HashRouter : BrowserRouter;
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Router>
+      <AnalyticsRouteTracker />
       <Routes>
         <Route path="/" element={<App />}>
           <Route index element={<Home />} />

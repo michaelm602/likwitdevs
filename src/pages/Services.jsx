@@ -5,6 +5,7 @@ import WorkProjectImage from "../components/WorkProjectImage";
 import { workProjects } from "../data/workProjects";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
+import { trackEvent } from "../lib/analytics";
 
 const problemCards = [
     {
@@ -184,6 +185,17 @@ function RelatedProjects({ slugs }) {
                     <Link
                         key={project.slug}
                         to={`/work/${project.slug}`}
+                        onClick={() =>
+                            trackEvent({
+                                eventName: "project_case_study_click",
+                                targetPath: `/work/${project.slug}`,
+                                projectSlug: project.slug,
+                                projectName: project.name,
+                                metadata: {
+                                    location: "services-related-work",
+                                },
+                            })
+                        }
                         className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-white/80 transition hover:bg-white/[0.08] hover:text-white"
                     >
                         {project.name}
@@ -226,6 +238,17 @@ function RecentBuilds({ projects, loading }) {
                                 </p>
                                 <Link
                                     to={`/work/${project.slug}`}
+                                    onClick={() =>
+                                        trackEvent({
+                                            eventName: "project_case_study_click",
+                                            targetPath: `/work/${project.slug}`,
+                                            projectSlug: project.slug,
+                                            projectName: project.name,
+                                            metadata: {
+                                                location: "services-recent-builds",
+                                            },
+                                        })
+                                    }
                                     className="mt-auto inline-flex pt-5 text-sm font-semibold text-white/80 underline underline-offset-4 transition hover:text-white"
                                 >
                                     See The Build -&gt;
@@ -276,11 +299,35 @@ export default function Services() {
                             We build websites, booking systems, customer portals, intake workflows, and custom software that help small businesses attract customers, stay organized, and grow.
                         </p>
                         <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                            <Link to="/contact?intent=free-review" className="btn">
+                            <Link
+                                to="/contact?intent=free-review"
+                                onClick={() =>
+                                    trackEvent({
+                                        eventName: "cta_click",
+                                        targetPath: "/contact?intent=free-review",
+                                        serviceIntent: "free-review",
+                                        metadata: {
+                                            label: "Get a Free Website Review",
+                                            location: "services-hero",
+                                        },
+                                    })
+                                }
+                                className="btn"
+                            >
                                 Get a Free Website Review
                             </Link>
                             <Link
                                 to="/work"
+                                onClick={() =>
+                                    trackEvent({
+                                        eventName: "cta_click",
+                                        targetPath: "/work",
+                                        metadata: {
+                                            label: "See Our Work",
+                                            location: "services-hero",
+                                        },
+                                    })
+                                }
                                 className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white/85 transition hover:bg-white/[0.08] hover:text-white"
                             >
                                 See Our Work
@@ -302,6 +349,17 @@ export default function Services() {
                                 <Reveal key={card.href} y={16} delay={index * 60}>
                                     <a
                                         href={card.href}
+                                        onClick={() =>
+                                            trackEvent({
+                                                eventName: "service_problem_click",
+                                                targetPath: card.href,
+                                                metadata: {
+                                                    title: card.title,
+                                                    solution: card.solution,
+                                                    location: "services-problem-cards",
+                                                },
+                                            })
+                                        }
                                         className="block h-full rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:bg-white/[0.08]"
                                     >
                                         <h3 className="text-lg font-semibold text-white">{card.title}</h3>
@@ -389,6 +447,19 @@ export default function Services() {
                                     <RelatedProjects slugs={service.projectSlugs} />
                                     <Link
                                         to={`/contact?intent=${service.contactIntent}`}
+                                        onClick={() =>
+                                            trackEvent({
+                                                eventName: "cta_click",
+                                                targetPath: `/contact?intent=${service.contactIntent}`,
+                                                serviceIntent: service.contactIntent,
+                                                metadata: {
+                                                    label: service.cta,
+                                                    serviceId: service.id,
+                                                    serviceTitle: service.title,
+                                                    location: "services-category-card",
+                                                },
+                                            })
+                                        }
                                         className="btn mt-7 w-full"
                                     >
                                         {service.cta}
@@ -417,11 +488,35 @@ export default function Services() {
                             Bring the workflow, website problem, or software idea. We will sort out the simplest build that moves the business forward.
                         </p>
                         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-                            <Link to="/contact?intent=free-review" className="btn">
+                            <Link
+                                to="/contact?intent=free-review"
+                                onClick={() =>
+                                    trackEvent({
+                                        eventName: "cta_click",
+                                        targetPath: "/contact?intent=free-review",
+                                        serviceIntent: "free-review",
+                                        metadata: {
+                                            label: "Get a Free Website Review",
+                                            location: "services-final-cta",
+                                        },
+                                    })
+                                }
+                                className="btn"
+                            >
                                 Get a Free Website Review
                             </Link>
                             <Link
                                 to="/work"
+                                onClick={() =>
+                                    trackEvent({
+                                        eventName: "cta_click",
+                                        targetPath: "/work",
+                                        metadata: {
+                                            label: "See Our Work",
+                                            location: "services-final-cta",
+                                        },
+                                    })
+                                }
                                 className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white/85 transition hover:bg-white/[0.08] hover:text-white"
                             >
                                 See Our Work
