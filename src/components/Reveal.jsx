@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 /** Anti-flicker Reveal: different thresholds for enter/exit (hysteresis) */
 export default function Reveal({
-    as: Tag = "div",
+    as = "div",
     className = "",
     children,
     y = 24,
@@ -17,6 +17,7 @@ export default function Reveal({
     startVisible = true,
     ...rest
 }) {
+    const Tag = as;
     const elRef = useRef(null);
     const [visible, setVisible] = useState(startVisible);
     const visibleRef = useRef(visible);

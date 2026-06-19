@@ -99,7 +99,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
     const selectedLabel =
         intentProjectType || plan;
 
-    const plans = ["Starter Site", "Business Site", "E-commerce / Booking"];
+    const plans = ["Starter", "Core", "Premium", "Custom Systems", "Care", "Growth", "Partner"];
     const [selectOpen, setSelectOpen] = useState(false);
 
     const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -189,7 +189,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         // Plan prefill
         if (plan && !current) {
             form.message.value =
-                `Hi! I'm interested in the ${plan} package. A few details about my project:\n\n` +
+                `Hi! I'm interested in ${plan}. A few details about my project:\n\n` +
                 `• Business / project name:\n` +
                 `• Goals for the site:\n` +
                 `• Pages / features needed:\n` +
@@ -209,11 +209,11 @@ export default function Contact({ embedded = false, source = "contact", intent: 
 
         if (form) {
             const existing = form.message.value;
-            const prefixRe = /^Hi! I'm interested in the (.+) package\./;
+            const prefixRe = /^Hi! I'm interested in (.+)\./;
 
             if (!existing.trim() || prefixRe.test(existing)) {
                 form.message.value = newPlan
-                    ? `Hi! I'm interested in the ${newPlan} package. A few details about my project:\n\n` +
+                    ? `Hi! I'm interested in ${newPlan}. A few details about my project:\n\n` +
                     `• Business / project name:\n` +
                     `• Goals for the site:\n` +
                     `• Pages / features needed:\n` +
@@ -300,7 +300,6 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 status: "New",
                 notes: "",
                 estimatedValue: null,
-                proposalValue: null,
             });
             leadId = leadRef.id;
             leadSaved = true;

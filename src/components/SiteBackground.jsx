@@ -850,13 +850,7 @@ function CanvasBeams() {
         if (!volume) continue;
 
         const rightSide = flare.x > 0.65;
-        const wave = Math.sin((t / volume.period) * Math.PI * 2 + volume.phase);
         const hazeMotion = Math.sin(t * 0.13 + volume.phase * 1.7);
-        const volumeX =
-          (volume.x - 0.5) * size.width +
-          wave * volume.drift +
-          pointer.x * volume.parallax * pointerStrength -
-          scrollY * 0.012;
         const volumeY =
           (volume.y - 0.5) * size.height +
           Math.cos((t / volume.period) * Math.PI * 2 + volume.phase) * volume.drift * 0.35 +

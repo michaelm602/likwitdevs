@@ -1,6 +1,6 @@
 // src/layouts/AnimatedLayout.jsx
 import { Outlet, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion as Motion } from "framer-motion";
 import { useEffect } from "react";
 
 export default function AnimatedLayout() {
@@ -13,7 +13,7 @@ export default function AnimatedLayout() {
 
     return (
         <AnimatePresence mode="wait" initial={false}>
-            <motion.div
+            <Motion.div
                 key={location.pathname}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } }}
@@ -21,7 +21,7 @@ export default function AnimatedLayout() {
                 style={{ minHeight: "100vh" }}
             >
                 <Outlet />
-            </motion.div>
+            </Motion.div>
         </AnimatePresence>
     );
 }

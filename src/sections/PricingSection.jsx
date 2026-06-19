@@ -5,67 +5,86 @@ import Reveal from "../components/Reveal";
 export default function PricingSection() {
     const tiers = [
         {
-            name: "Starter Site",
-            price: "$300",
-            blurb: "Single-page landing built to convert on mobile.",
+            name: "Starter",
+            price: "$800",
+            blurb: "A simple, fast, credible online presence for solo service providers.",
             features: [
                 "Hero + Services + Gallery + Contact",
                 "Mobile-first responsive layout",
+                "On-page SEO titles, meta, headings, and schema",
                 "Fast load times",
-                "Basic on-page SEO (titles/meta/headings)",
-                "1–2 week turnaround",
+                "1-2 week turnaround",
                 "2 revision rounds",
             ],
             cta: "Get Starter",
         },
         {
-            name: "Business Site",
-            price: "$600",
-            blurb: "Multi-page site with clean navigation + SEO foundation.",
+            name: "Core",
+            price: "$1,500",
+            blurb: "Your complete business website, built to rank locally and convert visitors.",
             features: [
                 "Home, About, Services, Gallery, Contact",
                 "Mobile-first responsive design",
-                "On-page SEO setup + sitemap/robots",
+                "On-page SEO + sitemap/robots setup",
+                "Google Search Console setup",
                 "Analytics installed",
-                "2–3 week turnaround",
+                "2-3 week turnaround",
                 "2 revision rounds",
+                "30-day post-launch support",
             ],
-            cta: "Start Business Site",
+            cta: "Start Core Build",
             highlight: true,
             badge: "Most Popular",
         },
         {
-            name: "E-commerce / Booking",
-            price: "$1,000+",
-            blurb: "Sell products or take appointments with secure setup.",
+            name: "Premium",
+            price: "$2,500+",
+            blurb: "A website plus booking, intake, and customer communication workflows.",
             features: [
-                "Stripe/PayPal checkout OR booking calendar",
-                "Product/service management",
-                "Email notifications",
-                "On-page SEO",
-                "3–5 week timeline",
-                "Admin walkthrough",
+                "Everything in Core",
+                "Booking or scheduling integration",
+                "Service/package selection + pricing display",
+                "Customer intake capture",
+                "Email notifications and confirmations",
+                "Admin access to bookings/submissions",
+                "3-4 week turnaround",
+                "Admin walkthrough on delivery",
             ],
-            cta: "Discuss Your Store",
+            cta: "Discuss Premium",
+        },
+        {
+            name: "Custom Systems",
+            price: "$4,000+",
+            blurb: "Custom software, dashboards, AI tools, and workflows quoted by scope.",
+            features: [
+                "Multi-step intake systems",
+                "Admin dashboards and portals",
+                "AI-assisted tools or web applications",
+                "Internal operations software",
+                "Integrations where practical",
+                "Scoped planning before build",
+                "Quoted per project",
+            ],
+            cta: "Scope a Custom System",
         },
     ];
 
     const maintenance = [
         {
-            name: "Care Plan",
-            price: "$49/mo",
+            name: "Care",
+            price: "$79/mo",
             items: ["Hosting + uptime monitoring", "Small content edits", "Basic security updates"],
         },
         {
-            name: "Growth Plan",
-            price: "$99/mo",
+            name: "Growth",
+            price: "$149/mo",
             items: ["Everything in Care", "Monthly performance/SEO tune-up", "Priority support"],
             highlight: true,
         },
         {
-            name: "Scale Plan",
-            price: "$149/mo",
-            items: ["Everything in Growth", "Monthly landing page/test", "Analytics summary report"],
+            name: "Partner",
+            price: "$299/mo",
+            items: ["Everything in Growth", "Monthly landing page or feature", "Analytics review"],
         },
     ];
 
@@ -85,63 +104,66 @@ export default function PricingSection() {
                 </Reveal>
 
                 {/* Build Packages */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="mx-auto grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-2">
                     {tiers.map((t, i) => {
                         const base = i * 90; // stagger base per card
                         return (
                             <div
                                 key={t.name}
                                 className={[
-                                    "rounded-2xl border border-white/10 bg-black/10 backdrop-blur-md",
-                                    "shadow-[0_8px_30px_rgba(0,0,0,0.3)] overflow-hidden p-6 text-white",
+                                    "flex h-full flex-col rounded-2xl border border-white/10 bg-black/10 backdrop-blur-md",
+                                    "shadow-[0_8px_30px_rgba(0,0,0,0.3)] overflow-hidden p-5 text-white md:p-6",
                                     t.highlight ? "ring-1 ring-white/20" : "",
                                 ].join(" ")}
                             >
-                                {t.badge && (
-                                    <div className="mb-3 inline-flex items-center rounded-full bg-white/10 border border-white/10 px-3 py-1 text-xs text-white/90">
-                                        {t.badge}
-                                    </div>
-                                )}
-
                                 <Reveal y={8} delay={base}>
-                                    <div className="text-sm uppercase tracking-wide text-white/70">
-                                        {t.name}
+                                    <div className="flex min-h-7 items-start justify-between gap-3">
+                                        <div className="text-sm uppercase tracking-wide text-white/70">
+                                            {t.name}
+                                        </div>
+                                        {t.badge && (
+                                            <div className="shrink-0 rounded-full bg-white/10 border border-white/10 px-2.5 py-1 text-[11px] leading-none text-white/90">
+                                                {t.badge}
+                                            </div>
+                                        )}
                                     </div>
                                 </Reveal>
 
                                 <Reveal y={8} delay={base + 80}>
-                                    <div className="mt-2 text-3xl font-bold">{t.price}</div>
+                                    <div className="mt-1 text-3xl font-bold">{t.price}</div>
                                 </Reveal>
 
                                 <Reveal y={8} delay={base + 120}>
-                                    <p className="mt-2 text-white/80">{t.blurb}</p>
+                                    <p className="mt-2 text-sm leading-6 text-white/80">{t.blurb}</p>
                                 </Reveal>
 
-                                <ul className="mt-4 space-y-2 text-white/80">
+                                <ul className="mt-4 grid gap-x-5 gap-y-1.5 text-sm leading-6 text-white/80 lg:grid-cols-2">
                                     {t.features.map((f, idx) => (
                                         <Reveal key={f} y={8} delay={base + 160 + idx * 40}>
                                             <li className="flex gap-2">
-                                                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-white/60" />
+                                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/60" />
                                                 <span>{f}</span>
                                             </li>
                                         </Reveal>
                                     ))}
                                 </ul>
 
-                                <Reveal y={8} delay={base + 160 + t.features.length * 40 + 80}>
-                                    <Link
-                                        to={`/contact?plan=${encodeURIComponent(t.name)}`}
-                                        className="btn mt-6 w-full"
-                                    >
-                                        {t.cta}
-                                    </Link>
-                                </Reveal>
+                                <div className="mt-auto pt-5">
+                                    <Reveal y={8} delay={base + 160 + t.features.length * 40 + 80}>
+                                        <Link
+                                            to={`/contact?plan=${encodeURIComponent(t.name)}`}
+                                            className="btn w-full"
+                                        >
+                                            {t.cta}
+                                        </Link>
+                                    </Reveal>
 
-                                <Reveal y={8} delay={base + 160 + t.features.length * 40 + 140}>
-                                    <p className="mt-3 text-xs text-white/60">
-                                        *Pricing is “from” and may vary with scope. 50% deposit to start.
-                                    </p>
-                                </Reveal>
+                                    <Reveal y={8} delay={base + 160 + t.features.length * 40 + 140}>
+                                        <p className="mt-2 text-xs leading-5 text-white/60">
+                                            *Pricing is “from” and may vary with scope. 50% deposit to start.
+                                        </p>
+                                    </Reveal>
+                                </div>
                             </div>
                         );
                     })}
@@ -161,7 +183,7 @@ export default function PricingSection() {
                     </Reveal>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {maintenance.map((m, i) => (
+                        {maintenance.map((m) => (
                             <div
                                 key={m.name}
                                 className={[
@@ -174,7 +196,7 @@ export default function PricingSection() {
                                 </div>
                                 <div className="mt-2 text-3xl font-bold">{m.price}</div>
 
-                                <ul className="mt-4 space-y-2 text-white/80">
+                                <ul className="mt-4 space-y-1.5 text-sm leading-6 text-white/80">
                                     {m.items.map((it) => (
                                         <li key={it} className="flex gap-2">
                                             <span className="mt-1 h-1.5 w-1.5 rounded-full bg-white/60" />

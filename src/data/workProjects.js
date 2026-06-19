@@ -69,13 +69,13 @@ export const workProjects = [
         name: "Blessed N Polished",
         industry: "Beauty services",
         summary:
-            "Beauty service website built to improve online credibility, service presentation, and customer contact flow.",
-        // TODO: Need project history from Michael.
-        challenge: "",
+            "Beauty service website and booking-focused presence built to improve online credibility, service presentation, and customer contact flow.",
+        challenge:
+            "Blessed N Polished needed a more polished online presence for presenting services, building trust with new clients, and moving visitors toward booking or contacting the business.",
         solution:
-            "Built a beauty service website focused on online credibility, service presentation, and customer contact flow.",
-        // TODO: Need project history from Michael.
-        status: "",
+            "Built a beauty service website focused on clear service presentation, mobile-friendly browsing, credibility signals, and a cleaner path for customers to take the next step.",
+        status:
+            "Completed client website build. No public live URL is listed in the current project data, so the confirmed domain should be attached when available.",
     },
     {
         slug: "freva-construction",
@@ -83,14 +83,15 @@ export const workProjects = [
         matchIds: ["freva-construction", "freva"],
         matchTitles: ["Freva Construction", "Freva"],
         name: "Freva Construction",
-        industry: "Client work",
-        summary: missingProjectHistory,
-        // TODO: Need project history from Michael.
-        challenge: "",
-        // TODO: Need project history from Michael.
-        solution: "",
-        // TODO: Need project history from Michael.
-        status: "",
+        industry: "Construction",
+        summary:
+            "Construction business website built to establish credibility, explain services clearly, and give prospects a direct path to request work.",
+        challenge:
+            "Freva Construction needed a professional web presence that could make the business easier to evaluate, communicate construction services clearly, and support new project inquiries.",
+        solution:
+            "Created a straightforward construction website structure with service-focused messaging, trust-building presentation, mobile-friendly layout, and a clear contact path for prospective customers.",
+        status:
+            "Completed client website build. No public live URL is listed in the current project data, so the confirmed domain should be attached when available.",
     },
     {
         slug: "nails-by-elysia",
@@ -98,14 +99,15 @@ export const workProjects = [
         matchIds: ["nails-by-elysia", "elysia", "elegance-by-elysia"],
         matchTitles: ["Nails by Elysia", "Elegance By Elysia", "Elysia"],
         name: "Nails by Elysia",
-        industry: "Client work",
-        summary: missingProjectHistory,
-        // TODO: Need project history from Michael.
-        challenge: "",
-        // TODO: Need project history from Michael.
-        solution: "",
-        // TODO: Need project history from Michael.
-        status: "",
+        industry: "Beauty services",
+        summary:
+            "Custom booking-focused website for a nail artist, built to move clients from social discovery to service selection and appointment requests.",
+        challenge:
+            "Nails by Elysia needed a cleaner way for clients to understand services and request appointments without every inquiry starting in scattered DMs.",
+        solution:
+            "Built a mobile-friendly beauty website with service presentation, booking-oriented customer flow, and a more structured path from interest to appointment request.",
+        status:
+            "Completed custom booking-focused client build. No public live URL is listed in the current project data, so the confirmed domain should be attached when available.",
     },
     {
         slug: "iep-compass",
@@ -115,14 +117,15 @@ export const workProjects = [
         showOnHome: true,
         homeOrder: 4,
         name: "IEP Compass",
-        industry: "Owned product",
-        summary: missingProjectHistory,
-        // TODO: Need product history from Michael.
-        challenge: "",
-        // TODO: Need product history from Michael.
-        solution: "",
-        // TODO: Need product history from Michael.
-        status: "",
+        industry: "Education technology",
+        summary:
+            "Owned AI-assisted education product that helps position Likwit Devs as a custom software and product builder, not only a website studio.",
+        challenge:
+            "Families and educators working with IEPs need clearer ways to understand complex education documents, organize next steps, and get support without digging through dense paperwork alone.",
+        solution:
+            "Built an AI-assisted product concept around IEP guidance, document understanding, and education workflow support, demonstrating custom application and AI tool capability.",
+        status:
+            "Owned product in active product and portfolio development. No public app URL is listed in the current project data.",
     },
     {
         slug: "likwit-blvd",
@@ -130,14 +133,15 @@ export const workProjects = [
         matchIds: ["likwit-blvd", "likwit-boulevard"],
         matchTitles: ["Likwit Blvd", "Likwit Boulevard"],
         name: "Likwit Blvd",
-        industry: "Owned product",
-        summary: missingProjectHistory,
-        // TODO: Need product history from Michael.
-        challenge: "",
-        // TODO: Need product history from Michael.
-        solution: "",
-        // TODO: Need product history from Michael.
-        status: "",
+        industry: "E-commerce and creative portfolio",
+        summary:
+            "Owned e-commerce and portfolio-style build that demonstrates product presentation, catalog structure, and branded digital experience work.",
+        challenge:
+            "Likwit Blvd needed a branded online experience that could present products or creative work with more structure than a basic gallery or social profile.",
+        solution:
+            "Built a portfolio and commerce-oriented web experience with visual product presentation, branded page structure, and a flexible foundation for future catalog or storefront expansion.",
+        status:
+            "Owned product build in portfolio development. No public launch URL is listed in the current project data.",
     },
 ];
 
