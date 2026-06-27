@@ -1,38 +1,46 @@
 import { Link } from "react-router-dom";
-import { useMemo } from "react";
+import { createElement, useMemo } from "react";
+import { CalendarCheck2, Globe2, Sparkles, Workflow } from "lucide-react";
 import Reveal from "../components/Reveal";
+import { CursorGlow, MotionCard } from "../components/PremiumMotion";
 import WorkProjectImage from "../components/WorkProjectImage";
 import { workProjects } from "../data/workProjects";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
 import { trackEvent } from "../lib/analytics";
+import TestimonialsSection from "../sections/TestimonialsSection";
 
 const problemCards = [
     {
         title: "Need More Leads?",
         solution: "Professional websites and local SEO",
         href: "#business-websites",
+        icon: Globe2,
     },
     {
         title: "Need Online Booking?",
         solution: "Scheduling and booking systems",
         href: "#booking-systems",
+        icon: CalendarCheck2,
     },
     {
         title: "Need To Replace Paper Forms?",
         solution: "Intake systems and workflow automation",
         href: "#workflow-automation",
+        icon: Workflow,
     },
     {
         title: "Need Custom Software?",
         solution: "AI tools and business applications",
         href: "#custom-software",
+        icon: Sparkles,
     },
 ];
 
 const services = [
     {
         id: "business-websites",
+        icon: Globe2,
         eyebrow: "Websites",
         title: "Business Websites & Website Rebuilds",
         description:
@@ -46,11 +54,13 @@ const services = [
             "Clear ownership of your website and content",
         ],
         projectSlugs: ["forest-pathways", "nw-autofix", "blessed-n-polished", "freva-construction"],
+        price: "Starting at $800",
         cta: "Plan My Website",
         contactIntent: "business-website",
     },
     {
         id: "booking-systems",
+        icon: CalendarCheck2,
         eyebrow: "Booking",
         title: "Booking & Scheduling Systems",
         description:
@@ -64,11 +74,13 @@ const services = [
             "Mobile-friendly booking paths",
         ],
         projectSlugs: ["blessed-n-polished", "nails-by-elysia"],
+        price: "Starting at $2,500+",
         cta: "Build My Booking Flow",
         contactIntent: "booking-system",
     },
     {
         id: "workflow-automation",
+        icon: Workflow,
         eyebrow: "Operations",
         title: "Intake Systems, Portals & Business Automation",
         description:
@@ -82,11 +94,13 @@ const services = [
             "Workflow automation around real business processes",
         ],
         projectSlugs: ["diamond-auto"],
+        price: "Starting at $4,000+",
         cta: "Map My Workflow",
         contactIntent: "workflow-automation",
     },
     {
         id: "custom-software",
+        icon: Sparkles,
         eyebrow: "Software",
         title: "AI Tools & Custom Software",
         description:
@@ -100,6 +114,7 @@ const services = [
             "Integrations with existing tools where practical",
         ],
         projectSlugs: ["iep-compass", "likwit-blvd", "diamond-auto"],
+        price: "Starting at $4,000+",
         cta: "Discuss Custom Software",
         contactIntent: "custom-software",
     },
@@ -170,6 +185,10 @@ function BulletList({ items }) {
             ))}
         </ul>
     );
+}
+
+function AccentIcon({ icon }) {
+    return createElement(icon, { className: "h-5 w-5", "aria-hidden": true });
 }
 
 function RelatedProjects({ slugs }) {
@@ -280,9 +299,8 @@ export default function Services() {
     }, [enrichedProjects]);
 
     useSEO({
-        title: "Business Websites, Booking Systems & Custom Software | Likwit Devs",
-        description:
-            "Likwit Devs builds websites, booking systems, customer portals, intake workflows, AI tools, and custom software for small businesses.",
+        title: "Web Design, Booking Systems & Custom Software Portland | Likwit Devs",
+        description: "Portland web design studio building websites, booking systems, customer portals, intake workflows, and custom software for small businesses. Starting at $800.",
         canonical: "https://www.likwitdevs.com/services",
     });
 
@@ -346,31 +364,37 @@ export default function Services() {
                         </div>
                         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                             {problemCards.map((card, index) => (
-                                <Reveal key={card.href} y={16} delay={index * 60}>
-                                    <a
-                                        href={card.href}
-                                        onClick={() =>
-                                            trackEvent({
-                                                eventName: "service_card_click",
-                                                targetPath: card.href,
-                                                metadata: {
-                                                    title: card.title,
-                                                    solution: card.solution,
-                                                    location: "services-problem-cards",
-                                                },
-                                            })
-                                        }
-                                        className="block h-full rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:bg-white/[0.08]"
-                                    >
-                                        <h3 className="text-lg font-semibold text-white">{card.title}</h3>
-                                        <p className="mt-3 text-sm leading-relaxed text-white/75">
-                                            {card.solution}
-                                        </p>
-                                        <span className="mt-5 inline-flex text-sm font-semibold text-white/80 underline underline-offset-4">
-                                            Jump to service -&gt;
-                                        </span>
-                                    </a>
-                                </Reveal>
+                                <MotionCard
+                                    as="a"
+                                    key={card.href}
+                                    href={card.href}
+                                    delay={index * 0.06}
+                                    lift={5}
+                                    onClick={() =>
+                                        trackEvent({
+                                            eventName: "service_card_click",
+                                            targetPath: card.href,
+                                            metadata: {
+                                                title: card.title,
+                                                solution: card.solution,
+                                                location: "services-problem-cards",
+                                            },
+                                        })
+                                    }
+                                    className="group relative block h-full overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-[0_14px_38px_rgba(0,0,0,0.22)] transition-colors hover:border-white/20 hover:bg-white/[0.065]"
+                                >
+                                    <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/70 transition duration-300 group-hover:scale-105 group-hover:bg-white/[0.09] motion-reduce:transform-none">
+                                        <AccentIcon icon={card.icon} />
+                                    </span>
+                                    <h3 className="mt-4 text-lg font-semibold text-white">{card.title}</h3>
+                                    <p className="mt-3 text-sm leading-relaxed text-white/75">
+                                        {card.solution}
+                                    </p>
+                                    <span className="mt-5 inline-flex text-sm font-semibold text-white/65">
+                                        Jump to service -&gt;
+                                    </span>
+                                    <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-gradient-to-r from-white/70 via-white/25 to-transparent transition-transform duration-500 group-hover:scale-x-100 motion-reduce:transition-none" />
+                                </MotionCard>
                             ))}
                         </div>
                     </section>
@@ -427,16 +451,27 @@ export default function Services() {
                             id={service.id}
                             y={24}
                             once
-                            className="scroll-mt-32 rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-white shadow-lg backdrop-blur-md md:p-10"
+                            className="group relative scroll-mt-32 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-white shadow-lg backdrop-blur-md transition-colors hover:border-white/20 md:p-10"
                         >
+                            <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-white/70 via-white/25 to-transparent transition-transform duration-700 group-hover:scale-x-100 motion-reduce:transition-none" />
                             <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-start">
                                 <div>
-                                    <p className="text-xs uppercase tracking-[0.18em] text-white/60">
-                                        {service.eyebrow}
-                                    </p>
+                                    <div className="flex items-center gap-3">
+                                        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/70 transition duration-300 group-hover:scale-105 motion-reduce:transform-none">
+                                            <AccentIcon icon={service.icon} />
+                                        </span>
+                                        <p className="text-xs uppercase tracking-[0.18em] text-white/60">
+                                            {service.eyebrow}
+                                        </p>
+                                    </div>
                                     <h2 className="mt-2 text-2xl md:text-3xl font-bold text-white">
                                         {service.title}
                                     </h2>
+                                    {service.price && (
+                                        <span className="inline-block mt-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1 text-xs font-semibold text-white/70">
+                                            {service.price}
+                                        </span>
+                                    )}
                                     <p className="mt-3 max-w-2xl text-sm md:text-base leading-relaxed text-white/80">
                                         {service.description}
                                     </p>
@@ -476,10 +511,12 @@ export default function Services() {
                     ))}
                 </div>
 
+                <TestimonialsSection />
+
                 <RecentBuilds projects={recentBuildProjects} loading={loading} />
 
                 <Reveal y={24} once>
-                    <section className="rounded-3xl border border-white/10 bg-gradient-to-b from-black/50 to-black/30 p-6 text-center text-white shadow-lg backdrop-blur-md md:p-10">
+                    <CursorGlow className="monochrome-glow rounded-3xl border border-[#2a2a2a] bg-[linear-gradient(145deg,rgba(24,24,27,0.86),rgba(10,10,11,0.92))] p-6 text-center text-white shadow-[0_28px_80px_rgba(0,0,0,0.44)] backdrop-blur-md md:p-10">
                         <p className="text-xs uppercase tracking-[0.18em] text-white/60">Next Step</p>
                         <h2 className="mx-auto mt-2 max-w-3xl text-2xl md:text-4xl font-bold leading-tight text-white">
                             Let's Build Something That Solves a Real Problem
@@ -501,7 +538,7 @@ export default function Services() {
                                         },
                                     })
                                 }
-                                className="btn"
+                                className="premium-cta text-sm"
                             >
                                 Get a Free Website Review
                             </Link>
@@ -522,7 +559,7 @@ export default function Services() {
                                 See Our Work
                             </Link>
                         </div>
-                    </section>
+                    </CursorGlow>
                 </Reveal>
             </div>
         </section>

@@ -236,7 +236,7 @@ export default function WebDesignPortland() {
 
                     <Reveal once delay={100}>
                         <div className="mt-7 flex flex-wrap gap-3">
-                            <Link to="/free-review" className="inline-block rounded-xl px-6 py-3 bg-white text-black font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-lg">
+                            <Link to="/free-review" className="premium-cta text-sm">
                                 Find Out What Your Website Is Costing You →
                             </Link>
                             <a href="#projects" className="inline-block rounded-xl px-6 py-3 bg-white/10 border border-white/15 text-white text-sm font-medium hover:bg-white/15 transition-colors backdrop-blur">
@@ -341,7 +341,7 @@ export default function WebDesignPortland() {
                                     <p className="text-white/75 leading-relaxed">
                                         Every site we build is custom — no Squarespace, no Wix, no drag-and-drop templates. Fast load times, local SEO from the start, and a layout that pushes visitors toward calling or booking — not scrolling and bouncing.
                                     </p>
-                                    <Link to="/free-review" className="inline-block mt-6 rounded-xl px-5 py-2.5 bg-white text-black font-semibold text-sm hover:bg-neutral-100 transition-colors">
+                                    <Link to="/free-review" className="premium-cta mt-6 text-sm">
                                         Find Out What Your Website Is Costing You →
                                     </Link>
                                 </div>
@@ -493,7 +493,7 @@ export default function WebDesignPortland() {
                             </p>
                             <Link
                                 to="/free-review"
-                                className="inline-block rounded-xl px-6 py-3 bg-white text-black font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-lg"
+                                className="premium-cta text-sm"
                             >
                                 Get a Free Website Review →
                             </Link>
@@ -560,7 +560,7 @@ export default function WebDesignPortland() {
                             </p>
                             <Link
                                 to="/free-review"
-                                className="inline-block rounded-xl px-7 py-3.5 bg-white text-black font-semibold text-sm hover:bg-neutral-100 transition-colors shadow-lg"
+                                className="premium-cta text-sm"
                             >
                                 Find Out What Your Website Is Costing You →
                             </Link>

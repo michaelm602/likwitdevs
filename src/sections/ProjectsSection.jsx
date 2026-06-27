@@ -84,7 +84,7 @@ export default function ProjectsSection() {
                         <div className="mt-5 flex flex-wrap gap-3">
                             <Link
                                 to="/free-review"
-                                className="rounded-md bg-white px-4 py-2 font-semibold text-black transition hover:opacity-90"
+                                className="premium-cta"
                             >
                                 Get My Free Review
                             </Link>

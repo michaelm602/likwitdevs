@@ -1,6 +1,7 @@
 // src/sections/PricingSection.jsx
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
+import { MotionCard } from "../components/PremiumMotion";
 
 export default function PricingSection() {
     const tiers = [
@@ -108,21 +109,28 @@ export default function PricingSection() {
                     {tiers.map((t, i) => {
                         const base = i * 90; // stagger base per card
                         return (
-                            <div
+                            <MotionCard
+                                as="article"
                                 key={t.name}
+                                delay={i * 0.07}
+                                lift={t.highlight ? 5 : 3}
                                 className={[
-                                    "flex h-full flex-col rounded-2xl border border-white/10 bg-black/10 backdrop-blur-md",
-                                    "shadow-[0_8px_30px_rgba(0,0,0,0.3)] overflow-hidden p-5 text-white md:p-6",
-                                    t.highlight ? "ring-1 ring-white/20" : "",
+                                    "relative flex h-full flex-col overflow-hidden rounded-2xl border bg-black/25 p-5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.32)] backdrop-blur-md transition-colors md:p-6",
+                                    t.highlight
+                                        ? "border-white/25 bg-[linear-gradient(145deg,rgba(255,255,255,0.065),rgba(0,0,0,0.36))] ring-1 ring-white/10 shadow-[0_22px_65px_rgba(0,0,0,0.42),0_0_28px_rgba(255,255,255,0.035)]"
+                                        : "border-white/10 hover:border-white/20 hover:bg-white/[0.04]",
                                 ].join(" ")}
                             >
+                                {t.highlight && (
+                                    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/75 to-transparent" />
+                                )}
                                 <Reveal y={8} delay={base}>
                                     <div className="flex min-h-7 items-start justify-between gap-3">
                                         <div className="text-sm uppercase tracking-wide text-white/70">
                                             {t.name}
                                         </div>
                                         {t.badge && (
-                                            <div className="shrink-0 rounded-full bg-white/10 border border-white/10 px-2.5 py-1 text-[11px] leading-none text-white/90">
+                                            <div className="shrink-0 rounded-full border border-white/15 bg-white/[0.07] px-2.5 py-1 text-[11px] font-semibold leading-none text-white/85">
                                                 {t.badge}
                                             </div>
                                         )}
@@ -141,7 +149,7 @@ export default function PricingSection() {
                                     {t.features.map((f, idx) => (
                                         <Reveal key={f} y={8} delay={base + 160 + idx * 40}>
                                             <li className="flex gap-2">
-                                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-white/60" />
+                                                <span className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${t.highlight ? "bg-white/80 shadow-[0_0_8px_rgba(255,255,255,0.35)]" : "bg-white/60"}`} />
                                                 <span>{f}</span>
                                             </li>
                                         </Reveal>
@@ -152,7 +160,7 @@ export default function PricingSection() {
                                     <Reveal y={8} delay={base + 160 + t.features.length * 40 + 80}>
                                         <Link
                                             to={`/contact?plan=${encodeURIComponent(t.name)}`}
-                                            className="btn w-full"
+                                            className="premium-cta w-full"
                                         >
                                             {t.cta}
                                         </Link>
@@ -164,7 +172,7 @@ export default function PricingSection() {
                                         </p>
                                     </Reveal>
                                 </div>
-                            </div>
+                            </MotionCard>
                         );
                     })}
                 </div>
@@ -183,12 +191,15 @@ export default function PricingSection() {
                     </Reveal>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {maintenance.map((m) => (
-                            <div
+                        {maintenance.map((m, index) => (
+                            <MotionCard
+                                as="article"
                                 key={m.name}
+                                delay={index * 0.06}
+                                lift={3}
                                 className={[
-                                    "rounded-2xl border border-white/10 bg-black/10 backdrop-blur-md p-6 text-white",
-                                    m.highlight ? "ring-1 ring-white/20" : "",
+                                    "rounded-2xl border bg-black/20 p-6 text-white backdrop-blur-md transition-colors",
+                                    m.highlight ? "border-white/20 ring-1 ring-white/10" : "border-white/10 hover:border-white/20",
                                 ].join(" ")}
                             >
                                 <div className="text-sm uppercase tracking-wide text-white/70">
@@ -211,7 +222,7 @@ export default function PricingSection() {
                                 >
                                     Choose {m.name}
                                 </Link>
-                            </div>
+                            </MotionCard>
                         ))}
                     </div>
                 </div>

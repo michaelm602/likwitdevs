@@ -1,23 +1,47 @@
 import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import emailjs from "@emailjs/browser";
+import { ArrowRight, BadgeCheck, PhoneCall, Search, Workflow } from "lucide-react";
 import Typewriter from "../components/Typewriter";
+import { CursorGlow, MotionCard, MotionReveal } from "../components/PremiumMotion";
 import AboutSection from "../sections/AboutSection";
 import PricingSection from "../sections/PricingSection";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
 import { trackEvent } from "../lib/analytics";
+import TestimonialsSection from "../sections/TestimonialsSection";
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 const proofItems = [
-    "Local Oregon Businesses",
+    "8 Projects Built",
     "Custom Built - No Templates",
     "Work Directly With The Developer",
     "Free Website Review",
-    "Mobile-First Builds",
+    "Websites · Systems · Software",
+];
+
+const heroOutcomes = [
+    {
+        title: "Get Found in Portland",
+        copy: "Show up when locals search for what you do -- built-in SEO from day one.",
+        icon: Search,
+        label: "Local visibility",
+    },
+    {
+        title: "Replace Paper With Systems",
+        copy: "Digital intake, booking, and admin tools that give your business a cleaner way to run.",
+        icon: Workflow,
+        label: "Cleaner operations",
+    },
+    {
+        title: "Turn Visitors Into Calls",
+        copy: "Every page built to push people toward booking -- not just browsing.",
+        icon: PhoneCall,
+        label: "Stronger conversion",
+    },
 ];
 
 const whyItems = [
@@ -104,9 +128,8 @@ function sortHomeProjects(a, b) {
 
 export default function Home() {
     useSEO({
-        title: "Your Website Is Losing You Customers",
-        description:
-            "Most small business websites drive people away without the owner ever knowing. We fix that -- and turn your site into something that actually rings your phone.",
+        title: "Portland Web Design, Booking Systems & Custom Software | Likwit Devs",
+        description: "Likwit Devs builds websites, booking systems, intake workflows, and custom software for Portland small businesses. Custom-built. No templates. Work directly with the developer.",
         canonical: "https://www.likwitdevs.com/",
     });
 
@@ -223,112 +246,118 @@ export default function Home() {
     return (
         <>
             {/* HERO */}
-            <section className="relative">
-                <div className="mx-auto max-w-6xl px-4">
-                    <div className="relative py-14 md:py-24">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-white">
-                            Your Website Isn't Getting You Calls... And It's Costing You Jobs
-                        </h1>
+            <section className="relative px-4 pt-10 pb-16 md:pt-16 md:pb-24">
+                <div className="mx-auto max-w-6xl">
+                    <div className="relative">
+                        <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -inset-x-8 -inset-y-10 bg-[radial-gradient(ellipse_at_34%_45%,rgba(0,0,0,0.5),transparent_68%)]"
+                        />
+                        <div className="relative grid gap-10 py-8 md:py-12 lg:grid-cols-[1.35fr_0.65fr] lg:items-center">
+                            <MotionReveal className="max-w-3xl" amount={0.05}>
+                                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/65">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-white/80 shadow-[0_0_10px_rgba(255,255,255,0.35)]" />
+                                    Portland-built digital systems
+                                </div>
+                                <h1 className="mt-5 max-w-4xl text-4xl font-bold leading-[1.02] tracking-[-0.035em] text-white sm:text-5xl md:text-6xl">
+                                    Your Business Runs on Systems. {" "}
+                                    <span className="bg-gradient-to-r from-white via-white to-zinc-400 bg-clip-text text-transparent">
+                                        Let's Build Better Ones.
+                                    </span>
+                                </h1>
 
-                        <p className="mt-3 text-base sm:text-lg md:text-xl leading-relaxed text-white/90 max-w-2xl">
-                            I build conversion-focused websites for Portland service businesses that turn visitors into real calls, quote requests, and booked work.
-                        </p>
-                        <p className="mt-3 text-sm sm:text-base text-white/80 max-w-2xl">
-                            Every day your site underperforms, people click, hesitate, and hire someone else.
-                        </p>
-
-                        <p className="mt-2 text-sm sm:text-base text-white/70 h-6">
-                            <Typewriter
-                                texts={[
-                                    "Turn clicks into calls.",
-                                    "Turn traffic into paying clients.",
-                                    "Get found locally. Get hired faster.",
-                                    "More leads. Better clients.",
-                                    "Websites that actually bring in business.",
-                                ]}
-                                speed={70}
-                                pause={2200}
-                            />
-                        </p>
-
-                        <div className="mt-6">
-                            <a
-                                href="#audit"
-                                onClick={() =>
-                                    trackEvent({
-                                        eventName: "cta_click",
-                                        targetPath: "#audit",
-                                        serviceIntent: "free-review",
-                                        metadata: {
-                                            label: "Get My Free Review",
-                                            location: "home-hero",
-                                        },
-                                    })
-                                }
-                                className="inline-block rounded-xl px-6 py-3 bg-white text-black font-semibold text-sm sm:text-base hover:bg-neutral-100 transition-colors shadow-lg"
-                            >
-                                Get My Free Review
-                            </a>
-                            <div className="mt-3 flex flex-wrap gap-2 text-sm text-white/75">
-                                <a
-                                    href="#projects"
-                                    onClick={() =>
-                                        trackEvent({
-                                            eventName: "cta_click",
-                                            targetPath: "#projects",
-                                            metadata: {
-                                                label: "View Work",
-                                                location: "home-hero-secondary",
-                                            },
-                                        })
-                                    }
-                                    className="hover:text-white/90 transition"
-                                >
-                                    View Work
-                                </a>
-                                <span>|</span>
-                                <Link
-                                    to="/contact"
-                                    onClick={() =>
-                                        trackEvent({
-                                            eventName: "cta_click",
-                                            targetPath: "/contact",
-                                            metadata: {
-                                                label: "Contact",
-                                                location: "home-hero-secondary",
-                                            },
-                                        })
-                                    }
-                                    className="hover:text-white/90 transition"
-                                >
-                                    Contact
-                                </Link>
-                                <span>|</span>
-                                <Link to="/web-design-portland" className="hover:text-white/90 transition">Portland Web Design</Link>
-                            </div>
-                            <p className="mt-3 text-xs text-white/70">
-                                5.0 Google Rating | Portland-based | Work directly with me | Launch in 1-3 weeks
-                            </p>
-                        </div>
-
-                        <div className="mt-8 grid gap-3 md:grid-cols-3">
-                            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
-                                <div className="text-white font-semibold">Get Found in Portland</div>
-                                <p className="text-white/80 text-sm mt-1">
-                                    Show up when locals search for what you do -- built-in SEO from day one.
+                                <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg md:text-xl">
+                                    I build websites, booking systems, intake workflows, and custom software for Portland small businesses — the kind that gets you more calls, less paperwork, and customers who actually follow through.
                                 </p>
-                            </div>
-                            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
-                                <div className="text-white font-semibold">Look Like the Pro You Are</div>
-                                <p className="text-white/80 text-sm mt-1">
-                                    Clean, fast design that builds trust before you even answer the phone.
+                                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
+                                    Most small business owners are running on tools that slow them down — bad websites, paper forms, and booking flows that live in DMs. I fix that.
                                 </p>
-                            </div>
-                            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
-                                <div className="text-white font-semibold">Turn Visitors Into Calls</div>
-                                <p className="text-white/80 text-sm mt-1">
-                                    Every page built to push people toward booking -- not just browsing.
+
+                                <p className="mt-3 h-6 text-sm text-white/60 sm:text-base">
+                                    <Typewriter
+                                        texts={[
+                                            "Turn clicks into calls.",
+                                            "Turn traffic into paying clients.",
+                                            "Get found locally. Get hired faster.",
+                                            "More leads. Better clients.",
+                                            "Websites that actually bring in business.",
+                                        ]}
+                                        speed={70}
+                                        pause={2200}
+                                    />
                                 </p>
+
+                                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+                                    <a
+                                        href="#audit"
+                                        onClick={() =>
+                                            trackEvent({
+                                                eventName: "cta_click",
+                                                targetPath: "#audit",
+                                                serviceIntent: "free-review",
+                                                metadata: {
+                                                    label: "Get My Free Review",
+                                                    location: "home-hero",
+                                                },
+                                            })
+                                        }
+                                        className="premium-cta group text-sm sm:text-base"
+                                    >
+                                        Get My Free Review
+                                        <ArrowRight className="h-4 w-4 transition-transform duration-300 motion-reduce:transition-none group-hover:translate-x-0.5" aria-hidden="true" />
+                                    </a>
+                                    <a
+                                        href="#projects"
+                                        onClick={() =>
+                                            trackEvent({
+                                                eventName: "cta_click",
+                                                targetPath: "#projects",
+                                                metadata: {
+                                                    label: "View Work",
+                                                    location: "home-hero-secondary",
+                                                },
+                                            })
+                                        }
+                                        className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-white/80 transition hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
+                                    >
+                                        View Work
+                                    </a>
+                                </div>
+
+                                <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/65">
+                                    <span className="inline-flex items-center gap-1.5"><BadgeCheck className="h-3.5 w-3.5 text-white/55" aria-hidden="true" />5.0 Google Rating</span>
+                                    <span>Portland-based</span>
+                                    <span>8 projects built</span>
+                                    <Link to="/contact" className="transition hover:text-white">Contact</Link>
+                                    <Link to="/web-design-portland" className="transition hover:text-white">Portland Web Design</Link>
+                                </div>
+                            </MotionReveal>
+
+                            <div className="grid gap-3" aria-label="Business outcomes">
+                                {heroOutcomes.map((outcome, index) => {
+                                    const Icon = outcome.icon;
+                                    return (
+                                        <MotionCard
+                                            as="article"
+                                            key={outcome.title}
+                                            delay={0.12 + index * 0.08}
+                                            lift={4}
+                                            className="group relative overflow-hidden rounded-2xl border border-white/10 bg-black/35 p-4 shadow-[0_12px_35px_rgba(0,0,0,0.26)] backdrop-blur-md transition-colors hover:border-white/20 hover:bg-white/[0.055]"
+                                        >
+                                            <div className="flex items-start gap-3">
+                                                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/70 transition duration-300 group-hover:scale-105 group-hover:bg-white/[0.09] motion-reduce:transform-none">
+                                                    <Icon className="h-5 w-5" aria-hidden="true" />
+                                                </span>
+                                                <div>
+                                                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40">{outcome.label}</p>
+                                                    <h2 className="mt-1 font-semibold text-white">{outcome.title}</h2>
+                                                    <p className="mt-1.5 text-sm leading-relaxed text-white/70">{outcome.copy}</p>
+                                                </div>
+                                            </div>
+                                            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-gradient-to-r from-white/70 via-white/25 to-transparent transition-transform duration-500 group-hover:scale-x-100 motion-reduce:transition-none" />
+                                        </MotionCard>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
@@ -336,15 +365,17 @@ export default function Home() {
             </section>
 
             {/* TRUST PROOF STRIP */}
-            <section aria-label="Likwit Devs proof points" className="mx-auto max-w-6xl px-4 -mt-4 md:-mt-10">
-                <div className="grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-black/25 p-3 backdrop-blur-md sm:grid-cols-3 lg:grid-cols-5">
-                    {proofItems.map((item) => (
-                        <div
+            <section aria-label="Likwit Devs proof points" className="mx-auto max-w-6xl px-4">
+                <div className="grid grid-cols-2 gap-2 rounded-2xl border border-[#2a2a2a] bg-black/45 p-3 shadow-[0_16px_45px_rgba(0,0,0,0.35)] backdrop-blur-md sm:grid-cols-3 lg:grid-cols-5">
+                    {proofItems.map((item, index) => (
+                        <MotionCard
                             key={item}
-                            className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-center text-xs font-semibold uppercase tracking-[0.08em] text-white/80"
+                            delay={index * 0.04}
+                            lift={2}
+                            className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-center text-[11px] font-semibold uppercase tracking-[0.1em] text-white/75 transition-colors hover:border-white/20 hover:text-white"
                         >
                             {item}
-                        </div>
+                        </MotionCard>
                     ))}
                 </div>
             </section>
@@ -362,23 +393,25 @@ export default function Home() {
                 </div>
 
                 <div className="mt-7 grid gap-4 md:grid-cols-2">
-                    {recentProjects.map((project) => {
+                    {recentProjects.map((project, index) => {
                         const imageUrl = getProjectImage(project);
                         const badges = getProjectBadges(project);
 
                         return (
-                            <article
+                            <MotionCard
+                                as="article"
                                 key={project.name}
-                                className="flex h-full flex-col rounded-2xl border border-white/10 bg-black/20 p-4 backdrop-blur-md transition-colors hover:bg-white/[0.07]"
+                                delay={index * 0.07}
+                                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/30 p-4 shadow-[0_20px_55px_rgba(0,0,0,0.32)] backdrop-blur-md transition-colors hover:border-white/20 hover:bg-white/[0.065]"
                             >
                                 {/* Thumbnail size: change md:max-w-[28rem] back to md:max-w-sm to restore the previous compact card height. */}
-                                <div className="aspect-[16/9] w-full overflow-hidden rounded-xl border border-white/10 bg-black/25 md:max-w-[28rem] md:self-center">
+                                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-white/10 bg-black/25 md:max-w-[28rem] md:self-center">
                                     {imageUrl ? (
                                         <img
                                             src={imageUrl}
                                             alt={project.imageAlt || `${project.name} project preview`}
                                             loading="lazy"
-                                            className="h-full w-full object-cover"
+                                            className="h-full w-full object-cover transition-transform duration-700 ease-out motion-reduce:transition-none group-hover:scale-[1.035]"
                                             style={{ objectPosition: project.imageFocus || "50% 25%" }}
                                         />
                                     ) : (
@@ -388,6 +421,8 @@ export default function Home() {
                                             </span>
                                         </div>
                                     )}
+                                    <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_28%,rgba(255,255,255,0.1)_48%,transparent_68%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none" />
+                                    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/40 to-transparent" />
                                 </div>
 
                                 <div className="flex flex-1 flex-col">
@@ -426,12 +461,12 @@ export default function Home() {
                                                 },
                                             })
                                         }
-                                        className="mt-auto inline-flex pt-5 text-sm font-semibold text-white/80 underline underline-offset-4 transition hover:text-white"
+                                        className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-white/70 transition hover:text-white"
                                     >
-                                        See The Build -&gt;
+                                        See The Build <ArrowRight className="h-4 w-4 transition-transform duration-300 motion-reduce:transition-none group-hover:translate-x-1" aria-hidden="true" />
                                     </Link>
                                 </div>
-                            </article>
+                            </MotionCard>
                         );
                     })}
                 </div>
@@ -451,19 +486,21 @@ export default function Home() {
                     </div>
 
                     <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {whyItems.map((item) => (
-                            <div key={item.title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                        {whyItems.map((item, index) => (
+                            <MotionCard key={item.title} delay={index * 0.04} lift={4} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition-colors hover:border-white/20 hover:bg-white/[0.06]">
                                 <h3 className="font-semibold text-white">{item.title}</h3>
                                 <p className="mt-2 text-sm leading-relaxed text-white/80">{item.copy}</p>
-                            </div>
+                            </MotionCard>
                         ))}
                     </div>
                 </div>
             </section>
 
+            <TestimonialsSection />
+
             {/* LEAD MAGNET: FREE REVIEW */}
             <section id="audit" className="mx-auto max-w-6xl px-4 py-12 md:py-16">
-                <div className="rounded-3xl border border-white/15 bg-black/20 backdrop-blur-md p-6 md:p-10">
+                <CursorGlow className="monochrome-glow rounded-3xl border border-[#2a2a2a] bg-[linear-gradient(145deg,rgba(24,24,27,0.86),rgba(10,10,11,0.9))] p-6 shadow-[0_28px_90px_rgba(0,0,0,0.42)] backdrop-blur-md md:p-10">
                     <div className="md:flex md:items-start md:justify-between gap-8">
                         <div className="max-w-2xl">
                             <h2 className="text-2xl md:text-3xl font-bold text-white">
@@ -509,7 +546,7 @@ export default function Home() {
                                     onSubmit={handleReviewSubmit}
                                     onFocus={handleReviewFormStarted}
                                     noValidate
-                                    className="rounded-2xl bg-black/20 border border-white/10 p-4"
+                                    className="rounded-2xl border border-[#2a2a2a] bg-black/35 p-4 shadow-[0_16px_45px_rgba(0,0,0,0.3)]"
                                 >
                                     <label htmlFor="audit-name" className="block text-sm text-white/90">
                                         Your Name <span className="text-white/70">(required)</span>
@@ -585,7 +622,7 @@ export default function Home() {
                                         <button
                                             type="submit"
                                             disabled={reviewStatus.sending}
-                                            className="w-full text-center rounded-xl px-4 py-2.5 bg-white text-black font-semibold hover:bg-neutral-100 transition-colors disabled:opacity-50"
+                                            className="premium-cta w-full"
                                         >
                                             {reviewStatus.sending ? "Sending..." : "Request My Free Review"}
                                         </button>
@@ -598,11 +635,43 @@ export default function Home() {
                             )}
                         </div>
                     </div>
-                </div>
+                </CursorGlow>
             </section>
 
             <PricingSection />
             <AboutSection />
+
+            <section className="mx-auto max-w-6xl px-4 pt-2 pb-20 md:pb-24" aria-labelledby="final-review-heading">
+                <CursorGlow className="monochrome-glow rounded-3xl border border-[#2a2a2a] bg-[#0d0d0e]/90 px-6 py-10 text-center shadow-[0_28px_80px_rgba(0,0,0,0.44)] backdrop-blur-md md:px-10 md:py-14">
+                    <MotionReveal amount={0.2}>
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/45">Your next step</p>
+                        <h2 id="final-review-heading" className="mx-auto mt-3 max-w-2xl text-2xl font-bold text-white md:text-4xl">
+                            Ready for a clearer next step?
+                        </h2>
+                        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/75 md:text-base">
+                            No pressure. No obligation. Just a useful review.
+                        </p>
+                        <a
+                            href="#audit"
+                            onClick={() =>
+                                trackEvent({
+                                    eventName: "cta_click",
+                                    targetPath: "#audit",
+                                    serviceIntent: "free-review",
+                                    metadata: {
+                                        label: "Request My Free Review",
+                                        location: "home-final-cta",
+                                    },
+                                })
+                            }
+                            className="premium-cta group mt-7"
+                        >
+                            Request My Free Review
+                            <ArrowRight className="h-4 w-4 transition-transform duration-300 motion-reduce:transition-none group-hover:translate-x-0.5" aria-hidden="true" />
+                        </a>
+                    </MotionReveal>
+                </CursorGlow>
+            </section>
 
             <div
                 className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-black/85 px-4 pt-3 backdrop-blur-md md:hidden"
@@ -623,7 +692,7 @@ export default function Home() {
                                 },
                             })
                         }
-                        className="w-full rounded-xl bg-white px-4 py-3 text-center text-sm font-semibold text-black shadow-lg"
+                        className="premium-cta w-full text-sm"
                     >
                         Free Review
                     </a>

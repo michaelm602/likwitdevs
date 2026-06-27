@@ -73,7 +73,7 @@ export default function WorkDetail() {
                                         },
                                     })
                                 }
-                                className="inline-flex w-fit rounded-full border border-white/15 bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-neutral-100"
+                                className="premium-cta w-fit text-sm"
                             >
                                 Visit Live Site -&gt;
                             </a>

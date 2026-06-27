@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+import { MotionCard, MotionReveal } from "../components/PremiumMotion";
 import WorkProjectImage from "../components/WorkProjectImage";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
@@ -16,16 +18,19 @@ function ProjectGrid({ title, projects, loading }) {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
-                {projects.map((project) => {
+                {projects.map((project, index) => {
                     const liveUrl = project.liveUrl || project.liveHref || "";
 
                     return (
-                        <article
+                        <MotionCard
+                            as="article"
                             key={project.slug}
-                            className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur-md transition-colors hover:bg-white/[0.07]"
+                            delay={index * 0.06}
+                            className="group relative overflow-hidden rounded-2xl border border-white/10 bg-black/30 p-5 shadow-[0_20px_55px_rgba(0,0,0,0.3)] backdrop-blur-md transition-colors hover:border-white/20 hover:bg-white/[0.065]"
                         >
+                            <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-white/70 via-white/25 to-transparent transition-transform duration-700 group-hover:scale-x-100 motion-reduce:transition-none" />
                             {/* TODO: Add final cropped screenshots, video clips, or before/after visuals as project media becomes available. */}
-                            <WorkProjectImage project={project} loading={loading} />
+                            <WorkProjectImage project={project} loading={loading} className="work-project-image rounded-xl" />
 
                             <p className="mt-5 text-xs uppercase tracking-[0.16em] text-white/70">
                                 {project.industry}
@@ -60,9 +65,9 @@ function ProjectGrid({ title, projects, loading }) {
                                             },
                                         })
                                     }
-                                    className="inline-flex text-sm font-semibold text-white/80 underline underline-offset-4 transition hover:text-white"
+                                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-white/70 transition hover:text-white"
                                 >
-                                    See The Build -&gt;
+                                    See The Build <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" />
                                 </Link>
                                 {liveUrl && (
                                     <a
@@ -86,7 +91,7 @@ function ProjectGrid({ title, projects, loading }) {
                                     </a>
                                 )}
                             </div>
-                        </article>
+                        </MotionCard>
                     );
                 })}
             </div>
@@ -109,7 +114,7 @@ export default function Work() {
     return (
         <section className="min-h-screen bg-transparent px-4 pt-28 pb-16">
             <div className="mx-auto max-w-6xl space-y-12">
-                <header className="max-w-3xl">
+                <MotionReveal as="header" className="max-w-3xl" amount={0.05}>
                     <p className="text-xs uppercase tracking-[0.18em] text-white/60">Project Portfolio</p>
                     <h1 className="mt-3 text-3xl md:text-5xl font-bold leading-tight text-white">
                         Client work and owned products from Likwit Devs.
@@ -117,7 +122,7 @@ export default function Work() {
                     <p className="mt-4 text-base md:text-lg leading-relaxed text-white/80">
                         This is the home base for completed client work and Likwit Devs owned products. Full case studies will grow here as project history, visuals, and verified details are documented.
                     </p>
-                </header>
+                </MotionReveal>
 
                 <ProjectGrid title={projectCategories.client} projects={clientProjects} loading={loading} />
                 <ProjectGrid title={projectCategories.owned} projects={ownedProjects} loading={loading} />

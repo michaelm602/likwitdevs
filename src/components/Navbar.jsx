@@ -83,7 +83,7 @@ export default function Navbar() {
                         {/* PRIMARY CTA */}
                         <button
                             onClick={() => { setOpen(false); navigate("/free-review"); }}
-                            className="ml-2 px-4 py-2 rounded-xl text-sm text-white bg-white/20 hover:bg-white/30 transition"
+                            className="premium-cta ml-2 px-4 py-2 text-sm"
                         >
                             Free Review
                         </button>
@@ -125,7 +125,7 @@ export default function Navbar() {
                             <li>
                                 <button
                                     onClick={() => { setOpen(false); navigate("/free-review"); }}
-                                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-white bg-white/20 hover:bg-white/30 transition"
+                                    className="premium-cta w-full px-3 py-2 text-sm"
                                 >
                                     Free Review
                                 </button>
