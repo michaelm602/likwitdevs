@@ -1,12 +1,11 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "../lib/firebase";
 import useSEO from "../hooks/useSEO";
 import PolicyNotice from "../components/PolicyNotice";
 import { getLeadAttribution, trackEvent } from "../lib/analytics";
+import { createPublicLead } from "../lib/leads";
+import { sendLeadNotification } from "../lib/emailNotifications";
 
 const MotionForm = motion.form;
 
@@ -87,6 +86,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
     const intentProjectType = projectTypeByIntent[intent] || "";
     const hasIntentProjectType = Boolean(intentProjectType);
     const [projectType, setProjectType] = useState("");
+    const [leadSource, setLeadSource] = useState("");
 
     useSEO({
         title: "Ready to Stop Losing Customers?",
@@ -101,10 +101,6 @@ export default function Contact({ embedded = false, source = "contact", intent: 
 
     const plans = ["Starter", "Core", "Premium", "Custom Systems", "Care", "Growth", "Partner"];
     const [selectOpen, setSelectOpen] = useState(false);
-
-    const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
     const intentPrefills = useMemo(() => ({
         audit:
@@ -229,6 +225,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
 
     function handleFormStarted() {
         if (formStarted) return;
+        if (formRef.current?.company?.value.trim()) return;
         setFormStarted(true);
         trackEvent({
             eventName: "contact_form_started",
@@ -246,6 +243,15 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         if (status.sending) return;
 
         const form = formRef.current;
+        if (form.company?.value.trim()) {
+            setStatus({
+                sending: false,
+                ok: true,
+                msg: "Thanks! Your message was received.",
+            });
+            return;
+        }
+
         const name = form.from_name.value.trim();
         const email = form.from_email.value.trim();
         const message = form.message.value.trim();
@@ -281,40 +287,33 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         let leadId = "";
 
         try {
-            const leadRef = await addDoc(collection(db, "leads"), {
-                name,
-                email,
-                replyTo: email,
-                website: websiteVal,
-                projectType: projectTypeVal,
-                rawIntent: intent,
-                message: submittedMessage,
-                rawMessage: message,
-                source,
-                sourcePage,
-                originPage: attribution.originPage,
-                landingPage: attribution.landingPage,
-                referrer: attribution.referrer,
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp(),
-                status: "New",
-                notes: "",
-                estimatedValue: null,
+            const leadRef = await createPublicLead({
+                lead: {
+                    name,
+                    email,
+                    replyTo: email,
+                    website: websiteVal,
+                    projectType: projectTypeVal,
+                    rawIntent: intent,
+                    message: submittedMessage,
+                    rawMessage: message,
+                    source,
+                    sourcePage,
+                    originPage: attribution.originPage,
+                    landingPage: attribution.landingPage,
+                    referrer: attribution.referrer,
+                    leadSource,
+                },
+                analytics: {
+                    serviceIntent: intent,
+                    metadata: {
+                        source,
+                        projectType: projectTypeVal,
+                    },
+                },
             });
             leadId = leadRef.id;
             leadSaved = true;
-            trackEvent({
-                eventName: "lead_created",
-                serviceIntent: intent,
-                leadId,
-                originPage: attribution.originPage,
-                landingPage: attribution.landingPage,
-                referrer: attribution.referrer,
-                metadata: {
-                    source,
-                    projectType: projectTypeVal,
-                },
-            });
         } catch (err) {
             console.error("Lead save failed", err);
             trackEvent({
@@ -328,31 +327,24 @@ export default function Contact({ embedded = false, source = "contact", intent: 
         }
 
         try {
-            await emailjs.send(
-                SERVICE_ID,
-                TEMPLATE_ID,
-                {
-                    title: inquiryTitle,
-                    name,
-                    email,
-                    from_name: name,
-                    from_email: email,
-                    message: submittedMessage,
-                    raw_message: message,
-                    plan,
-                    intent,
-                    project_type: projectTypeVal,
-                    projectType: projectTypeVal,
-                    raw_intent: intent,
-                    website: websiteVal,
-                    website_url: websiteVal,
-                    business: businessVal,
-                    business_type: businessVal,
-                    reply_to: email,
-                    source,
-                },
-                { publicKey: PUBLIC_KEY }
-            );
+            await sendLeadNotification({
+                title: inquiryTitle,
+                name,
+                email,
+                message: submittedMessage,
+                raw_message: message,
+                plan,
+                intent,
+                project_type: projectTypeVal,
+                projectType: projectTypeVal,
+                raw_intent: intent,
+                website: websiteVal,
+                website_url: websiteVal,
+                business: businessVal,
+                business_type: businessVal,
+                source,
+                lead_source: leadSource || "",
+            });
             emailSent = true;
             trackEvent({
                 eventName: "emailjs_sent",
@@ -376,7 +368,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
             });
         }
 
-        if (emailSent) {
+        if (leadSaved && emailSent) {
             setStatus({ sending: false, ok: true, msg: "Thanks! Your message was sent." });
             form.reset();
             return;
@@ -387,6 +379,21 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                 sending: false,
                 ok: true,
                 msg: "Thanks! Your request was saved. I may need to follow up manually if the email notification is delayed.",
+            });
+            form.reset();
+            return;
+        }
+
+        if (emailSent) {
+            console.warn("Lead notification sent, but the CRM write failed", {
+                source,
+                sourcePage,
+                projectType: projectTypeVal,
+            });
+            setStatus({
+                sending: false,
+                ok: true,
+                msg: "Thanks! Your message reached me by email. The CRM copy is delayed, so I'll follow up manually.",
             });
             form.reset();
             return;
@@ -429,6 +436,7 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                     className="hidden"
                     tabIndex={-1}
                     autoComplete="off"
+                    aria-hidden="true"
                 />
 
                 {/* Selected plan / audit badge */}
@@ -533,6 +541,29 @@ export default function Contact({ embedded = false, source = "contact", intent: 
                                     {option}
                                 </option>
                             ))}
+                    </select>
+                </div>
+
+                <div>
+                    <label className="text-sm text-white/80">
+                        How did you hear about us? <span className="text-white/40">(optional)</span>
+                    </label>
+                    <select
+                        className="input mt-1"
+                        value={leadSource}
+                        onChange={(e) => setLeadSource(e.target.value)}
+                    >
+                        <option value="">Select one...</option>
+                        <option value="Google Search">Google Search</option>
+                        <option value="Google Maps">Google Maps</option>
+                        <option value="Referral">Referral</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="LinkedIn">LinkedIn</option>
+                        <option value="Website Audit">Website Audit</option>
+                        <option value="Client Website Footer">Client Website Footer</option>
+                        <option value="Previous Client">Previous Client</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
 

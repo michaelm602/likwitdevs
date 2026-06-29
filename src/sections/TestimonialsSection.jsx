@@ -1,5 +1,7 @@
 import Reveal from "../components/Reveal";
 
+const GOOGLE_REVIEW_COUNT = 3;
+
 const testimonials = [
     {
         text: "Great experience working with LikWitDevs on my website. Fast communication, clean design, and they delivered exactly what I needed. Highly recommend for anyone looking for reliable web development.",
@@ -57,7 +59,7 @@ export default function TestimonialsSection() {
                         </span>
                     </div>
                     <div className="rounded-full border border-white/15 bg-black/20 backdrop-blur-md px-4 py-2 text-sm text-white/60">
-                        3 Google Reviews
+                        {GOOGLE_REVIEW_COUNT} Google Reviews
                     </div>
                 </div>
 

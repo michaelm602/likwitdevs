@@ -120,9 +120,19 @@ function compactEventPayload(payload = {}) {
 export function trackEvent(payload) {
     try {
         const eventPayload = compactEventPayload(payload);
-        void addDoc(collection(db, analyticsCollection), eventPayload).catch(() => {});
-    } catch {
-        // Analytics should never interrupt the user experience.
+        return addDoc(collection(db, analyticsCollection), eventPayload).catch((err) => {
+            console.error("Analytics event write failed", {
+                eventName: eventPayload.eventName,
+                error: err,
+            });
+            return null;
+        });
+    } catch (err) {
+        console.error("Analytics event setup failed", {
+            eventName: payload?.eventName || "event",
+            error: err,
+        });
+        return Promise.resolve(null);
     }
 }
 

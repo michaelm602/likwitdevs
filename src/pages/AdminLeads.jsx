@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import {
+    addDoc,
     arrayUnion,
     collection,
     doc,
+    getDoc,
     onSnapshot,
     orderBy,
     query,
@@ -68,6 +70,60 @@ const proposalPackages = [
     },
 ];
 
+
+const auditTemplateOptions = [
+    "General Business",
+    "Contractor",
+    "Salon / Beauty",
+    "Therapist",
+    "Auto Repair",
+    "Photographer",
+];
+
+const auditTemplates = {
+    "General Business": {
+        snapshot: "The website should quickly explain what the business does, who it helps, and what action a visitor should take next.",
+        trustSignals: "- Customer reviews\n- Clear business contact information\n- Photos of real work, team, or location",
+        conversionOpportunities: "- Clear primary call-to-action\n- Simple contact form\n- Click-to-call button on mobile",
+        priorityIssues: "- Clarify the main offer above the fold\n- Make the next step easier to find\n- Strengthen proof and credibility near the top of the page",
+        recommendedNextSteps: "Start with the highest-friction parts of the visitor path: homepage clarity, mobile contact flow, and trust signals.",
+    },
+    Contractor: {
+        snapshot: "The website should help homeowners quickly understand the services offered, see proof of completed work, and request an estimate with confidence.",
+        trustSignals: "- Project gallery\n- Reviews\n- License and insurance information",
+        conversionOpportunities: "- Request estimate CTA\n- Service area pages\n- Photo-backed service pages",
+        priorityIssues: "- Feature completed projects more prominently\n- Add service-area content for local searches\n- Make estimate requests easy from every major page",
+        recommendedNextSteps: "Prioritize a stronger project gallery, service-area structure, and a clearer estimate request flow.",
+    },
+    "Salon / Beauty": {
+        snapshot: "The website should make services, style, pricing expectations, and booking steps easy to understand from a phone.",
+        trustSignals: "- Client reviews\n- Service photos\n- Studio or provider photos",
+        conversionOpportunities: "- Book appointment CTA\n- Service menu with clear categories\n- Intake or appointment request form",
+        priorityIssues: "- Make booking the clearest next step\n- Organize services for fast scanning\n- Add visual proof near service descriptions",
+        recommendedNextSteps: "Focus on mobile booking flow, service clarity, and stronger visual proof for new clients.",
+    },
+    Therapist: {
+        snapshot: "The website should feel trustworthy, calm, and clear while helping visitors understand fit, services, and how to take the next step privately.",
+        trustSignals: "- Credentials and specialties\n- Clear privacy-aware language\n- Professional headshot or office photo",
+        conversionOpportunities: "- Consultation request CTA\n- Service/specialty pages\n- Insurance or private-pay clarity",
+        priorityIssues: "- Clarify who the practice helps\n- Make the inquiry path feel low-pressure\n- Add specialties and location signals for search",
+        recommendedNextSteps: "Improve service clarity, trust signals, and the private inquiry path before adding more content.",
+    },
+    "Auto Repair": {
+        snapshot: "The website should make the shop easy to trust, easy to contact, and easy to choose when a driver needs help quickly.",
+        trustSignals: "- Customer reviews\n- ASE certifications\n- Shop photos",
+        conversionOpportunities: "- Click-to-call button\n- Online appointment request\n- Repair intake form",
+        priorityIssues: "- Put phone and appointment actions higher on mobile\n- Add shop proof and certifications near service content\n- Create service pages for common repair searches",
+        recommendedNextSteps: "Prioritize mobile click-to-call, appointment requests, repair intake, and trust proof around reviews and certifications.",
+    },
+    Photographer: {
+        snapshot: "The website should show the quality of the work quickly, explain packages clearly, and guide visitors toward an inquiry.",
+        trustSignals: "- Portfolio galleries\n- Client reviews\n- Featured sessions or publications",
+        conversionOpportunities: "- Inquiry CTA\n- Package or starting-price section\n- Session type pages",
+        priorityIssues: "- Make portfolio categories easier to browse\n- Clarify the inquiry process\n- Add stronger calls-to-action after galleries",
+        recommendedNextSteps: "Focus on portfolio navigation, package clarity, and inquiry flow so visitors know what to do after viewing the work.",
+    },
+};
 function formatDate(value) {
     const date = value?.toDate ? value.toDate() : value ? new Date(value) : null;
     if (!date || Number.isNaN(date.getTime())) return "Unknown";
@@ -345,6 +401,421 @@ async function copyText(value) {
     document.body.removeChild(textarea);
 }
 
+
+function normalizeAuditStatus(status) {
+    if (status === "sent" || status === "responded") return status;
+    return "draft";
+}
+
+function getAuditStatusLabel(status) {
+    const normalized = normalizeAuditStatus(status);
+    if (normalized === "responded") return "Audit responded";
+    if (normalized === "sent") return "Audit sent";
+    return "Audit draft";
+}
+
+function textValue(value) {
+    return String(value || "").trim();
+}
+
+function getLeadBusinessName(lead) {
+    return lead?.businessName || lead?.company || lead?.name || "";
+}
+
+function getLeadWebsite(lead) {
+    return lead?.website || lead?.url || "";
+}
+
+function getDefaultAuditForm(lead) {
+    const template = "General Business";
+    const preset = auditTemplates[template];
+
+    return {
+        businessName: getLeadBusinessName(lead),
+        contactName: lead?.name || "",
+        website: getLeadWebsite(lead),
+        template,
+        snapshot: preset.snapshot,
+        trustSignals: preset.trustSignals,
+        conversionOpportunities: preset.conversionOpportunities,
+        priorityIssues: preset.priorityIssues,
+        recommendedNextSteps: preset.recommendedNextSteps,
+        internalNotes: "",
+    };
+}
+
+function hydrateAuditForm(audit, lead) {
+    const fallback = getDefaultAuditForm(lead);
+    const sections = audit?.sections || {};
+
+    return {
+        businessName: audit?.businessName || fallback.businessName,
+        contactName: audit?.contactName || fallback.contactName,
+        website: audit?.website || fallback.website,
+        template: audit?.template || fallback.template,
+        snapshot: sections.snapshot || audit?.snapshot || fallback.snapshot,
+        trustSignals: sections.trustSignals || audit?.trustSignals || fallback.trustSignals,
+        conversionOpportunities: sections.conversionOpportunities || audit?.conversionOpportunities || fallback.conversionOpportunities,
+        priorityIssues: sections.priorityIssues || audit?.priorityIssues || fallback.priorityIssues,
+        recommendedNextSteps: sections.recommendedNextSteps || audit?.recommendedNextSteps || fallback.recommendedNextSteps,
+        internalNotes: audit?.internalNotes || "",
+    };
+}
+
+function formatAuditSection(value, fallback) {
+    return textValue(value) || fallback;
+}
+
+function buildAuditOutput(form) {
+    const businessName = textValue(form.businessName) || "the business";
+    const website = textValue(form.website);
+
+    return `Website Review & Improvement Opportunities
+Prepared for ${businessName}
+
+Business Snapshot
+${formatAuditSection(form.snapshot, "The website should make the business easy to understand, trust, and contact.")}${website ? `\n\nWebsite reviewed: ${website}` : ""}
+
+Trust Signals
+${formatAuditSection(form.trustSignals, "- Customer reviews\n- Clear contact information\n- Real photos or examples")}
+
+Conversion Opportunities
+${formatAuditSection(form.conversionOpportunities, "- Clear call-to-action\n- Simple contact path\n- Mobile-friendly next step")}
+
+Priority Improvements
+${formatAuditSection(form.priorityIssues, "- Clarify the offer\n- Reduce contact friction\n- Add proof near key decision points")}
+
+Recommended Next Steps
+${formatAuditSection(form.recommendedNextSteps, "Start with the improvements most likely to help visitors trust the business and take action.")}`;
+}
+
+function buildAuditPayload({ auditId, form, lead, status }) {
+    const normalizedStatus = normalizeAuditStatus(status);
+    const outputText = buildAuditOutput(form);
+    const payload = {
+        id: auditId || "",
+        leadId: lead?.id || "",
+        businessName: textValue(form.businessName),
+        contactName: textValue(form.contactName),
+        website: textValue(form.website),
+        template: form.template || "General Business",
+        status: normalizedStatus,
+        sections: {
+            snapshot: textValue(form.snapshot),
+            trustSignals: textValue(form.trustSignals),
+            conversionOpportunities: textValue(form.conversionOpportunities),
+            priorityIssues: textValue(form.priorityIssues),
+            recommendedNextSteps: textValue(form.recommendedNextSteps),
+        },
+        internalNotes: textValue(form.internalNotes),
+        clientFacingTitle: "Website Review & Improvement Opportunities",
+        outputText,
+        updatedAt: serverTimestamp(),
+    };
+
+    if (normalizedStatus === "sent") payload.sentAt = serverTimestamp();
+    if (normalizedStatus === "responded") payload.respondedAt = serverTimestamp();
+
+    return payload;
+}
+
+function AuditModal({ lead, onClose }) {
+    const [auditId, setAuditId] = useState(lead?.latestAuditId || "");
+    const [form, setForm] = useState(() => getDefaultAuditForm(lead));
+    const [auditStatus, setAuditStatus] = useState(normalizeAuditStatus(lead?.auditStatus));
+    const [loading, setLoading] = useState(Boolean(lead?.latestAuditId));
+    const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const preview = useMemo(() => buildAuditOutput(form), [form]);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        async function loadAudit() {
+            if (!lead?.latestAuditId) {
+                setAuditId("");
+                setForm(getDefaultAuditForm(lead));
+                setAuditStatus(normalizeAuditStatus(lead?.auditStatus));
+                setLoading(false);
+                return;
+            }
+
+            setLoading(true);
+            try {
+                const auditRef = doc(db, "audits", lead.latestAuditId);
+                const snapshot = await getDoc(auditRef);
+                if (cancelled) return;
+
+                if (snapshot.exists()) {
+                    const audit = { id: snapshot.id, ...snapshot.data() };
+                    setAuditId(snapshot.id);
+                    setForm(hydrateAuditForm(audit, lead));
+                    setAuditStatus(normalizeAuditStatus(audit.status || lead.auditStatus));
+                    setMessage("Existing audit loaded.");
+                } else {
+                    setAuditId("");
+                    setForm(getDefaultAuditForm(lead));
+                    setAuditStatus(normalizeAuditStatus(lead?.auditStatus));
+                    setMessage("Could not find the saved audit. Starting a new draft.");
+                }
+            } catch (err) {
+                console.error("Audit load failed", err);
+                if (!cancelled) setMessage("Could not load existing audit.");
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        }
+
+        loadAudit();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [lead]);
+
+    function updateForm(field, value) {
+        setForm((current) => ({ ...current, [field]: value }));
+        setMessage("");
+    }
+
+    function applyTemplate(template) {
+        const preset = auditTemplates[template] || auditTemplates["General Business"];
+        setForm((current) => ({
+            ...current,
+            template,
+            snapshot: preset.snapshot,
+            trustSignals: preset.trustSignals,
+            conversionOpportunities: preset.conversionOpportunities,
+            priorityIssues: preset.priorityIssues,
+            recommendedNextSteps: preset.recommendedNextSteps,
+        }));
+        setMessage(`${template} template applied.`);
+    }
+
+    async function persistAudit(nextStatus = "draft") {
+        if (!lead?.id) return null;
+
+        const normalizedStatus = normalizeAuditStatus(nextStatus);
+        const currentAuditId = auditId || "";
+        const payload = buildAuditPayload({ auditId: currentAuditId, form, lead, status: normalizedStatus });
+
+        setSaving(true);
+        setMessage("");
+        try {
+            let nextAuditId = currentAuditId;
+            if (nextAuditId) {
+                await updateDoc(doc(db, "audits", nextAuditId), payload);
+            } else {
+                const docRef = await addDoc(collection(db, "audits"), {
+                    ...payload,
+                    id: "",
+                    createdAt: serverTimestamp(),
+                    createdBy: "admin",
+                });
+                nextAuditId = docRef.id;
+                await updateDoc(doc(db, "audits", nextAuditId), { id: nextAuditId });
+                setAuditId(nextAuditId);
+            }
+
+            await updateDoc(doc(db, "leads", lead.id), {
+                auditStatus: normalizedStatus,
+                latestAuditId: nextAuditId,
+                updatedAt: serverTimestamp(),
+            });
+
+            setAuditStatus(normalizedStatus);
+            setMessage(normalizedStatus === "draft" ? "Audit draft saved." : `Audit marked as ${normalizedStatus}.`);
+            return nextAuditId;
+        } catch (err) {
+            console.error("Audit save failed", err);
+            setMessage("Could not save audit.");
+            return null;
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    async function copyAudit() {
+        try {
+            await copyText(preview);
+            setMessage("Audit copied.");
+        } catch (err) {
+            console.error("Audit copy failed", err);
+            setMessage("Could not copy audit.");
+        }
+    }
+
+    return (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 px-4 py-6 backdrop-blur-sm md:py-10">
+            <div className="mx-auto max-w-6xl rounded-2xl border border-white/10 bg-neutral-950 p-4 text-white shadow-2xl md:p-6">
+                <div className="flex flex-col gap-3 border-b border-white/10 pb-4 md:flex-row md:items-start md:justify-between">
+                    <div>
+                        <p className="text-xs uppercase tracking-[0.18em] text-white/50">Website Audit</p>
+                        <h2 className="mt-1 text-2xl font-bold">Generate Audit</h2>
+                        <p className="mt-1 text-sm text-white/65">
+                            Use presets, edit the findings, save a draft, and copy the client-facing review.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs capitalize text-white/70">
+                            {auditStatus}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            disabled={saving}
+                            className="rounded-xl bg-white/10 px-3 py-2 text-sm hover:bg-white/20 disabled:opacity-60"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div className="py-12 text-center text-white/70">Loading audit...</div>
+                ) : (
+                    <div className="mt-5 grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
+                        <div className="space-y-4">
+                            <label className="grid gap-1 text-sm text-white/80">
+                                Industry Template
+                                <select
+                                    className="input"
+                                    value={form.template}
+                                    onChange={(e) => applyTemplate(e.target.value)}
+                                >
+                                    {auditTemplateOptions.map((template) => (
+                                        <option key={template} value={template}>
+                                            {template}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+
+                            <div className="grid gap-3 md:grid-cols-2">
+                                <label className="grid gap-1 text-sm text-white/80">
+                                    Business Name
+                                    <input
+                                        className="input"
+                                        value={form.businessName}
+                                        onChange={(e) => updateForm("businessName", e.target.value)}
+                                    />
+                                </label>
+                                <label className="grid gap-1 text-sm text-white/80">
+                                    Website
+                                    <input
+                                        className="input"
+                                        value={form.website}
+                                        onChange={(e) => updateForm("website", e.target.value)}
+                                    />
+                                </label>
+                            </div>
+
+                            <label className="grid gap-1 text-sm text-white/80">
+                                Business Snapshot
+                                <textarea
+                                    className="input min-h-24"
+                                    value={form.snapshot}
+                                    onChange={(e) => updateForm("snapshot", e.target.value)}
+                                />
+                            </label>
+
+                            <div className="grid gap-3 md:grid-cols-2">
+                                <label className="grid gap-1 text-sm text-white/80">
+                                    Trust Signals
+                                    <textarea
+                                        className="input min-h-36"
+                                        value={form.trustSignals}
+                                        onChange={(e) => updateForm("trustSignals", e.target.value)}
+                                    />
+                                </label>
+                                <label className="grid gap-1 text-sm text-white/80">
+                                    Conversion Opportunities
+                                    <textarea
+                                        className="input min-h-36"
+                                        value={form.conversionOpportunities}
+                                        onChange={(e) => updateForm("conversionOpportunities", e.target.value)}
+                                    />
+                                </label>
+                            </div>
+
+                            <label className="grid gap-1 text-sm text-white/80">
+                                Priority Improvements
+                                <textarea
+                                    className="input min-h-32"
+                                    value={form.priorityIssues}
+                                    onChange={(e) => updateForm("priorityIssues", e.target.value)}
+                                />
+                            </label>
+
+                            <label className="grid gap-1 text-sm text-white/80">
+                                Recommended Next Steps
+                                <textarea
+                                    className="input min-h-28"
+                                    value={form.recommendedNextSteps}
+                                    onChange={(e) => updateForm("recommendedNextSteps", e.target.value)}
+                                />
+                            </label>
+
+                            <label className="grid gap-1 text-sm text-white/80">
+                                Internal Notes
+                                <textarea
+                                    className="input min-h-20"
+                                    value={form.internalNotes}
+                                    onChange={(e) => updateForm("internalNotes", e.target.value)}
+                                />
+                            </label>
+
+                            <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                                <button
+                                    type="button"
+                                    onClick={() => persistAudit("draft")}
+                                    disabled={saving}
+                                    className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-white/90 disabled:opacity-60"
+                                >
+                                    {saving ? "Saving..." : "Save Draft"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={copyAudit}
+                                    disabled={saving}
+                                    className="rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20 disabled:opacity-60"
+                                >
+                                    Copy Audit
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => persistAudit("sent")}
+                                    disabled={saving}
+                                    className="rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20 disabled:opacity-60"
+                                >
+                                    Mark as Sent
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => persistAudit("responded")}
+                                    disabled={saving}
+                                    className="rounded-xl bg-white/10 px-4 py-2 text-sm hover:bg-white/20 disabled:opacity-60"
+                                >
+                                    Mark as Responded
+                                </button>
+                            </div>
+                            {message && <p className="text-sm text-white/70">{message}</p>}
+                        </div>
+
+                        <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                            <div className="flex flex-col gap-2 border-b border-white/10 pb-3 sm:flex-row sm:items-center sm:justify-between">
+                                <h3 className="font-semibold text-white">Client Audit Preview</h3>
+                                <span className="text-xs text-white/50">Local preview. No AI requests.</span>
+                            </div>
+                            <pre className="mt-4 max-h-[72vh] overflow-auto whitespace-pre-wrap break-words text-sm leading-relaxed text-white/80">{preview}</pre>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
 export default function AdminLeads() {
     const { loading: authLoading, ok } = useAuthGate();
     const navigate = useNavigate();
@@ -361,6 +832,7 @@ export default function AdminLeads() {
     const [proposalForm, setProposalForm] = useState(() => getDefaultProposalForm(null));
     const [proposalSaving, setProposalSaving] = useState(false);
     const [proposalStatus, setProposalStatus] = useState("");
+    const [auditLead, setAuditLead] = useState(null);
 
     useEffect(() => {
         const leadsQuery = query(collection(db, "leads"), orderBy("createdAt", "desc"));
@@ -446,6 +918,14 @@ export default function AdminLeads() {
         } finally {
             setSavingId("");
         }
+    }
+
+    function openAuditModal(lead) {
+        setAuditLead(lead);
+    }
+
+    function closeAuditModal() {
+        setAuditLead(null);
     }
 
     function openProposalModal(lead) {
@@ -628,6 +1108,11 @@ export default function AdminLeads() {
                                                 Proposal ready
                                             </span>
                                         )}
+                                        {lead.auditStatus && (
+                                            <span className="rounded-full border border-sky-300/20 bg-sky-400/10 px-2 py-0.5 text-xs text-sky-100">
+                                                {getAuditStatusLabel(lead.auditStatus)}
+                                            </span>
+                                        )}
                                     </div>
                                     <a href={`mailto:${lead.email}`} className="mt-1 block break-all text-sm text-white/75 hover:text-white">
                                         {lead.email || "No email"}
@@ -651,6 +1136,9 @@ export default function AdminLeads() {
                                     <div>Lead Source: {lead.originPage || lead.sourcePage || "unknown"}</div>
                                     <div>First Landing Page: {lead.landingPage || "unknown"}</div>
                                     <div className="break-all">Referrer: {lead.referrer || "direct / unknown"}</div>
+                                    {lead.leadSource && (
+                                        <div>How they heard: {lead.leadSource}</div>
+                                    )}
                                 </div>
 
                                 <select
@@ -667,6 +1155,13 @@ export default function AdminLeads() {
                                 </select>
 
                                 <div className="grid gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => openAuditModal(lead)}
+                                        className="rounded-xl bg-sky-300 px-3 py-2 text-sm font-semibold text-black hover:bg-sky-200"
+                                    >
+                                        Generate Audit
+                                    </button>
                                     <button
                                         type="button"
                                         onClick={() => openProposalModal(lead)}
@@ -748,6 +1243,8 @@ export default function AdminLeads() {
                     );
                 })}
             </section>
+
+            {auditLead && <AuditModal lead={auditLead} onClose={closeAuditModal} />}
 
             {proposalLead && (
                 <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 px-4 py-6 backdrop-blur-sm md:py-10">

@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useMemo, useState } from "react";
-import emailjs from "@emailjs/browser";
 import { ArrowRight, BadgeCheck, PhoneCall, Search, Workflow } from "lucide-react";
 import Typewriter from "../components/Typewriter";
 import { CursorGlow, MotionCard, MotionReveal } from "../components/PremiumMotion";
@@ -8,12 +7,10 @@ import AboutSection from "../sections/AboutSection";
 import PricingSection from "../sections/PricingSection";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
-import { trackEvent } from "../lib/analytics";
+import { getLeadAttribution, trackEvent } from "../lib/analytics";
+import { createPublicLead } from "../lib/leads";
+import { sendLeadNotification } from "../lib/emailNotifications";
 import TestimonialsSection from "../sections/TestimonialsSection";
-
-const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 const proofItems = [
     "8 Projects Built",
@@ -156,8 +153,9 @@ export default function Home() {
         return [...selectedProjects, ...fallbackProjects].slice(0, maxHomeProjects);
     }, [enrichedProjects]);
 
-    function handleReviewFormStarted() {
+    function handleReviewFormStarted(event) {
         if (reviewFormStarted) return;
+        if (event.currentTarget.elements.company?.value.trim()) return;
         setReviewFormStarted(true);
         trackEvent({
             eventName: "contact_form_started",
@@ -170,6 +168,16 @@ export default function Home() {
 
     async function handleReviewSubmit(e) {
         e.preventDefault();
+        if (reviewStatus.sending) return;
+
+        if (e.currentTarget.elements.company?.value.trim()) {
+            setReviewStatus({
+                sending: false,
+                ok: true,
+                message: "Got it - I will be in touch within 1 business day.",
+            });
+            return;
+        }
 
         const errors = {};
         if (!reviewName.trim()) errors.name = "Please enter your name.";
@@ -189,58 +197,156 @@ export default function Home() {
         }
 
         setReviewStatus({ sending: true, ok: null, message: "" });
+        const name = reviewName.trim();
+        const email = reviewEmail.trim();
+        const website = reviewUrl.trim();
+        const industry = reviewBiz.trim();
+        const source = "free-review";
+        const sourcePage = "/";
+        const projectType = "Free Website Review";
+        const rawIntent = "free-review";
+        const rawMessage =
+            `Free website review request.\n\n` +
+            `Website: ${website || "Not provided"}\n` +
+            `Industry: ${industry || "Not provided"}`;
+        const message =
+            `Project Type: ${projectType}\n` +
+            `Raw Intent: ${rawIntent}\n\n` +
+            rawMessage;
+        const attribution = getLeadAttribution();
+
         trackEvent({
             eventName: "contact_form_submitted",
-            serviceIntent: "free-review",
+            serviceIntent: rawIntent,
             metadata: {
-                source: "home-review-form",
-                hasWebsite: Boolean(reviewUrl.trim()),
-                hasIndustry: Boolean(reviewBiz.trim()),
+                source,
+                hasWebsite: Boolean(website),
+                hasIndustry: Boolean(industry),
+                projectType,
             },
         });
 
+        let leadSaved = false;
+        let emailSent = false;
+        let leadId = "";
+
         try {
-            await emailjs.send(
-                SERVICE_ID,
-                TEMPLATE_ID,
-                {
-                    from_name: reviewName.trim(),
-                    from_email: reviewEmail.trim(),
-                    reply_to: reviewEmail.trim(),
-                    website: reviewUrl.trim() || "Not provided",
-                    business: reviewBiz.trim() || "Not provided",
-                    intent: "review",
-                    source: "home-review-form",
-                    message: `Free website review request.\n\nWebsite: ${reviewUrl.trim() || "Not provided"}\nIndustry: ${reviewBiz.trim() || "Not provided"}`,
+            const leadRef = await createPublicLead({
+                lead: {
+                    name,
+                    email,
+                    replyTo: email,
+                    website,
+                    projectType,
+                    rawIntent,
+                    message,
+                    rawMessage,
+                    source,
+                    sourcePage,
+                    originPage: attribution.originPage,
+                    landingPage: attribution.landingPage,
+                    referrer: attribution.referrer,
+                    leadSource: "",
                 },
-                { publicKey: PUBLIC_KEY }
-            );
+                analytics: {
+                    serviceIntent: rawIntent,
+                    metadata: {
+                        source,
+                        projectType,
+                    },
+                },
+            });
+            leadId = leadRef.id;
+            leadSaved = true;
+        } catch (err) {
+            console.error("Homepage free-review lead save failed", err);
+            trackEvent({
+                eventName: "lead_create_failed",
+                serviceIntent: rawIntent,
+                metadata: {
+                    source,
+                    projectType,
+                },
+            });
+        }
+
+        try {
+            await sendLeadNotification({
+                title: `[Website Review] ${name}`,
+                name,
+                email,
+                message,
+                raw_message: rawMessage,
+                website: website || "Not provided",
+                website_url: website || "Not provided",
+                business: industry || "Not provided",
+                business_type: industry || "Not provided",
+                intent: rawIntent,
+                raw_intent: rawIntent,
+                project_type: projectType,
+                projectType,
+                source,
+            });
+            emailSent = true;
+            trackEvent({
+                eventName: "emailjs_sent",
+                serviceIntent: rawIntent,
+                leadId,
+                metadata: {
+                    source,
+                    projectType,
+                },
+            });
+        } catch (err) {
+            console.error("Homepage free-review EmailJS notification failed", err);
+            trackEvent({
+                eventName: "emailjs_failed",
+                serviceIntent: rawIntent,
+                leadId,
+                metadata: {
+                    source,
+                    projectType,
+                },
+            });
+        }
+
+        if (leadSaved && emailSent) {
             setReviewStatus({
                 sending: false,
                 ok: true,
                 message: "Got it - I will be in touch with a real breakdown within 1 business day.",
             });
-            trackEvent({
-                eventName: "emailjs_sent",
-                serviceIntent: "free-review",
-                metadata: {
-                    source: "home-review-form",
-                },
-            });
-        } catch {
+            return;
+        }
+
+        if (leadSaved) {
             setReviewStatus({
                 sending: false,
-                ok: false,
-                message: "Something went wrong - try emailing me directly at likwitdevs@gmail.com.",
+                ok: true,
+                message: "Your review request was saved. Email notification is delayed, but I can still follow up.",
             });
-            trackEvent({
-                eventName: "emailjs_failed",
-                serviceIntent: "free-review",
-                metadata: {
-                    source: "home-review-form",
-                },
-            });
+            return;
         }
+
+        if (emailSent) {
+            console.warn("Homepage review notification sent, but the CRM write failed", {
+                source,
+                sourcePage,
+                projectType,
+            });
+            setReviewStatus({
+                sending: false,
+                ok: true,
+                message: "Your request reached me by email. The CRM copy is delayed, so I'll follow up manually.",
+            });
+            return;
+        }
+
+        setReviewStatus({
+            sending: false,
+            ok: false,
+            message: "Something went wrong - try emailing me directly at likwitdevs@gmail.com.",
+        });
     }
 
     return (
@@ -548,6 +654,15 @@ export default function Home() {
                                     noValidate
                                     className="rounded-2xl border border-[#2a2a2a] bg-black/35 p-4 shadow-[0_16px_45px_rgba(0,0,0,0.3)]"
                                 >
+                                    <input
+                                        type="text"
+                                        name="company"
+                                        className="hidden"
+                                        tabIndex={-1}
+                                        autoComplete="off"
+                                        aria-hidden="true"
+                                    />
+
                                     <label htmlFor="audit-name" className="block text-sm text-white/90">
                                         Your Name <span className="text-white/70">(required)</span>
                                     </label>

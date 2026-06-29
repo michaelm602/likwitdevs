@@ -7,7 +7,7 @@ import { auth, db } from "../lib/firebase";
 
 const eventLimit = 1000;
 const leadLimit = 1000;
-const funnelEvents = ["page_view", "contact_form_started", "contact_form_submitted", "lead_created"];
+const funnelEvents = ["page_view", "contact_form_started", "contact_form_submitted"];
 const serviceInterestEvents = ["service_card_click", "service_problem_click", "cta_click"];
 const portfolioEvents = ["project_case_study_click", "project_live_site_click"];
 const displayedEventNames = new Set([
@@ -299,6 +299,9 @@ export default function AdminAnalytics() {
             next[eventName] = events.filter((event) => event.eventName === eventName).length;
             return next;
         }, {});
+        const historicalLeadEvents = events.filter((event) => event.eventName === "lead_created").length;
+        const leadCreateFailures = events.filter((event) => event.eventName === "lead_create_failed").length;
+        const emailFailures = events.filter((event) => event.eventName === "emailjs_failed").length;
 
         const leadSourceCounts = countBy(leads, (lead) => getDisplayPageLabel(getLeadSource(lead)));
         const topLeadSources = [...leadSourceCounts.entries()]
@@ -353,6 +356,10 @@ export default function AdminAnalytics() {
             services,
             portfolio,
             funnelCounts,
+            currentLeads: leads.length,
+            historicalLeadEvents,
+            leadCreateFailures,
+            emailFailures,
             topLeadSources,
             topLandingPages,
             attributionReport,
@@ -502,23 +509,50 @@ export default function AdminAnalytics() {
                     </section>
 
                     <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                        <h2 className="text-lg font-semibold text-white">Lead Funnel</h2>
+                        <h2 className="text-lg font-semibold text-white">Lead Activity and Current CRM</h2>
+                        <p className="mt-1 text-sm text-white/60">
+                            Event cards use the latest {eventLimit.toLocaleString()} analytics events. Current Leads reads live Firestore lead documents.
+                        </p>
                         <div className="mt-4 grid gap-3 md:grid-cols-4">
-                            <StatCard label="Page Views" value={dashboard.funnelCounts.page_view || 0} />
                             <StatCard
-                                label="Form Started"
+                                label="Page Views (Events)"
+                                value={dashboard.funnelCounts.page_view || 0}
+                            />
+                            <StatCard
+                                label="Form Started (Events)"
                                 value={dashboard.funnelCounts.contact_form_started || 0}
                                 helper={`${percent(dashboard.funnelCounts.contact_form_started || 0, dashboard.funnelCounts.page_view || 0)} of page views`}
                             />
                             <StatCard
-                                label="Form Submitted"
+                                label="Form Submitted (Events)"
                                 value={dashboard.funnelCounts.contact_form_submitted || 0}
                                 helper={`${percent(dashboard.funnelCounts.contact_form_submitted || 0, dashboard.funnelCounts.contact_form_started || 0)} of starts`}
                             />
                             <StatCard
-                                label="Leads Created"
-                                value={dashboard.funnelCounts.lead_created || 0}
-                                helper={`${percent(dashboard.funnelCounts.lead_created || 0, dashboard.funnelCounts.contact_form_submitted || 0)} of submissions`}
+                                label="Current Leads"
+                                value={dashboard.currentLeads}
+                                helper="Live documents currently stored in the CRM"
+                            />
+                        </div>
+                    </section>
+
+                    <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <h2 className="text-lg font-semibold text-white">Pipeline Diagnostics</h2>
+                        <div className="mt-4 grid gap-3 md:grid-cols-3">
+                            <StatCard
+                                label="Historical Lead Events"
+                                value={dashboard.historicalLeadEvents}
+                                helper="Successful create events; may include leads later deleted from the CRM"
+                            />
+                            <StatCard
+                                label="Lead Write Failures"
+                                value={dashboard.leadCreateFailures}
+                                helper="Validated submissions that did not reach Firestore"
+                            />
+                            <StatCard
+                                label="Email Failures"
+                                value={dashboard.emailFailures}
+                                helper="Notification attempts rejected by EmailJS"
                             />
                         </div>
                     </section>
