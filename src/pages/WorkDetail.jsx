@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import WorkProjectImage from "../components/WorkProjectImage";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
+import ReviewsSection from "../sections/ReviewsSection";
 import { getWorkProject, missingProjectHistory, projectCategories } from "../data/workProjects";
 import { trackEvent } from "../lib/analytics";
 
@@ -16,6 +17,7 @@ export default function WorkDetail() {
     const enrichedProject = projects.find((item) => item.slug === slug);
     const project = enrichedProject || staticProject;
     const liveUrl = project?.liveUrl || project?.liveHref || "";
+    const reviewProjectIds = [project?.slug, project?.firestoreId, project?.id].filter(Boolean);
 
     useSEO({
         title: project ? `${project.name} | Likwit Devs Work` : "Project Not Found | Likwit Devs",
@@ -125,6 +127,14 @@ export default function WorkDetail() {
                         </p>
                     </article>
                 </div>
+
+                <ReviewsSection
+                    title="Client Review"
+                    eyebrow="Project Feedback"
+                    copy=""
+                    query={{ associatedProjectIds: reviewProjectIds }}
+                    className="px-0 pt-0 pb-0"
+                />
 
                 <section className="rounded-3xl border border-white/10 bg-black/20 p-6 backdrop-blur-md">
                     <h2 className="text-2xl font-semibold text-white">Current Status</h2>

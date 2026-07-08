@@ -1037,6 +1037,9 @@ export default function AdminLeads() {
                     <Link to="/admin/leads" className="px-3 py-2 rounded-xl bg-white/20">
                         Leads
                     </Link>
+                    <Link to="/admin/reviews" className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
+                        Reviews
+                    </Link>
                     <Link to="/admin/analytics" className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20">
                         Analytics
                     </Link>
