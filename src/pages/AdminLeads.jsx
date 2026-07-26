@@ -5,6 +5,7 @@ import {
     addDoc,
     arrayUnion,
     collection,
+    deleteDoc,
     doc,
     getDoc,
     onSnapshot,
@@ -16,6 +17,12 @@ import {
 import useAuthGate from "../hooks/useAuthGate";
 import { auth, db } from "../lib/firebase";
 import { trackEvent } from "../lib/analytics";
+import {
+    ARCHIVED_LEAD_FILTER,
+    canPermanentlyDeleteLead,
+    isLeadArchived,
+    matchesLeadStatusFilter,
+} from "../lib/adminLeadControls";
 
 const leadStatuses = ["New", "Contacted", "Discovery", "Proposal Sent", "Won", "Lost", "Spam"];
 
@@ -817,7 +824,7 @@ function AuditModal({ lead, onClose }) {
     );
 }
 export default function AdminLeads() {
-    const { loading: authLoading, ok } = useAuthGate();
+    const { loading: authLoading, ok, user } = useAuthGate();
     const navigate = useNavigate();
     const [leads, setLeads] = useState([]);
     const [loadingLeads, setLoadingLeads] = useState(true);
@@ -869,7 +876,7 @@ export default function AdminLeads() {
     const filteredLeads = useMemo(
         () =>
             leads.filter((lead) => {
-                if (statusFilter && lead.status !== statusFilter) return false;
+                if (!matchesLeadStatusFilter(lead, statusFilter)) return false;
                 if (projectTypeFilter && lead.projectType !== projectTypeFilter) return false;
                 return includesSearch(lead, search);
             }),
@@ -915,6 +922,56 @@ export default function AdminLeads() {
         } catch (err) {
             console.error("Lead update failed", err);
             setError("Could not update lead.");
+        } finally {
+            setSavingId("");
+        }
+    }
+
+    async function setLeadArchived(lead, archived) {
+        if (!lead?.id || !ok) return;
+
+        setSavingId(lead.id);
+        try {
+            await updateDoc(doc(db, "leads", lead.id), {
+                archived,
+                archivedAt: archived ? serverTimestamp() : null,
+                updatedAt: serverTimestamp(),
+            });
+            if (archived && expandedId === lead.id) setExpandedId("");
+            setError("");
+        } catch (err) {
+            console.error("Lead archive update failed", err);
+            setError(archived ? "Could not archive lead." : "Could not restore lead.");
+        } finally {
+            setSavingId("");
+        }
+    }
+
+    async function permanentlyDeleteLead(lead) {
+        if (!canPermanentlyDeleteLead(user, lead)) {
+            setError("Only the owner admin can permanently delete archived leads.");
+            return;
+        }
+
+        const leadName = lead.name || lead.email || "this lead";
+        const confirmed = window.confirm(
+            `Permanently delete ${leadName}? This cannot be undone. Associated analytics events will be kept.`
+        );
+        if (!confirmed) return;
+
+        setSavingId(lead.id);
+        try {
+            await deleteDoc(doc(db, "leads", lead.id));
+            if (expandedId === lead.id) setExpandedId("");
+            setDraftNotes((current) => {
+                const next = { ...current };
+                delete next[lead.id];
+                return next;
+            });
+            setError("");
+        } catch (err) {
+            console.error("Lead delete failed", err);
+            setError("Could not permanently delete lead.");
         } finally {
             setSavingId("");
         }
@@ -1068,6 +1125,7 @@ export default function AdminLeads() {
                                 {status}
                             </option>
                         ))}
+                        <option value={ARCHIVED_LEAD_FILTER}>Archived</option>
                     </select>
                     <select
                         className="input"
@@ -1095,6 +1153,7 @@ export default function AdminLeads() {
 
                 {filteredLeads.map((lead) => {
                     const isExpanded = expandedId === lead.id;
+                    const archived = isLeadArchived(lead);
                     const website = lead.website || "";
 
                     return (
@@ -1114,6 +1173,11 @@ export default function AdminLeads() {
                                         {lead.auditStatus && (
                                             <span className="rounded-full border border-sky-300/20 bg-sky-400/10 px-2 py-0.5 text-xs text-sky-100">
                                                 {getAuditStatusLabel(lead.auditStatus)}
+                                            </span>
+                                        )}
+                                        {archived && (
+                                            <span className="rounded-full border border-amber-300/20 bg-amber-400/10 px-2 py-0.5 text-xs text-amber-100">
+                                                Archived
                                             </span>
                                         )}
                                     </div>
@@ -1179,6 +1243,24 @@ export default function AdminLeads() {
                                     >
                                         {isExpanded ? "Hide Details" : "View Details"}
                                     </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setLeadArchived(lead, !archived)}
+                                        disabled={savingId === lead.id}
+                                        className="rounded-xl bg-amber-300/15 px-3 py-2 text-sm text-amber-100 hover:bg-amber-300/25 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        {archived ? "Restore Lead" : "Archive Lead"}
+                                    </button>
+                                    {archived && (
+                                        <button
+                                            type="button"
+                                            onClick={() => permanentlyDeleteLead(lead)}
+                                            disabled={savingId === lead.id}
+                                            className="rounded-xl bg-red-500/15 px-3 py-2 text-sm text-red-100 hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-50"
+                                        >
+                                            Permanent Delete
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 
