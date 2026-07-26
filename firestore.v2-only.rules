@@ -2,7 +2,6 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{db}/documents {
-
     function isOwner() {
       return request.auth != null &&
              request.auth.uid in ['7u3Uund1CKRrtf4Pw0ehaLCI7WR2'];
@@ -81,46 +80,6 @@ service cloud.firestore {
         && value.gclid is string;
     }
 
-    // TEMPORARY COMPATIBILITY WINDOW: accept the existing public-site contract
-    // only through this separate, explicit validator. Remove all legacy
-    // validators and their allow clauses after the v2 observation window.
-    function hasValidLegacyAnalyticsShape() {
-      return request.resource.data.keys().hasOnly([
-          "eventName", "pagePath", "sourcePage", "targetPath", "targetUrl",
-          "projectSlug", "projectName", "serviceIntent", "leadId", "metadata",
-          "createdAt", "originPage", "landingPage", "referrer", "sessionId"
-        ])
-        && request.resource.data.eventName is string
-        && request.resource.data.pagePath is string
-        && request.resource.data.sourcePage is string
-        && request.resource.data.targetPath is string
-        && request.resource.data.targetUrl is string
-        && request.resource.data.projectSlug is string
-        && request.resource.data.projectName is string
-        && request.resource.data.serviceIntent is string
-        && request.resource.data.leadId is string
-        && isValidMetadata(request.resource.data.metadata)
-        && request.resource.data.createdAt == request.time
-        && request.resource.data.originPage is string
-        && request.resource.data.landingPage is string
-        && request.resource.data.referrer is string
-        && request.resource.data.sessionId is string
-        && request.resource.data.sessionId.size() > 0;
-    }
-
-    function isValidLegacyPublicAnalyticsEvent() {
-      return hasValidLegacyAnalyticsShape()
-        && isPublicEventName(request.resource.data.eventName)
-        && !request.resource.data.pagePath.matches('^/admin(/.*)?$')
-        && !request.resource.data.sourcePage.matches('^/admin(/.*)?$');
-    }
-
-    function isValidLegacyAdminOperationalEvent() {
-      return isOwner()
-        && isAdminOperationalEventName(request.resource.data.eventName)
-        && hasValidLegacyAnalyticsShape();
-    }
-
     function hasValidV2AnalyticsShape() {
       return request.resource.data.keys().hasOnly([
           "schemaVersion", "releaseId", "eventCategory", "isPublicTraffic",
@@ -179,38 +138,6 @@ service cloud.firestore {
         && hasValidV2AnalyticsShape();
     }
 
-    function hasValidLegacyLeadShape() {
-      return request.resource.data.keys().hasOnly([
-          "name", "email", "replyTo", "website", "projectType", "rawIntent",
-          "message", "rawMessage", "source", "sourcePage", "createdAt",
-          "updatedAt", "status", "originPage", "landingPage", "referrer",
-          "estimatedValue", "notes", "leadSource"
-        ])
-        && request.resource.data.name is string
-        && request.resource.data.email is string
-        && request.resource.data.replyTo is string
-        && request.resource.data.website is string
-        && request.resource.data.projectType is string
-        && request.resource.data.rawIntent is string
-        && request.resource.data.message is string
-        && request.resource.data.rawMessage is string
-        && request.resource.data.source is string
-        && request.resource.data.sourcePage is string
-        && request.resource.data.createdAt == request.time
-        && request.resource.data.updatedAt == request.time
-        && request.resource.data.status == "New"
-        && request.resource.data.originPage is string
-        && request.resource.data.landingPage is string
-        && request.resource.data.referrer is string
-        && request.resource.data.estimatedValue == null
-        && request.resource.data.notes == ""
-        && request.resource.data.leadSource is string;
-    }
-
-    function isValidLegacyPublicLeadCreate() {
-      return hasValidLegacyLeadShape();
-    }
-
     function hasValidV2LeadShape() {
       return request.resource.data.keys().hasOnly([
           "name", "email", "replyTo", "website", "projectType", "rawIntent",
@@ -257,10 +184,6 @@ service cloud.firestore {
         && request.resource.data.submissionSurface is string;
     }
 
-    function isValidV2PublicLeadCreate() {
-      return hasValidV2LeadShape();
-    }
-
     match /projects/{doc} {
       allow read: if true;
       allow create, update, delete: if isOwner();
@@ -272,15 +195,12 @@ service cloud.firestore {
     }
 
     match /leads/{leadId} {
-      allow create: if isValidLegacyPublicLeadCreate() ||
-                       isValidV2PublicLeadCreate();
+      allow create: if hasValidV2LeadShape();
       allow read, update, delete: if isOwner();
     }
 
     match /analyticsEvents/{eventId} {
-      allow create: if isValidLegacyAdminOperationalEvent() ||
-                       isValidV2AdminOperationalEvent() ||
-                       isValidLegacyPublicAnalyticsEvent() ||
+      allow create: if isValidV2AdminOperationalEvent() ||
                        isValidV2PublicAnalyticsEvent();
       allow read: if isOwner();
       allow update, delete: if false;

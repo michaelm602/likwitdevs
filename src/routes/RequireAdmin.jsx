@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { Navigate, useLocation } from "react-router-dom";
 import { auth } from "../lib/firebase";
-
-const ADMIN_UIDS = (import.meta.env.VITE_ADMIN_UIDS || "7u3Uund1CKRrtf4Pw0ehaLCI7WR2")
-    .split(",").map(s => s.trim()).filter(Boolean);
+import { isAuthorizedAdminUser } from "../lib/adminAccess";
 
 export default function RequireAdmin({ children }) {
     const [checking, setChecking] = useState(true);
@@ -13,7 +11,7 @@ export default function RequireAdmin({ children }) {
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => {
-            setOk(!!u && ADMIN_UIDS.includes(u.uid));
+            setOk(isAuthorizedAdminUser(u));
             setChecking(false);
         });
         return unsub;

@@ -21,7 +21,31 @@ export function buildPublicLeadDocument({
     landingPage,
     referrer,
     leadSource,
+    firstTouch,
+    latestTouch,
+    acquisitionSource,
+    selfReportedSource,
+    canonicalLandingPage,
+    conversionLocation,
+    submissionSurface,
+    analyticsSchemaVersion,
+    analyticsReleaseId,
 }) {
+    const fallbackLandingPage = text(canonicalLandingPage || landingPage || sourcePage) || "/";
+    const fallbackAttribution = {
+        acquisitionSource: "Unknown",
+        landingPage: fallbackLandingPage,
+        landingPath: fallbackLandingPage,
+        referrer: text(referrer),
+        utmSource: "",
+        utmMedium: "",
+        utmCampaign: "",
+        utmContent: "",
+        utmTerm: "",
+        fbclid: "",
+        gclid: "",
+    };
+
     return {
         name: text(name),
         email: text(email),
@@ -42,6 +66,15 @@ export function buildPublicLeadDocument({
         notes: "",
         estimatedValue: null,
         leadSource: text(leadSource),
+        analyticsSchemaVersion: Number(analyticsSchemaVersion) || 2,
+        analyticsReleaseId: text(analyticsReleaseId),
+        firstTouch: firstTouch || fallbackAttribution,
+        latestTouch: latestTouch || firstTouch || fallbackAttribution,
+        acquisitionSource: text(acquisitionSource) || "Unknown",
+        selfReportedSource: text(selfReportedSource || leadSource),
+        canonicalLandingPage: fallbackLandingPage,
+        conversionLocation: text(conversionLocation || originPage || sourcePage),
+        submissionSurface: text(submissionSurface || source),
     };
 }
 
@@ -56,6 +89,11 @@ export async function createPublicLead({ lead, analytics = {} }) {
         originPage: leadDocument.originPage,
         landingPage: leadDocument.landingPage,
         referrer: leadDocument.referrer,
+        firstTouch: leadDocument.firstTouch,
+        latestTouch: leadDocument.latestTouch,
+        acquisitionSource: leadDocument.acquisitionSource,
+        conversionLocation: leadDocument.conversionLocation,
+        submissionSurface: leadDocument.submissionSurface,
         metadata: {
             source: leadDocument.source,
             projectType: leadDocument.projectType,
