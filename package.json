@@ -9,7 +9,7 @@
     "build:github": "vite build --mode github",
     "predeploy": "npm run build:github",
     "deploy": "gh-pages -d dist",
-    "postbuild": "cp dist/index.html dist/404.html || copy dist\\index.html dist\\404.html"
+    "postbuild": "node scripts/generate-seo-snapshots.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
