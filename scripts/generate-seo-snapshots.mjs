@@ -7,6 +7,14 @@ const homepageHtml = await readFile(indexPath, "utf8");
 
 const pages = [
   {
+    route: "services",
+    title: "Web Design, Booking Systems & Custom Software Portland | Likwit Devs",
+    description:
+      "Portland web design studio building websites, booking systems, customer portals, intake workflows, and custom software for small businesses. Starting at $800.",
+    canonical: "https://www.likwitdevs.com/services",
+    heading: "Build the Systems Your Business Runs On",
+  },
+  {
     route: "web-design-portland",
     title: "Portland Web Design for Small Businesses | Starting at $300 | Likwit Devs",
     description:
