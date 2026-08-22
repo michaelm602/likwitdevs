@@ -108,8 +108,7 @@ export default function WebDesignSalons() {
             .
           </p>
           <p className="mt-4 text-white/50 text-sm">
-            Trusted by: <span className="text-white/70">Elegance By Elysia</span> &amp;{" "}
-            <span className="text-white/70">Blessed N Polished</span>
+            Trusted by: <span className="text-white/70">Elegance By Elysia</span>
           </p>
           <Link to="/free-review" className="btn mt-6 inline-block">Find Out What Your Website Is Costing You →</Link>
         </Reveal>

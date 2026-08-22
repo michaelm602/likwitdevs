@@ -3,7 +3,7 @@ import WorkProjectImage from "../components/WorkProjectImage";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
 import ReviewsSection from "../sections/ReviewsSection";
-import { getWorkProject, missingProjectHistory, projectCategories } from "../data/workProjects";
+import { missingProjectHistory, projectCategories } from "../data/workProjects";
 import { trackEvent } from "../lib/analytics";
 
 function getProjectTypeLabel(project) {
@@ -12,10 +12,8 @@ function getProjectTypeLabel(project) {
 
 export default function WorkDetail() {
     const { slug } = useParams();
-    const staticProject = getWorkProject(slug);
     const { projects, loading } = useEnrichedWorkProjects();
-    const enrichedProject = projects.find((item) => item.slug === slug);
-    const project = enrichedProject || staticProject;
+    const project = projects.find((item) => item.slug === slug);
     const liveUrl = project?.liveUrl || project?.liveHref || "";
     const reviewProjectIds = [project?.slug, project?.firestoreId, project?.id].filter(Boolean);
 

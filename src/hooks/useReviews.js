@@ -2,6 +2,23 @@ import { useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { publicDb } from "../lib/firebasePublic";
 import { sortReviews } from "../lib/reviews";
+import useEnrichedWorkProjects from "./useEnrichedWorkProjects";
+
+function normalizeProjectReference(value) {
+    return String(value || "").trim().toLowerCase();
+}
+
+function getAssociatedProjectReference(review) {
+    const associatedProject = review.associatedProject;
+
+    return normalizeProjectReference(
+        review.associatedProjectId ||
+        review.projectSlug ||
+        (typeof associatedProject === "string"
+            ? associatedProject
+            : associatedProject?.slug || associatedProject?.id)
+    );
+}
 
 export default function useReviews({
     featuredOnly = false,
@@ -13,6 +30,7 @@ export default function useReviews({
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { projects: publicProjects, loading: projectsLoading } = useEnrichedWorkProjects();
 
     useEffect(() => {
         const reviewsQuery = query(collection(publicDb, "reviews"), orderBy("displayOrder", "asc"));
@@ -35,15 +53,27 @@ export default function useReviews({
 
     const reviews = useMemo(() => {
         const projectIds = new Set(associatedProjectIds.filter(Boolean));
+        const publicProjectReferences = new Set(
+            publicProjects.flatMap((project) => [
+                project.slug,
+                project.id,
+                project.firestoreId,
+                ...(project.matchIds || []),
+            ]).map(normalizeProjectReference).filter(Boolean)
+        );
         const filtered = records
             .filter((review) => !featuredOnly || review.featured === true)
             .filter((review) => !showOnHomepage || review.showOnHomepage === true)
             .filter((review) => !showOnServices || review.showOnServices === true)
-            .filter((review) => projectIds.size === 0 || projectIds.has(review.associatedProjectId));
+            .filter((review) => projectIds.size === 0 || projectIds.has(review.associatedProjectId))
+            .filter((review) => {
+                const associatedProjectReference = getAssociatedProjectReference(review);
+                return !associatedProjectReference || publicProjectReferences.has(associatedProjectReference);
+            });
 
         const sorted = [...filtered].sort(sortReviews);
         return limitCount > 0 ? sorted.slice(0, limitCount) : sorted;
-    }, [associatedProjectIds, featuredOnly, limitCount, records, showOnHomepage, showOnServices]);
+    }, [associatedProjectIds, featuredOnly, limitCount, publicProjects, records, showOnHomepage, showOnServices]);
 
-    return { reviews, loading, error };
+    return { reviews, loading: loading || projectsLoading, error };
 }

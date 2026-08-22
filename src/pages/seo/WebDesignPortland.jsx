@@ -111,11 +111,6 @@ const testimonials = [
         biz: "Elegance By Elysia",
         quote: "Great experience working with LikWitDevs on my website. Fast communication, clean design, and they delivered exactly what I needed. Highly recommend for anyone looking for reliable web development.",
     },
-    {
-        name: "Katrina Garcia",
-        biz: "Blessed N Polished",
-        quote: "I'm so happy with the website they created for my nail business! From the beginning they listened to what I wanted and made the whole process easy and stress-free. The design is beautiful, professional, and exactly what I envisioned.",
-    },
 ];
 
 const faqs = [

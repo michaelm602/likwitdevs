@@ -202,10 +202,11 @@ export default function useEnrichedWorkProjects() {
     const projects = useMemo(
         () => {
             const matchedRecordIds = new Set();
-            const staticProjects = workProjects.map((project, index) => {
+            const staticProjects = workProjects.flatMap((project, index) => {
                 const record = findMatchingRecord(project, records);
+                if (!record) return [];
                 if (record?.id) matchedRecordIds.add(record.id);
-                return mergeProject(project, record, index);
+                return [mergeProject(project, record, index)];
             });
 
             const firestoreOnlyProjects = records

@@ -4,7 +4,6 @@ import { CalendarCheck2, Globe2, Sparkles, Workflow } from "lucide-react";
 import Reveal from "../components/Reveal";
 import { CursorGlow, MotionCard } from "../components/PremiumMotion";
 import WorkProjectImage from "../components/WorkProjectImage";
-import { workProjects } from "../data/workProjects";
 import useEnrichedWorkProjects from "../hooks/useEnrichedWorkProjects";
 import useSEO from "../hooks/useSEO";
 import { trackEvent } from "../lib/analytics";
@@ -157,10 +156,6 @@ const buildItems = [
 const recentBuildSlugs = ["iep-compass", "diamond-auto", "nw-autofix", "forest-pathways"];
 const maxRecentBuilds = 4;
 
-function getProject(slug) {
-    return workProjects.find((project) => project.slug === slug);
-}
-
 function getServicesOrder(project) {
     return Number.isFinite(Number(project.servicesOrder)) ? Number(project.servicesOrder) : Number.MAX_SAFE_INTEGER;
 }
@@ -191,8 +186,10 @@ function AccentIcon({ icon }) {
     return createElement(icon, { className: "h-5 w-5", "aria-hidden": true });
 }
 
-function RelatedProjects({ slugs }) {
-    const projects = slugs.map(getProject).filter(Boolean);
+function RelatedProjects({ slugs, publicProjects }) {
+    const projects = slugs
+        .map((slug) => publicProjects.find((project) => project.slug === slug))
+        .filter(Boolean);
 
     if (projects.length === 0) return null;
 
@@ -479,7 +476,10 @@ export default function Services() {
                                 </div>
 
                                 <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-                                    <RelatedProjects slugs={service.projectSlugs} />
+                                    <RelatedProjects
+                                        slugs={service.projectSlugs}
+                                        publicProjects={enrichedProjects}
+                                    />
                                     <Link
                                         to={`/contact?intent=${service.contactIntent}`}
                                         onClick={() =>
@@ -511,7 +511,7 @@ export default function Services() {
                     ))}
                 </div>
 
-                <TestimonialsSection />
+                <TestimonialsSection placement="services" />
 
                 <RecentBuilds projects={recentBuildProjects} loading={loading} />
 
